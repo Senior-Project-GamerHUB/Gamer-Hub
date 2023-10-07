@@ -21,11 +21,39 @@ app.use(express.static(path.join(__dirname, 'static')));
 app.use(express.json());
 app.use(cors());
 
-app.get('', async (req, res) => {
+app.get('/', async (req, res) => {
 	res.json({});
 });
 
-app.post('', async (req, res) => {
+app.get('/getGameInfo', async (req, res) => {
+	const game = await db.all(`SELECT * FROM Game_Catalog`)
+	res.json({game});
+});
+
+app.post('/addNewUser', async (req, res) => {
+	let hash = await bcrypt.hash(req.body.password, 10);
+	
+});
+
+app.post('/loginUser', async (req, res) => {
+	let compare = await bcrypt.compare(req.body.password, hash);
+	res.render('passwordResult', {
+		password: req.body.password,
+		hash: hash,
+		compare: compare
+	});
+	// res.json({});
+});
+
+app.post('/addNewGame', async (req, res) => {
+	res.json({});
+});
+
+app.post('/addReview', async (req, res) => {
+	res.json({});
+});
+
+app.post('/addForum', async (req, res) => {
 	res.json({});
 });
 
