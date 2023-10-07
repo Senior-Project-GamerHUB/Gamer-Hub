@@ -6,6 +6,8 @@ import SignUp from './pages/welcome pages/signup';
 import Header from './components/header';
 import Footer from './components/footer';
 import Home from './pages/home/home';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 
 const Layout = () => {
@@ -36,7 +38,8 @@ const router = createBrowserRouter([
   },
   {
     path: '/login', 
-    element: <Login />, 
+    element: <Login/>
+    
   },
   {
     path: '/signup', 
