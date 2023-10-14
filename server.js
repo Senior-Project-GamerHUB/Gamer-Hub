@@ -22,17 +22,21 @@ app.use(express.json());
 app.use(cors());
 
 app.get('/', async (req, res) => {
-	res.json({});
+	const game = await db.all(`SELECT * FROM Game_Catalog`)
+	const forum = await db.all(`SELECT * FROM Forum`)
+	const review = await db.all(`SELECT * FROM Review`)
+	res.json({game, forum, review});
 });
 
-app.get('/getGameInfo', async (req, res) => {
-	const game = await db.all(`SELECT * FROM Game_Catalog`)
-	res.json({game});
-});
+// app.get('/getGameInfo', async (req, res) => {
+// 	const game = await db.all(`SELECT * FROM Game_Catalog`)
+// 	res.json({game});
+// });
 
 app.post('/addNewUser', async (req, res) => {
 	let hash = await bcrypt.hash(req.body.password, 10);
-	
+	db.get(`INSERT INTO User (Username, Email, Password, Account Type)
+	VALUES (?, ?, ?, ?)`);
 });
 
 app.post('/loginUser', async (req, res) => {
@@ -46,15 +50,21 @@ app.post('/loginUser', async (req, res) => {
 });
 
 app.post('/addNewGame', async (req, res) => {
-	res.json({});
+	const addGame = req.body.gameRequest;
+	db.get(`INSERT INTO Game_Catalog (Name, Image, Description, Game_Info, Video, Price)
+	VALUES (?, ?, ?, ?, ?, ?)`);
 });
 
 app.post('/addReview', async (req, res) => {
-	res.json({});
+	db.get(`INSERT INTO Review (Rating, Text, gameID, userID, date)
+	VALUES (?, ?, ?, ?, ?)`);
+	
 });
 
 app.post('/addForum', async (req, res) => {
-	res.json({});
+	db.get(`INSERT INTO Forum (Text, Comments, gameID, userID, date)
+	VALUES (?, ?, ?, ?, ?)`);
+	
 });
 
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
