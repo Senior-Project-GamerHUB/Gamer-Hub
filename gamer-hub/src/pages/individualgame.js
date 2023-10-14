@@ -1,12 +1,12 @@
 import React from 'react';
 
-const Footer = () => {
+const IndividualGame = () => {
     return(
         <div>
-             Footer
+             Game
         </div>
     );
 };
 
 
-export default Footer;
+export default IndividualGame;

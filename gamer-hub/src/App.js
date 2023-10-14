@@ -6,7 +6,7 @@ import SignUp from './pages/welcome pages/signup';
 import Header from './components/header';
 import Footer from './components/footer';
 import Home from './pages/home/home';
-
+import IndividualGame from "./pages/individualgame";
 
 const Layout = () => {
   return (
@@ -26,6 +26,11 @@ const router = createBrowserRouter([
       {
         path:"/",
         element: <Home />,
+      },
+
+      {
+        path: '/game', 
+        element: <IndividualGame />, 
       },
   
     ],
