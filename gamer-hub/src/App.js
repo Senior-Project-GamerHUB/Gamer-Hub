@@ -1,12 +1,15 @@
 import React from "react";
 import {createBrowserRouter, Outlet, RouterProvider} from "react-router-dom";
-import Welcome from './pages/welcome pages/welcome';
-import Login from './pages/welcome pages/login';
-import SignUp from './pages/welcome pages/signup';
-import Header from './components/header';
-import Footer from './components/footer';
+import Welcome from './pages/welcome pages/welcome/welcome';
+import Login from './pages/welcome pages//login/login';
+import SignUp from './pages/welcome pages//signup/signup';
+import Header from './components/header/header';
+import Footer from './components/footer/footer';
 import Home from './pages/home/home';
-import IndividualGame from "./pages/individualgame";
+import IndividualGame from "./pages/individualgame/individualgame";
+import Submit from "./pages/submit";
+import Profile from "./pages/profile";
+
 
 const Layout = () => {
   return (
@@ -20,32 +23,38 @@ const Layout = () => {
 
 const router = createBrowserRouter([
   {
-    path:"/",
+    path: '/',
     element: <Layout />,
     children: [
       {
-        path:"/",
+        path: '/', // This will match the root URL
         element: <Home />,
       },
-
       {
-        path: '/game', 
-        element: <IndividualGame />, 
+        path: '/game',
+        element: <IndividualGame />,
       },
-  
+      {
+        path: '/submit',
+        element: <Submit />,
+      },
+      {
+        path: '/profile',
+        element: <Profile />,
+      },
     ],
   },
   {
-    path: '/welcome', 
-    element: <Welcome />, 
+    path: '/welcome', // Place this route at the top
+    element: <Welcome />,
   },
   {
-    path: '/login', 
-    element: <Login />, 
+    path: '/login',
+    element: <Login />,
   },
   {
-    path: '/signup', 
-    element: <SignUp />, 
+    path: '/signup',
+    element: <SignUp />,
   },
 ]);
 
