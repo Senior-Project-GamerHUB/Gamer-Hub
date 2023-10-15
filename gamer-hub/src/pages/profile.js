@@ -1,12 +1,12 @@
 import React from 'react';
 
-const IndividualGame = () => {
+const Profile = () => {
     return(
         <div>
-             Game
+            Profile
         </div>
     );
 };
 
 
-export default IndividualGame;
+export default Profile;

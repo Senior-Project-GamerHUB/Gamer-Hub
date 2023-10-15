@@ -1,0 +1,13 @@
+.background {
+  background-color: rgb(252, 183, 231);
+  height: 825px;
+}
+
+.custom-bg-color {
+  background-color: rgb(101, 195, 24);
+}
+
+.card-hover:hover {
+  transform: scale(1.25); /* Increase the scale value for a larger expansion */
+  transition: transform 0.2s; /* Adjust the transition duration as needed */
+}

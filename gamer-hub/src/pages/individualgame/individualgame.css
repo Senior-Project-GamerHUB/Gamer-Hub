@@ -1,0 +1,97 @@
+/* Styles for screens wider than 768px (adjust the breakpoint as needed) */
+.page-container {
+    display: flex;
+    width: 100%;
+}
+
+.game-container {
+    width: 254px;
+    height: 630px;
+    border: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-y: auto;
+    margin-top: 30px;
+    margin-left: 300px;
+}
+
+.game-info-container {
+    width: 245px;
+    height: 200px;
+}
+
+.info {
+    border-bottom: 1px solid #333;
+    height: 25px;
+    width: 245px;
+    font-size: 12px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.addButton {
+    width: 252px;
+    height: 40px;
+    border: 2px solid #0074D9;
+    background-color: #0074D9;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.addButton:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.summary {
+    width: 700px;
+    height: 400px;
+    margin-top: 100px;
+    border: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-y: auto;
+    margin-top: 30px;
+    margin-left: 20px;
+    margin-bottom: 200px;
+}
+
+.right-content {
+    margin-left: 100px;
+}
+
+/* Media query for screens 768px and narrower */
+@media screen and (max-width: 768px) {
+    .page-container {
+        flex-direction: column; /* Stack elements vertically */
+    }
+    
+    .game-container {
+        width: 100%; /* Expand to full width */
+        margin: 0; /* Remove left margin */
+    }
+    
+    .right-content {
+        margin-left: 0; /* Remove left margin */
+        width: 500px;
+    }
+}
+
+.victory-chart-container{
+    width: 500px;
+    margin-bottom: 50px;
+    margin-left: 10px;
+    margin-right:100px;
+}
