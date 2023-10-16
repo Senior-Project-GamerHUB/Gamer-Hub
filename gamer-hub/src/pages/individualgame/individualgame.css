@@ -1,7 +1,9 @@
-/* Styles for screens wider than 768px (adjust the breakpoint as needed) */
+
 .page-container {
     display: flex;
     width: 100%;
+    justify-content: center;
+    background-color: rgb(252, 183, 231);
 }
 
 .game-container {
@@ -10,11 +12,11 @@
     border: 1px solid #333;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
+    align-items: center; 
     overflow-y: auto;
     margin-top: 30px;
-    margin-left: 300px;
+    background-color: rgb(0, 0, 0);
+    color: white;
 }
 
 .game-info-container {
@@ -60,38 +62,38 @@
     border: 1px solid #333;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
+    align-items: center; 
     overflow-y: auto;
     margin-top: 30px;
-    margin-left: 20px;
     margin-bottom: 200px;
+    background-color: rgb(0, 0, 0);
+    color: white;
 }
 
 .right-content {
     margin-left: 100px;
+    align-items: center; 
 }
 
-/* Media query for screens 768px and narrower */
 @media screen and (max-width: 768px) {
     .page-container {
-        flex-direction: column; /* Stack elements vertically */
+        flex-direction: column; 
     }
     
     .game-container {
-        width: 100%; /* Expand to full width */
-        margin: 0; /* Remove left margin */
+        width: 100%; 
+        margin: 0; 
     }
     
     .right-content {
-        margin-left: 0; /* Remove left margin */
-        width: 500px;
+        margin-left: 0; 
+        width: 100%; 
+    }
+    
+    .victory-chart-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     }
 }
 
-.victory-chart-container{
-    width: 500px;
-    margin-bottom: 50px;
-    margin-left: 10px;
-    margin-right:100px;
-}
