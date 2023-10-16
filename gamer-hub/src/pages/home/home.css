@@ -4,10 +4,14 @@
 }
 
 .custom-bg-color {
-  background-color: rgb(101, 195, 24);
+  background-color: rgb(0, 0, 0);
+}
+
+.card-title{
+  font-size: 10px;
 }
 
 .card-hover:hover {
-  transform: scale(1.25); /* Increase the scale value for a larger expansion */
-  transition: transform 0.2s; /* Adjust the transition duration as needed */
+  transform: scale(1.25); 
+  transition: transform 0.2s; 
 }

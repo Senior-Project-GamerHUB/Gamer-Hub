@@ -26,7 +26,7 @@ const Home = () => {
                       />
                     </div>
                     <div className="card-body custom-bg-color">
-                      <h5 className="card-title" style={{ fontSize: "10px" }}>Elden Ring</h5>
+                      <h5 className="card-title" style={{ fontSize: "10px", color: "white" }}>Elden Ring</h5>
                     </div>
                   </div>
                 </div>
@@ -42,7 +42,7 @@ const Home = () => {
                       />
                     </div>
                     <div className="card-body custom-bg-color"style={{ width: "128px", height: "55px" }}>
-                      <h5 className="card-title" style={{ fontSize: "10px" }}>Red Dead Redemption 2</h5>
+                      <h5 className="card-title" style={{ fontSize: "10px", color: "white" }}>Red Dead Redemption 2</h5>
                     </div>
                   </div>
                 </div>
@@ -58,7 +58,7 @@ const Home = () => {
                       />
                     </div>
                     <div className="card-body custom-bg-color">
-                      <h5 className="card-title" style={{ fontSize: "10px" }}>Cyberpunk 2077</h5>
+                      <h5 className="card-title" style={{ fontSize: "10px", color: "white" }}>Cyberpunk 2077</h5>
                     </div>
                   </div>
                 </div>
@@ -74,7 +74,7 @@ const Home = () => {
                       />
                     </div>
                     <div className="card-body custom-bg-color">
-                      <h5 className="card-title" style={{ fontSize: "10px" }}>Baldur's Gate 3</h5>
+                      <h5 className="card-title" style={{ fontSize: "10px", color: "white" }}>Baldur's Gate 3</h5>
                     </div>
                   </div>
                 </div>
@@ -90,7 +90,7 @@ const Home = () => {
                       />
                     </div>
                     <div className="card-body custom-bg-color">
-                      <h5 className="card-title" style={{ fontSize: "10px" }}>Lies of P</h5>
+                      <h5 className="card-title" style={{ fontSize: "10px", color: "white" }}>Lies of P</h5>
                     </div>
                   </div>
                 </div>
@@ -108,7 +108,7 @@ const Home = () => {
                       </a>
                     </div>
                     <div className="card-body custom-bg-color">
-                      <h5 className="card-title" style={{ fontSize: "10px" }}>Starfield</h5>
+                      <h5 className="card-title" style={{ fontSize: "10px", color: "white" }}>Starfield</h5>
                     </div>
                   </div>
                 </div>
