@@ -26,7 +26,9 @@ const SignUp = () => {
     const handleSubmit = (event) =>{
         event.preventDefault();
         setErrors(Valid(values));
+
         console.log(values.name,values.username,values.email,values.password,values.repass);
+
     }
    
 
