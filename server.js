@@ -4,6 +4,7 @@ const sqlite3 = require('sqlite3');
 const { open } = require('sqlite');
 const cors = require('cors');
 var bcrypt = require('bcryptjs');
+const fetch = require(`node-fetch`);
 
 PORT=8080;
 
@@ -16,6 +17,20 @@ let db;
 	});
 })();
 
+function SteamData(appid){
+	(async () => {
+		const response = await fetch("https://store.steampowered.com/api/appdetails?appids=220")
+		const data = await response.json();
+		console.log(data["220"].data.name);
+		console.log(data["220"].data.about_the_game);
+		console.log(data["220"].data.pc_requirements);
+		console.log(data["220"].data.price_overview.final_formatted);
+		console.log(data["220"].data.metacritic.score);
+		console.log(data["220"].data.screenshots);
+		console.log(data["220"].data.movies);
+		console.log(data["220"].data.release_date.date);
+	})();
+}
 app = express();
 app.use(express.static(path.join(__dirname, 'static')));
 app.use(express.json());
@@ -26,8 +41,9 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/getGameInfo', async (req, res) => {
-	const game = await db.all(`SELECT * FROM Game_Catalog`)
-	res.json({game});
+	SteamData();
+	// const game = await db.all(`SELECT * FROM Game_Catalog`)
+	// res.json({game});
 });
 
 app.post('/addNewUser', async (req, res) => {
