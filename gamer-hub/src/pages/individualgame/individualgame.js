@@ -1,19 +1,49 @@
 import React from 'react';
-import { VictoryPie } from 'victory';
 import "./individualgame.css";
-
+import ReactApexChart from "react-apexcharts";
 
 
 const IndividualGame = () => {
-  const difficultyPieChart = [
-    { x: 'No Sweat', y: 35 },
-    { x: 'Easy Peasy', y: 20 },
-    { x: 'Light Work No Reaction', y: 15 },
-    { x: 'Got a Little Kick In It', y: 25 },
-    { x: 'Hard as Bedrock', y: 5 },
-  ];
- 
+  const chartOptions = {
+    series: [{
+      name: 'Marine Sprite',
+      data: [44, 55, 41, 37, 22, 43, 21]
+    }, {
+      name: 'Striking Calf',
+      data: [53, 32, 33, 52, 13, 43, 32]
+    }, {
+      name: 'Tank Picture',
+      data: [12, 17, 11, 9, 15, 11, 20]
+    }, {
+      name: 'Bucket Slope',
+      data: [9, 7, 5, 8, 6, 9, 4]
+    }, {
+      name: 'Reborn Kid',
+      data: [25, 12, 19, 32, 25, 24, 10]
+    }],
+    chart: {
+      type: 'bar',
+      height: 350,
+      stacked: true,
+    },
+    // Add other chart options here
+  };
+  const heroStyle = {
+    backgroundImage: 'url("https://i.redd.it/vo9vm1fcqrp71.jpg")', // Replace this URL with the actual image URL
+  };
   return (
+    <div>
+      
+      <section class="page-top-section set-bg" style={heroStyle}>
+          <div class="page-info">
+            <h2>Games</h2>
+            <div class="site-breadcrumb">
+              <a href="/">Home</a>  /
+              <span>Game</span>
+            </div>
+          </div>
+	  </section>
+
     <div className="page-container">
       <div className="game-container">
         <h1>Starfield</h1>
@@ -45,7 +75,8 @@ const IndividualGame = () => {
 
       <div className="right-content">
         <div className="summary">
-          <p>Starfield is the first new universe in 25 years from Bethesda Game Studios, the award-winning creators of The Elder Scrolls V: Skyrim and Fallout 4. In this next generation role-playing game set amongst the stars, create any character you want and explore with unparalleled freedom as you embark on an epic journey to answer humanity’s greatest mystery.</p>
+          <p>Affronting imprudence do he he everything. Sex lasted dinner wanted indeed wished out law. Far advanced settling say finished raillery. Offered chiefly farther of my no colonel shyness. Such on help ye some door if in. Laughter proposal laughing any son law consider. Needed except up piqued an.</p>
+
         </div>
         <div>
 
@@ -53,28 +84,13 @@ const IndividualGame = () => {
         <h1>User Statistics</h1>
         <h3>Difficulty</h3>
 
-        <div className="victory-chart-container" style={{ width: "450px", height: "450px" }}>
-          <VictoryPie
-            data={difficultyPieChart}
-            colorScale={['#14FFB1', '#14FF34', '#FFFF14', '#FF7B14', '#FF1414']}
-            innerRadius={0} // Adjust the size of the inner hole
-            labelRadius={90} // Adjust the distance of the labels from the center
-            style={{
-              labels: {
-                fontSize: 10, // Adjust label font size
-                fill: 'gray', // Label text color
-              },
-            }}
-            labels={({ datum }) => `${datum.x}: ${datum.y}%`}
-          />
-          
-        </div>
+        <ReactApexChart options={chartOptions} series={chartOptions.series} type="bar" height={350} />
 
 
       </div>
     </div>
   
-    
+    </div>
   );
 };
 

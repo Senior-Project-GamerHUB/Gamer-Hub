@@ -1,9 +1,39 @@
 import React from 'react';
-import "./home.css";
+import './home.css';
 
 const Home = () => {
-    return(
-    <div className="background">
+  const heroStyle = {
+    backgroundImage: 'url("https://i.redd.it/vo9vm1fcqrp71.jpg")', // Replace this URL with the actual image URL
+  };
+
+  return (
+      <div>
+        <section className="hero-section overflow-hidden">
+        <div className="hero-slider owl-carousel">
+          <div className="hero-item set-bg d-flex align-items-center justify-content-center text-center" style={heroStyle}>
+            <div className="container">
+              <h2>Game on!</h2>
+              <p>
+                Fusce erat dui, venenatis et erat in, vulputate dignissim lacus. Donec vitae tempus dolor,
+                <br /> sit amet elementum lorem. Ut cursus tempor turpis.
+              </p>
+              <a href="#" className="site-btn">
+                Read More <img src="img/icons/double-arrow.png" alt="#" />
+              </a>
+            </div>
+          </div>
+        </div>
+       </section>
+       
+       
+    <section class="intro-section">
+    <div class="container">
+			<div class="row">
+				
+				
+				
+      
+        <div className="background">
       <div
         id="carouselMultiItemExample"
         className="carousel slide carousel-dark text-center"
@@ -139,8 +169,12 @@ const Home = () => {
         </div>
       </div>
     </div>
-   );
+			</div>
+		</div>
+	</section>
+  </div>
+   
+  );
 };
-
 
 export default Home;

@@ -3,13 +3,13 @@ import {createBrowserRouter, Outlet, RouterProvider} from "react-router-dom";
 import Welcome from './pages/welcome pages/welcome/welcome';
 import Login from './pages/welcome pages//login/login';
 import SignUp from './pages/welcome pages//signup/signup';
-import Header from './components/header/header';
+import Header from './header';
 import Footer from './components/footer/footer';
 import Home from './pages/home/home';
 import IndividualGame from "./pages/individualgame/individualgame";
 import Submit from "./pages/submit";
 import Profile from "./pages/profile";
-
+import Forum from "./pages/forum";
 
 const Layout = () => {
   return (
@@ -41,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: '/profile',
         element: <Profile />,
+      },
+      { 
+         path: 'forum',
+         element: <Forum/>
       },
     ],
   },
