@@ -17,7 +17,7 @@ let db;
 	});
 })();
 
-function SteamData(appid){
+function SteamGameData(appid){
 	(async () => {
 		const response = await fetch("https://store.steampowered.com/api/appdetails?appids=220")
 		const data = await response.json();
@@ -31,6 +31,22 @@ function SteamData(appid){
 		console.log(data["220"].data.release_date.date);
 	})();
 }
+
+function SteamReviewData(appid){
+	(async () => {
+		const response = await fetch("https://store.steampowered.com/appreviews/220?json=1")
+		const data = await response.json();
+		//console.log(data);
+		//from 0-19 as of right now
+		console.log(data["reviews"][0]);
+		console.log(data["reviews"][0].author);
+		console.log(data["reviews"][0].review);
+		console.log(data["reviews"][0].weighted_vote_score);
+		console.log(data["reviews"][0].votes_up);
+		console.log(data["reviews"][0].steam_purchase);
+	})();
+}
+
 app = express();
 app.use(express.static(path.join(__dirname, 'static')));
 app.use(express.json());
@@ -41,8 +57,14 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/getGameInfo', async (req, res) => {
-	SteamData();
+	SteamGameData();
 	// const game = await db.all(`SELECT * FROM Game_Catalog`)
+	// res.json({game});
+});
+
+app.get('/getSteamReview', async (req, res) => {
+	SteamReviewData();
+	// const game = await db.all(`SELECT * FROM Review`)
 	// res.json({game});
 });
 
@@ -66,7 +88,7 @@ app.post('/addNewGame', async (req, res) => {
 });
 
 app.post('/addReview', async (req, res) => {
-	res.json({});
+	//res.json({});
 });
 
 app.post('/addForum', async (req, res) => {
