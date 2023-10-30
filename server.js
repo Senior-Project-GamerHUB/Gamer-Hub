@@ -47,17 +47,28 @@ function SteamReviewData(appid){
 	})();
 }
 
+// Needs api key from steam
+function SteamAccountName(steamid)
+{
+	(async () => {
+		const response = await fetch("https://partner.steam-api.com/ISteamUser/GetPlayerSummaries/v2/")
+		const data = await response.json();
+		console.log(data);
+	})();
+}
+
 app = express();
 app.use(express.static(path.join(__dirname, 'static')));
 app.use(express.json());
 app.use(cors());
 
 app.get('/', async (req, res) => {
+	SteamAccountName();
 	res.json({});
 });
 
 app.get('/getGameInfo', async (req, res) => {
-	SteamGameData();
+	// SteamGameData();
 	// const game = await db.all(`SELECT * FROM Game_Catalog`)
 	// res.json({game});
 });
@@ -84,11 +95,15 @@ app.post('/loginUser', async (req, res) => {
 });
 
 app.post('/addNewGame', async (req, res) => {
+	// SteamGameData();
+	// await db.get(`INSERT INTO Game_Catalog (Name, Image, Description, Game_Info, Video, User_Rating, Price)
+	// VALUES (?, ?, ?, ?, ?, ?, ?)` (req.body.data.name, req.body.data.screenshots, req.body.data.about_the_game, req.body.data.pc_requirements, req.body.data.movies, req.body.data.metacritic.score, req.body.data.price_overview.final_formatted));
 	res.json({});
 });
 
 app.post('/addReview', async (req, res) => {
-	//res.json({});
+	//await db.get(`INSERT INTO Review (Rating, Text, gameID, userID, date)
+	//VALUES (?, ?, ?, ?, ?)` (req.body.author, req.body.review, req.body.weighted_vote_score));
 });
 
 app.post('/addForum', async (req, res) => {
