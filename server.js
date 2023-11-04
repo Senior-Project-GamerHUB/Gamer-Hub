@@ -2,8 +2,8 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 var bcrypt = require('bcryptjs');
-const fetch = require(`node-fetch`);
 const mysql = require('mysql2');
+
 
 PORT=8080;
 
