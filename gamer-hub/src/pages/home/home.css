@@ -1,0 +1,7 @@
+.carousel-control-prev {
+    margin-left: -120px; /* Increase this value as needed */
+}
+
+.carousel-control-next {
+    margin-right: -120px; /* Increase this value as needed */
+}

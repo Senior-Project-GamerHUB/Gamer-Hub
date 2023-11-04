@@ -1,150 +1,62 @@
-import React from 'react';
+import React, { useEffect, useState} from 'react';
 import './home.css';
+import GameCard from './gamecard';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 
 const Home = () => {
   const heroStyle = {
     backgroundImage: 'url("https://i.redd.it/vo9vm1fcqrp71.jpg")', // Replace this URL with the actual image URL
   };
+  const scrollToIntro = () => {
+    const introSection = document.getElementById('intro-section');
+    if (introSection) {
+      introSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
+  const gameData = [
+    {
+      appid: 1817070,
+      imageURL: 'https://cdn.akamai.steamstatic.com/steam/apps/1817070/header.jpg?t=1695916105',
+      name: 'Spiderman Remastered',
+    }
+  ];
+  
   return (
       <div>
         <section className="hero-section overflow-hidden">
         <div className="hero-slider owl-carousel">
           <div className="hero-item set-bg d-flex align-items-center justify-content-center text-center" style={heroStyle}>
             <div className="container">
-              <h2>Game on!</h2>
-              <p>
-                Fusce erat dui, venenatis et erat in, vulputate dignissim lacus. Donec vitae tempus dolor,
-                <br /> sit amet elementum lorem. Ut cursus tempor turpis.
-              </p>
-              <a href="#" className="site-btn">
-                Read More <img src="img/icons/double-arrow.png" alt="#" />
-              </a>
+              <h1>Game on!</h1>
+              <h5>
+                Take a look at the selection of our games you can review and see existing reviews.
+              </h5>
+              <button onClick={scrollToIntro} className="scroll-button">
+                Immerse
+              </button>
             </div>
           </div>
         </div>
-       </section>
+        </section>
        
        
     <section class="intro-section">
     <div class="container">
 			<div class="row">
-				
-				
-				
-      
         <div className="background">
-      <div
-        id="carouselMultiItemExample"
-        className="carousel slide carousel-dark text-center"
-        data-mdb-ride="carousel"
-      >
-        
-        <div className="carousel-inner py-5">
-          <div className="carousel-item active">
-            <div className="container">
-              <div className="row mx-auto">
-
-                <div className="col-sm-2">
-                  <div className="card card-hover" style={{ width: "130px", height: "230px" }}>
-                    <div className="card-container" style={{ width: "100%", height: "85%" }}>
-                      <img
-                        src="https://howlongtobeat.com/games/68151_Elden_Ring.jpg?width=100"
-                        className="card-img-top"
-                        alt="Your Image"
-                        style={{ objectFit: "cover", width: "100%", height: "100%" }}
-                      />
-                    </div>
-                    <div className="card-body custom-bg-color">
-                      <h5 className="card-title" style={{ fontSize: "10px", color: "white" }}>Elden Ring</h5>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-sm-2">
-                  <div className="card card-hover" style={{ width: "130px", height: "230px" }}>
-                    <div className="card-container" style={{ width: "100%", height: "85%" }}>
-                      <img
-                        src="https://howlongtobeat.com/games/27100_Red_Dead_Redemption_2.jpg?width=100"
-                        className="card-img-top"
-                        alt="Your Image"
-                        style={{ objectFit: "cover", width: "100%", height: "100%" }}
-                      />
-                    </div>
-                    <div className="card-body custom-bg-color"style={{ width: "128px", height: "55px" }}>
-                      <h5 className="card-title" style={{ fontSize: "10px", color: "white" }}>Red Dead Redemption 2</h5>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-sm-2">
-                  <div className="card card-hover" style={{ width: "130px", height: "230px" }}>
-                    <div className="card-container" style={{ width: "100%", height: "85%" }}>
-                      <img
-                        src="https://howlongtobeat.com/games/Cyberpunk-2077-2.jpg?width=100"
-                        className="card-img-top"
-                        alt="Your Image"
-                        style={{ objectFit: "cover", width: "100%", height: "100%" }}
-                      />
-                    </div>
-                    <div className="card-body custom-bg-color">
-                      <h5 className="card-title" style={{ fontSize: "10px", color: "white" }}>Cyberpunk 2077</h5>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-sm-2">
-                  <div className="card card-hover" style={{ width: "130px", height: "230px" }}>
-                    <div className="card-container" style={{ width: "100%", height: "85%" }}>
-                      <img
-                        src="https://howlongtobeat.com/games/68033_Baldurs_Gate_3.jpg?width=100"
-                        className="card-img-top"
-                        alt="Your Image"
-                        style={{ objectFit: "cover", width: "100%", height: "100%" }}
-                      />
-                    </div>
-                    <div className="card-body custom-bg-color">
-                      <h5 className="card-title" style={{ fontSize: "10px", color: "white" }}>Baldur's Gate 3</h5>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-sm-2">
-                  <div className="card card card-hover" style={{ width: "130px", height: "230px" }}>
-                    <div className="card-container" style={{ width: "100%", height: "85%" }}>
-                      <img
-                        src="https://howlongtobeat.com/games/92418_Lies_Of_P.jpg?width=100"
-                        className="card-img-top"
-                        alt="Your Image"
-                        style={{ objectFit: "cover", width: "100%", height: "100%" }}
-                      />
-                    </div>
-                    <div className="card-body custom-bg-color">
-                      <h5 className="card-title" style={{ fontSize: "10px", color: "white" }}>Lies of P</h5>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-sm-2">
-                  <div className="card card-hover" style={{ width: "130px", height: "230px" }}>
-                    <div className="card-container" style={{ width: "100%", height: "85%" }}>
-                      <a href="/game"> {/* Add the URL you want to link to */}
-                        <img
-                          src="https://howlongtobeat.com/games/57445_Starfield.jpg?width=100"
-                          className="card-img-top"
-                          alt="Your Image"
-                          style={{ objectFit: "cover", width: "100%", height: "100%" }}
-                        />
-                      </a>
-                    </div>
-                    <div className="card-body custom-bg-color">
-                      <h5 className="card-title" style={{ fontSize: "10px", color: "white" }}>Starfield</h5>
-                    </div>
-                  </div>
-                </div>
-                
+        <div class="category-row">
+          <div class="row-header">
+            <h1></h1>
+          </div>
+          <div class="carousel">
+            <div class="carousel-container">
+              <div class="carousel-track">
+                {gameData.map((game, index) => (
+                  <GameCard key={index} game={game} />
+                ))}
               </div>
-            </div>
           </div>
           
           <button
@@ -166,8 +78,13 @@ const Home = () => {
             <span className="visually-hidden">Next</span>
           </button>
 
-        </div>
-      </div>
+         </div>
+       </div>
+
+
+     
+       
+   
     </div>
 			</div>
 		</div>
