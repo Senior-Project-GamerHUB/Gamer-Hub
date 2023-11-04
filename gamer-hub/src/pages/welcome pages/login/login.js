@@ -1,5 +1,8 @@
 import React, {useState} from 'react';
 import Valid from './loginValidation.js';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 
 const Login = () => {
 
@@ -8,7 +11,7 @@ const Login = () => {
         password: ""
     })
    
-
+    const navigate = useNavigate();
     const [errors, setErrors] = useState({})
 
     const handleInput = (event) =>{
@@ -21,7 +24,23 @@ const Login = () => {
     const handleSubmit = (event) =>{
         event.preventDefault();
         setErrors(Valid(values));
+
+        axios.post('http://localhost:8080/login', values)
+            .then(res => {
+                console.log(res.data)
+                if(res.data == "Login Successfull"){
+                    navigate('/');
+                }
+                else{
+                    alert("Incorrect Login")
+                }
+            })
+            .catch(err => console.log(err));
+
+        
     }
+
+
 
     return(
         <div className="background-1">
