@@ -3,11 +3,8 @@ const path = require('path');
 const cors = require('cors');
 var bcrypt = require('bcryptjs');
 const fetch = require(`node-fetch`);
-const passport = require('passport');
-const session = require('express-session');
-const passportSteam = require('passport-steam');
-const SteamStrategy = passportSteam.Strategy;
 const mysql = require('mysql2');
+
 
 PORT=8080;
 
