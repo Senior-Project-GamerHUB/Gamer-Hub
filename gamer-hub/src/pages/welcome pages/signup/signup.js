@@ -4,6 +4,8 @@ import user_icon from '../Assets/person.png'
 import email_icon from '../Assets/email.png'
 import password_icon from '../Assets/password.png'
 import Valid from './signupValidation';
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
 
@@ -15,17 +17,26 @@ const SignUp = () => {
         repass:""
     })
 
+    const navigate = useNavigate();
     const [errors, setErrors] = useState({})
 
     const handleInput = (event) =>{
         setValues(prev => ({...prev, [event.target.name]: [event.target.value]}))
         console.log(event.target.name, event.target.value);
+        
 
     }
 
     const handleSubmit = (event) =>{
         event.preventDefault();
         setErrors(Valid(values));
+        if(errors.name === "" && errors.username === "" && errors.email==="" && errors.password===""){
+            axios.post('http://localhost:8080/signup', values)
+            .then(res => console.log(res), 
+            navigate('/login'))
+
+            .catch(err => console.log(err));
+        }
 
         console.log(values.name,values.username,values.email,values.password,values.repass);
 
