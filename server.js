@@ -1,10 +1,9 @@
 const express = require('express');
 const path = require('path');
-const sqlite3 = require('sqlite3');
-const { open } = require('sqlite');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const fetch = require(`node-fetch`);
+const mysql = require('mysql2');
 const passport = require('passport');
 const session = require('express-session');
 const passportSteam = require('passport-steam');
@@ -13,13 +12,7 @@ const SteamStrategy = passportSteam.Strategy;
 PORT=8080;
 key = '6FDE1CAA90BAA7010C02DF447AF228BE';
 // connect to db
-let db;
-(async () => {
-	db = await open({
-		filename: 'data.sqlite',
-		driver: sqlite3.Database
-	});
-})();
+
 
 function SteamGameData(appid){
 	(async () => {
@@ -102,6 +95,57 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+
+// mysql database
+
+const db = mysql.createConnection({
+	host: "database-1.c4ukfhv2ecav.us-east-2.rds.amazonaws.com",
+	user: "databaseGamerHub",
+	password: "Gamerhub23",
+	database: "GamerHub_DATA"
+})
+
+// signup data into mysql
+
+app.post('/signup',(req, res)=>{
+	const dbsql = "INSERT INTO users (name, username, email, password) VALUES(?)";
+	const values = [
+		req.body.name,
+		req.body.username,
+		req.body.email,
+		req.body.password
+	]
+	db.query(dbsql,[values], (err,data)=>{
+		if(err){
+			return res.json(err)
+		}
+		return res.json(data);
+		console.log("1 record added!");
+	})
+})
+
+
+// login checker to database
+
+app.post('/login', (req, res)=>{
+	const dbsql = "SELECT * FROM users WHERE email = ? AND password = ?";
+	const values =[
+		req.body.email,
+		req.body.password
+	]
+
+	db.query(dbsql, [req.body.email, req.body.password], (err,data)=>{
+		if(err) return res.json(err);
+		if(data.length > 0){
+			return res.json("Login Successfull")
+		}else{
+			return res.json("No such Record")
+		}
+	})
+
+})
+
+
 
 app.get('/', async (req, res) => {
 	//res.send(req.user);
