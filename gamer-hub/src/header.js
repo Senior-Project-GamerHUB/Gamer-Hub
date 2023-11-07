@@ -14,7 +14,7 @@ const Header = () => {
             {/* Add your social media icons or links here if needed */}
         </div>
         <div className="header-bar-warp d-flex">
-            <a href="/" className="site-logo" style={{ marginRight: '20px' }}>
+            <a href="/home" className="site-logo" style={{ marginRight: '20px' }}>
                 GamerHub
             </a>
             <div className="search-box" style={{ marginLeft: '20px' }}>
