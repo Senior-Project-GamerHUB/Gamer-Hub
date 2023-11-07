@@ -8,11 +8,11 @@ const passport = require('passport');
 const session = require('express-session');
 const passportSteam = require('passport-steam');
 const SteamStrategy = passportSteam.Strategy;
+const axios = require('axios');
 
 PORT=8080;
 key = '6FDE1CAA90BAA7010C02DF447AF228BE';
 // connect to db
-
 
 function SteamGameData(appid){
 	(async () => {
@@ -29,7 +29,7 @@ function SteamGameData(appid){
 	})();
 }
 
-async function SteamGameData2(appid, genre){
+async function SteamGameData2(appid){
 	try {
 		const response = await axios.get(`https://store.steampowered.com/api/appdetails?appids=${appid}`);
 		const data = response.data;
@@ -46,11 +46,8 @@ async function SteamGameData2(appid, genre){
 			detailed_description: data[appid].data.detailed_description ? data[appid].data.detailed_description : 'N/A',
 		  };
 	
-		  if (genre === '' || gameData.genre.includes(genre)) {
+		  
 			return gameData;
-		  } else {
-			return null;
-		  }
 		} else {
 		  return null;
 		}
@@ -59,29 +56,6 @@ async function SteamGameData2(appid, genre){
 		return null;
 	  }
 }
-
-app.get('/game/:appid', async (req, res) => {
-	const appid = req.params.appid;
-	const genre = req.query.genre; // Get the genre query parameter
-  
-	// Fetch game data for the given appid from the Steam API
-	const gameData = await SteamGameData2(appid);
-  
-	if (!gameData) {
-	  return res.status(404).json({ error: 'Game not found' });
-	}
-  
-	// Filter the game data based on the provided genre
-	if (genre) {
-	  const filteredGameData = gameData.filter((game) => game.genre.includes(genre));
-	  if (filteredGameData.length === 0) {
-		return res.status(404).json({ error: 'No games found in this genre' });
-	  }
-	  res.json(filteredGameData);
-	} else {
-	  res.json(gameData);
-	}
-  });
 
 function SteamReviewData(appid){
 	(async () => {
@@ -199,7 +173,16 @@ app.post('/login', (req, res)=>{
 
 })
 
-
+app.get('/game/:appid', async (req, res) => {
+	const appid = req.params.appid;
+	const gameData = await SteamGameData2(appid);
+  
+	if (gameData) {
+	  res.json(gameData);
+	} else {
+	  res.status(404).json({ error: 'Game not found' });
+	}
+  });
 
 app.get('/', async (req, res) => {
 	//res.send(req.user);
