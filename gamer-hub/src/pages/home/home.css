@@ -1,7 +1,36 @@
 .carousel-control-prev {
-    margin-left: -120px; /* Increase this value as needed */
+    margin-left: -120px; 
 }
 
 .carousel-control-next {
-    margin-right: -120px; /* Increase this value as needed */
+    margin-right: -120px; 
+}
+
+.container1 {
+    background-color: rgb(21, 48, 72); 
+    padding: 20px; 
+    text-align: center; 
+    border-radius: 10px; 
+    width: 400px;
+}
+
+
+.container1 h1 {
+    color: #FFFFFF;
+}
+
+/* Style for the button */
+.btn1 {
+    display: inline-block;
+    background-color: rgb(146, 42, 181); 
+    color: #FFFFFF; 
+    padding: 10px 20px; 
+    text-decoration: none; 
+    border-radius: 5px; 
+}
+
+/* Hover effect for the button */
+.btn1:hover {
+    background-color: #f9f9f9; 
+
 }

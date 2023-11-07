@@ -7,8 +7,9 @@ import Header from './header';
 import Footer from './components/footer/footer';
 import Home from './pages/home/home';
 import IndividualGame from "./pages/individualgame/individualgame";
-import Submit from "./pages/submit";
-import Profile from "./pages/profile";
+import Submit from "./pages/submit/submit";
+import Submit2 from "./pages/submit2/submit2";
+import Profile from "./pages/profile/profile";
 import Forum from "./pages/forum";
 import NotFound from './pages/notfound'; // Import the NotFound component
 
@@ -40,15 +41,19 @@ const router = createBrowserRouter([
         element: <IndividualGame />,
       },
       {
-        path: 'submit',
+        path: '/submit',
         element: <Submit />,
       },
       {
-        path: 'profile',
+        path: '/submit/game/:appid',
+        element: <Submit2/>,
+      },
+      {
+        path: '/profile/user/:user',
         element: <Profile />,
       },
       {
-        path: 'forum',
+        path: '/forum',
         element: <Forum />,
       },
       {
