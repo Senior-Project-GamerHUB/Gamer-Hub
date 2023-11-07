@@ -7,11 +7,11 @@ import { useParams } from 'react-router-dom';
 const IndividualGame = () => {
   
   const heroStyle = {
-    backgroundImage: 'url("https://i.redd.it/vo9vm1fcqrp71.jpg")', // Replace this URL with the actual image URL
+    backgroundImage: 'url("https://i.redd.it/vo9vm1fcqrp71.jpg")', 
   };
 
   const [gameData, setGameData] = useState(null);
-  const { appid } = useParams(); // Get the appid from the URL
+  const { appid } = useParams();
 
   const chartOptions = {
     series: [{
@@ -57,7 +57,7 @@ const IndividualGame = () => {
         <div className="page-info">
           <h2>Game</h2>
           <div className="site-breadcrumb">
-            <a href="/">Home</a> /
+            <a href="/home">Home</a> /
             <span>Game</span>
           </div>
         </div>
@@ -77,6 +77,7 @@ const IndividualGame = () => {
                 <p>Release Date: {gameData.releaseDate}</p>
                 <p>Genre: {gameData.genre}</p>
                 <p>Metacritic Score: {gameData.rating}</p>
+                <p>Metacritic Score: {gameData.appid}</p>
               </div>
              
             </div>

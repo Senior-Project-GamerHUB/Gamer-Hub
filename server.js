@@ -29,6 +29,60 @@ function SteamGameData(appid){
 	})();
 }
 
+async function SteamGameData2(appid, genre){
+	try {
+		const response = await axios.get(`https://store.steampowered.com/api/appdetails?appids=${appid}`);
+		const data = response.data;
+	
+		if (data[appid].success) {
+		  const gameData = {
+			name: data[appid].data.name,
+			imageURL: data[appid].data.header_image,
+			developer: data[appid].data.developers.join(', '),
+			publisher: data[appid].data.publishers.join(', '),
+			releaseDate: data[appid].data.release_date.date,
+			genre: data[appid].data.genres.map((genre) => genre.description).join(', '),
+			rating: data[appid].data.metacritic ? data[appid].data.metacritic.score : 'N/A',
+			detailed_description: data[appid].data.detailed_description ? data[appid].data.detailed_description : 'N/A',
+		  };
+	
+		  if (genre === '' || gameData.genre.includes(genre)) {
+			return gameData;
+		  } else {
+			return null;
+		  }
+		} else {
+		  return null;
+		}
+	  } catch (error) {
+		console.error('Error fetching game data: ', error);
+		return null;
+	  }
+}
+
+app.get('/game/:appid', async (req, res) => {
+	const appid = req.params.appid;
+	const genre = req.query.genre; // Get the genre query parameter
+  
+	// Fetch game data for the given appid from the Steam API
+	const gameData = await SteamGameData2(appid);
+  
+	if (!gameData) {
+	  return res.status(404).json({ error: 'Game not found' });
+	}
+  
+	// Filter the game data based on the provided genre
+	if (genre) {
+	  const filteredGameData = gameData.filter((game) => game.genre.includes(genre));
+	  if (filteredGameData.length === 0) {
+		return res.status(404).json({ error: 'No games found in this genre' });
+	  }
+	  res.json(filteredGameData);
+	} else {
+	  res.json(gameData);
+	}
+  });
+
 function SteamReviewData(appid){
 	(async () => {
 		const response = await fetch(`https://store.steampowered.com/appreviews/${appid}?json=1`)
