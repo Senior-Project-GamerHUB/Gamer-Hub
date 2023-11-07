@@ -8,6 +8,7 @@
     "mysql": "^2.18.1",
     "mysql2": "^3.6.2",
     "express-session": "^1.17.3",
+    "mysql2": "^3.6.3",
     "passport": "^0.6.0",
     "passport-steam": "^1.0.18",
     "react-router-dom": "^6.16.0",
