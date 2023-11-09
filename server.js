@@ -10,13 +10,13 @@ const passportSteam = require('passport-steam');
 const SteamStrategy = passportSteam.Strategy;
 const axios = require('axios');
 
-PORT=8080;
+const port = process.env.PORT || 8080;
 key = '6FDE1CAA90BAA7010C02DF447AF228BE';
 // connect to db
 
 function SteamGameData(appid){
 	(async () => {
-		const response = await fetch(`https://store.steampowered.com/api/appdetails?appids=${appid}`)
+		const response = await fetch(`https://store.steampowered.com/api/appdetails?appids=${appid}&l=english`)
 		const data = await response.json();
 		console.log(`Name: ${data[String(appid)].data.name}`);
 		console.log(`Description: ${data[String(appid)].data.about_the_game}`);
@@ -74,16 +74,16 @@ function SteamReviewData(appid){
 	})();
 }
 
-// Needs api key from steam
 function SteamAccountName(steamid)
 {
 	(async () => {
 		// steamids=${steamid} change it after testing
-		const response = await fetch(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${key}&steamids=76561197960361544`);
+		const response = await fetch(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${key}&steamids=${steamid}`);
 		const data = await response.json();
 		console.log(data["response"]["players"]);
 	})();
 }
+
 
 // Required to get data from user for sessions
 passport.serializeUser((user, done) => {
@@ -96,8 +96,8 @@ passport.deserializeUser((user, done) => {
 
 // Initiate Strategy
 passport.use(new SteamStrategy({
-	returnURL: 'http://localhost:' + PORT + '/api/auth/steam/return',
-	realm: 'http://localhost:' + PORT + '/',
+	returnURL: 'http://localhost:' + port + '/api/auth/steam/return',
+	realm: 'http://localhost:' + port + '/',
 	apiKey: '6FDE1CAA90BAA7010C02DF447AF228BE'
 	}, function (identifier, profile, done) {
 	 process.nextTick(function () {
@@ -125,7 +125,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // mysql database
-
 const db = mysql.createConnection({
 	host: "database-1.c4ukfhv2ecav.us-east-2.rds.amazonaws.com",
 	user: "databaseGamerHub",
@@ -134,7 +133,6 @@ const db = mysql.createConnection({
 })
 
 // signup data into mysql
-
 app.post('/signup',(req, res)=>{
 	const dbsql = "INSERT INTO users (name, username, email, password) VALUES(?)";
 	const values = [
@@ -148,16 +146,21 @@ app.post('/signup',(req, res)=>{
 			return res.json(err)
 		}
 		return res.json(data);
-		console.log("1 record added!");
+			console.log("1 record added!");
 	})
 })
 
 
 // login checker to database
-
 app.post('/login', (req, res)=>{
+	// let compare = await bcrypt.compare(req.body.password, hash);
+	// res.render('passwordResult', {
+	// 	password: req.body.password,
+	// 	hash: hash,
+	// 	compare: compare
+	// });
 	const dbsql = "SELECT * FROM users WHERE email = ? AND password = ?";
-	const values =[
+	const values = [
 		req.body.email,
 		req.body.password
 	]
@@ -170,7 +173,6 @@ app.post('/login', (req, res)=>{
 			return res.json("No such Record")
 		}
 	})
-
 })
 
 app.get('/game/:appid', async (req, res) => {
@@ -185,17 +187,21 @@ app.get('/game/:appid', async (req, res) => {
   });
 
 app.get('/', async (req, res) => {
+	
+});
+
+app.get('/SteamLogin', async (req, res) => {
 	//res.send(req.user);
 	SteamAccountName();
 	//res.json({});
 });
 
 app.get('/api/auth/steam', passport.authenticate('steam', {failureRedirect: '/'}), function (req, res) {
-	res.redirect('/');
+	res.redirect('/SteamLogin');
    });
 
 app.get('/api/auth/steam/return', passport.authenticate('steam', {failureRedirect: '/'}), function (req, res) {
-	res.redirect('/');
+	res.redirect('/SteamLogin');
    });
 
 app.get('/getGameInfo', async (req, res) => {
@@ -206,23 +212,19 @@ app.get('/getGameInfo', async (req, res) => {
 
 app.get('/getSteamReview', async (req, res) => {
 	SteamReviewData(220);
-	// const game = await db.all(`SELECT * FROM Review`)
+	// const game = await db.all(`SELECT * FROM Review`);
 	// res.json({game});
 });
 
-app.post('/addNewUser', async (req, res) => {
-	let hash = await bcrypt.hash(req.body.password, 10);
-	
-});
-
-app.post('/loginUser', async (req, res) => {
-	let compare = await bcrypt.compare(req.body.password, hash);
-	res.render('passwordResult', {
-		password: req.body.password,
-		hash: hash,
-		compare: compare
-	});
-	// res.json({});
+app.get('/getSteamList', async (req, res) => {
+	(async () => {
+		const response = await fetch(`http://api.steampowered.com/ISteamApps/GetAppList/v0002/?key=${key}&format=json`);
+		const data = await response.json();
+		index = data["applist"]["apps"].map(function(e) {return e.name;}).indexOf('ELDEN RING');
+		res.send(data["applist"]["apps"][index]);
+		appid = data["applist"]["apps"][index]["appid"];
+		SteamGameData(appid);
+	})();
 });
 
 app.post('/addNewGame', async (req, res) => {
@@ -242,4 +244,4 @@ app.post('/addForum', async (req, res) => {
 });
 
 
-app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
+app.listen(port, () => console.log(`Server listening on port ${port}`));
