@@ -8,11 +8,11 @@ const passport = require('passport');
 const session = require('express-session');
 const passportSteam = require('passport-steam');
 const SteamStrategy = passportSteam.Strategy;
+const axios = require('axios');
 
 const port = process.env.PORT || 8080;
 key = '6FDE1CAA90BAA7010C02DF447AF228BE';
 // connect to db
-
 
 function SteamGameData(appid){
 	(async () => {
@@ -27,6 +27,34 @@ function SteamGameData(appid){
 		console.log(`Videos: ${data[String(appid)].data.movies}`);
 		console.log(`Release date: ${data[String(appid)].data.release_date.date}`);
 	})();
+}
+
+async function SteamGameData2(appid){
+	try {
+		const response = await axios.get(`https://store.steampowered.com/api/appdetails?appids=${appid}`);
+		const data = response.data;
+	
+		if (data[appid].success) {
+		  const gameData = {
+			name: data[appid].data.name,
+			imageURL: data[appid].data.header_image,
+			developer: data[appid].data.developers.join(', '),
+			publisher: data[appid].data.publishers.join(', '),
+			releaseDate: data[appid].data.release_date.date,
+			genre: data[appid].data.genres.map((genre) => genre.description).join(', '),
+			rating: data[appid].data.metacritic ? data[appid].data.metacritic.score : 'N/A',
+			detailed_description: data[appid].data.detailed_description ? data[appid].data.detailed_description : 'N/A',
+		  };
+	
+		  
+			return gameData;
+		} else {
+		  return null;
+		}
+	  } catch (error) {
+		console.error('Error fetching game data: ', error);
+		return null;
+	  }
 }
 
 function SteamReviewData(appid){
@@ -146,6 +174,17 @@ app.post('/login', (req, res)=>{
 		}
 	})
 })
+
+app.get('/game/:appid', async (req, res) => {
+	const appid = req.params.appid;
+	const gameData = await SteamGameData2(appid);
+  
+	if (gameData) {
+	  res.json(gameData);
+	} else {
+	  res.status(404).json({ error: 'Game not found' });
+	}
+  });
 
 app.get('/', async (req, res) => {
 	
