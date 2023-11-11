@@ -29,7 +29,7 @@ const Login = () => {
             .then(res => {
                 console.log(res.data)
                 if(res.data == "Login Successfull"){
-                    navigate('/');
+                    navigate('/home');
                 }
                 else{
                     alert("Incorrect Login")

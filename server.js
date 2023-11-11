@@ -134,20 +134,18 @@ const db = mysql.createConnection({
 
 // signup data into mysql
 app.post('/signup',(req, res)=>{
-	const dbsql = "INSERT INTO users (name, username, email, password) VALUES(?)";
-	const values = [
-		req.body.name,
-		req.body.username,
-		req.body.email,
-		req.body.password
-	]
-	db.query(dbsql,[values], (err,data)=>{
-		if(err){
-			return res.json(err)
-		}
-		return res.json(data);
-			console.log("1 record added!");
+
+	const name_user =req.body.name;
+	const username = req.body.username;
+	const email =req.body.email;
+	const password =req.body.password;
+
+	 db.query( "INSERT INTO users (name, username, email, password) VALUES(?,?,?,?)", [name_user, username, email, password], (error, result) =>{
+		console.log(error)
+
 	})
+
+
 })
 
 
