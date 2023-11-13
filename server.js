@@ -31,7 +31,7 @@ function SteamGameData(appid){
 
 async function SteamGameData2(appid){
 	try {
-		const response = await axios.get(`https://store.steampowered.com/api/appdetails?appids=${appid}`);
+		const response = await axios.get(`https://store.steampowered.com/api/appdetails?appids=${appid}&l=english`);
 		const data = response.data;
 	
 		if (data[appid].success) {
@@ -40,6 +40,8 @@ async function SteamGameData2(appid){
 			imageURL: data[appid].data.header_image,
 			developer: data[appid].data.developers.join(', '),
 			publisher: data[appid].data.publishers.join(', '),
+			price: data[appid].data.price_overview.final_formatted,
+			pc_specs: data[appid].data.pc_requirements,
 			releaseDate: data[appid].data.release_date.date,
 			genre: data[appid].data.genres.map((genre) => genre.description).join(', '),
 			rating: data[appid].data.metacritic ? data[appid].data.metacritic.score : 'N/A',
@@ -72,6 +74,27 @@ function SteamReviewData(appid){
 			console.log(`If Purchase: ${data["reviews"][i].steam_purchase}`);
 		}
 	})();
+}
+
+async function SteamGameReview2(appid){
+	try {
+		const response = await axios.get(`https://store.steampowered.com/appreviews/${appid}?json=1`);
+		const data = response.data;
+	
+		if (data.success) {
+		  const reviewData = {
+			summary: data["query_summary"],
+			review: data["reviews"],
+		  };
+		  
+			return reviewData;
+		} else {
+		  return null;
+		}
+	  } catch (error) {
+		console.error('Error fetching review data: ', error);
+		return null;
+	  }
 }
 
 function SteamAccountName(steamid)
@@ -176,9 +199,10 @@ app.post('/login', (req, res)=>{
 app.get('/game/:appid', async (req, res) => {
 	const appid = req.params.appid;
 	const gameData = await SteamGameData2(appid);
+	const reviewData = await SteamGameReview2(appid);
   
-	if (gameData) {
-	  res.json(gameData);
+	if (gameData && reviewData) {
+	  res.json({gameData, reviewData});
 	} else {
 	  res.status(404).json({ error: 'Game not found' });
 	}
