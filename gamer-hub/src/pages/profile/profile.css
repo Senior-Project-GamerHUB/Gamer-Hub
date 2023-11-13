@@ -1,0 +1,40 @@
+.profile-container {
+    display: flex;
+    border: 1px solid rgb(4, 0, 9)e0e; 
+    background-color: #828181; 
+    margin: 0 auto; 
+    max-width: 800px; 
+    margin-top: 50px;
+  }
+
+  .user-img{
+    border: 1px solid;
+    margin-bottom: 20px;
+  }
+  
+  .left-sidebar {
+    width: 20%;
+    padding: 20px;
+    background-color: #f0f0f0;
+    text-align: center;
+  }
+  
+  img {
+    max-width: 100%;
+    border-radius: 50%;
+  }
+  
+  .profile-links {
+    list-style: none;
+    padding: 0;
+  
+  }
+  
+  .profile-links li {
+    margin-bottom: 10px;
+  }
+  
+  .right-content {
+    flex: 1;
+    padding: 20px;
+  }

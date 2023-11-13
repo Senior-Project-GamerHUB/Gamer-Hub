@@ -4,6 +4,8 @@ import user_icon from '../Assets/person.png'
 import email_icon from '../Assets/email.png'
 import password_icon from '../Assets/password.png'
 import Valid from './signupValidation';
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
 
@@ -15,17 +17,26 @@ const SignUp = () => {
         repass:""
     })
 
+    const navigate = useNavigate();
     const [errors, setErrors] = useState({})
 
     const handleInput = (event) =>{
         setValues(prev => ({...prev, [event.target.name]: [event.target.value]}))
         console.log(event.target.name, event.target.value);
+        
 
     }
 
     const handleSubmit = (event) =>{
         event.preventDefault();
         setErrors(Valid(values));
+        if(errors.name === "" && errors.username === "" && errors.email==="" && errors.password===""){
+            axios.post('http://localhost:8080/signup', values)
+            .then(res => console.log(res), 
+            navigate('/profile'))
+
+            .catch(err => console.log(err));
+        }
 
         console.log(values.name,values.username,values.email,values.password,values.repass);
 
@@ -41,7 +52,7 @@ const SignUp = () => {
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                <div class=" text-white green-bg">
+                <div class=" bg-dark text-white green-bg">
                 <div class="card-body p-5 text-center">
 
                     <div class="mb-md-5 mt-md-4 pb-5">

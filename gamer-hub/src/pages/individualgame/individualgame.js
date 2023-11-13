@@ -1,82 +1,110 @@
-import React from 'react';
-import { VictoryPie } from 'victory';
+import React, { useEffect, useState} from 'react';
 import "./individualgame.css";
-
-
+import ReactApexChart from 'react-apexcharts';
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 const IndividualGame = () => {
-  const difficultyPieChart = [
-    { x: 'No Sweat', y: 35 },
-    { x: 'Easy Peasy', y: 20 },
-    { x: 'Light Work No Reaction', y: 15 },
-    { x: 'Got a Little Kick In It', y: 25 },
-    { x: 'Hard as Bedrock', y: 5 },
-  ];
- 
-  return (
-    <div className="page-container">
-      <div className="game-container">
-        <h1>Starfield</h1>
-        <div className="game-image">
-          <img src='https://howlongtobeat.com/games/57445_Starfield.jpg?width=250' alt="Starfield" />
-        </div>
-        <div className="game-info-container">
-          <div className="info">
-            <p>Developer: Bethesda Game Studios</p>
-          </div>
-          <div className="info">
-            <p>Publisher: ZeniMax Media</p>
-          </div>
-          <div className="info">
-            <p>Release Date: 6 September 2023</p>
-          </div>
-          <div className="info">
-            <p>Platform: Xbox Series X|S, PC</p>
-          </div>
-          <div className="info">
-            <p>Genre: Adventure</p>
-          </div>
-          <div className="info">
-            <p>Rating ESRB: M</p>
-          </div>
-        </div>
-        <button className="addButton">Submit Your Review</button>
-      </div>
-
-      <div className="right-content">
-        <div className="summary">
-          <p>Starfield is the first new universe in 25 years from Bethesda Game Studios, the award-winning creators of The Elder Scrolls V: Skyrim and Fallout 4. In this next generation role-playing game set amongst the stars, create any character you want and explore with unparalleled freedom as you embark on an epic journey to answer humanity’s greatest mystery.</p>
-        </div>
-        <div>
-
-    </div>
-        <h1>User Statistics</h1>
-        <h3>Difficulty</h3>
-
-        <div className="victory-chart-container" style={{ width: "450px", height: "450px" }}>
-          <VictoryPie
-            data={difficultyPieChart}
-            colorScale={['#14FFB1', '#14FF34', '#FFFF14', '#FF7B14', '#FF1414']}
-            innerRadius={0} // Adjust the size of the inner hole
-            labelRadius={90} // Adjust the distance of the labels from the center
-            style={{
-              labels: {
-                fontSize: 10, // Adjust label font size
-                fill: 'gray', // Label text color
-              },
-            }}
-            labels={({ datum }) => `${datum.x}: ${datum.y}%`}
-          />
-          
-        </div>
-
-
-      </div>
-    </div>
   
+  const heroStyle = {
+    backgroundImage: 'url("https://i.redd.it/vo9vm1fcqrp71.jpg")', 
+  };
+
+  const [gameData, setGameData] = useState(null);
+  const { appid } = useParams();
+
+  const chartOptions = {
+    series: [{
+      name: 'Marine Sprite',
+      data: [44, 55, 41, 37, 22, 43, 21]
+    }, {
+      name: 'Striking Calf',
+      data: [53, 32, 33, 52, 13, 43, 32]
+    }, {
+      name: 'Tank Picture',
+      data: [12, 17, 11, 9, 15, 11, 20]
+    }, {
+      name: 'Bucket Slope',
+      data: [9, 7, 5, 8, 6, 9, 4]
+    }, {
+      name: 'Reborn Kid',
+      data: [25, 12, 19, 32, 25, 24, 10]
+    }],
+    chart: {
+      type: 'bar',
+      height: 350,
+      stacked: true,
+    },
+
+  };
+
+
+  useEffect(() => {
+    axios.get(`http://localhost:8080/game/${appid}`)
+      .then((response) => {
+        setGameData(response.data);
+
+  
+      })
+      .catch((error) => {
+        console.error('Error fetching game data: ', error);
+      });
+  }, [appid]);
+
+  return (
+    <div>
+      <section className="page-top-section set-bg" style={heroStyle}>
+        <div className="page-info">
+          <h2>Game</h2>
+          <div className="site-breadcrumb">
+            <a href="/home">Home</a> /
+            <span>Game</span>
+          </div>
+        </div>
+      </section>
+
+      <div className="page-container">
+        <div className="game-container">
+          {gameData ? (
+            <div>
+              <h1>{gameData.name}</h1>
+              <div className="game-image">
+                <img src={gameData.imageURL} alt={gameData.name} />
+              </div>
+              <div className="game-info-container">
+                <p>Developer: {gameData.developer}</p>
+                <p>Publisher: {gameData.publisher}</p>
+                <p>Release Date: {gameData.releaseDate}</p>
+                <p>Genre: {gameData.genre}</p>
+                <p>Metacritic Score: {gameData.rating}</p>
+                <p>Metacritic Score: {gameData.appid}</p>
+              </div>
+             
+            </div>
+          ) : (
+            <p>Loading...</p>
+          )}
+        </div>
+
+        <div className="right-content">
+          <div className="summary">
+            {gameData ? (
+              <p> {gameData.detailed_description.replace(/<[^>]+>/g, '')}</p>  
+            ) : (
+              <p>Loading...</p>
+            )}
+
+          </div>
+          <h1>User Statistics</h1>
+          <h3>Difficulty</h3>
+          <ReactApexChart options={chartOptions} series={chartOptions.series} type="bar" height={400} width={500} />
+      
+
     
+        </div>
+      </div>
+    </div>
   );
 };
-
 
 export default IndividualGame;

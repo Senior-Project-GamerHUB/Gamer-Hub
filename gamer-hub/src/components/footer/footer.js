@@ -23,11 +23,11 @@ const Footer = () => {
 
   return (
     <footer
-      className={`bg-green text-center text-lg-start ${
+      className={`bg-dark text-center text-lg-start ${
         showFooter ? 'visible' : 'hidden'
       }`}
     >
-      <div className="text-center p-3">
+      <div className="footer text-center p-3">
         © 2023 Copyright: GamerHub.com
       </div>
     </footer>
