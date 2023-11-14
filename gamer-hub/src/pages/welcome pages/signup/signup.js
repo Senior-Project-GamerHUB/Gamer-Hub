@@ -31,7 +31,7 @@ const SignUp = () => {
         event.preventDefault();
         setErrors(Valid(values));
         if(errors.name === "" && errors.username === "" && errors.email==="" && errors.password===""){
-            axios.post('http://localhost:8080/signup', values)
+            axios.post('https://gamerhub-s7o6.onrender.com/signup', values)
             .then(res => console.log(res), 
             navigate('/profile'))
 

@@ -12,7 +12,7 @@ const Submit2 = () => {
       const { appid } = useParams(); 
 
       useEffect(() => {
-        axios.get(`http://localhost:8080/game/${appid}`)
+        axios.get(`https://gamerhub-s7o6.onrender.com/game/${appid}`)
           .then((response) => {
             setGameData(response.data);
     
