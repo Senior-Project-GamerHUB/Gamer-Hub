@@ -31,33 +31,6 @@ function SteamGameData(appid){
 	})();
 }
 
-async function SteamGameData2(appid){
-	try {
-		const response = await axios.get(`https://store.steampowered.com/api/appdetails?appids=${appid}`);
-		const data = response.data;
-	
-		if (data[appid].success) {
-		  const gameData = {
-			name: data[appid].data.name,
-			imageURL: data[appid].data.header_image,
-			developer: data[appid].data.developers.join(', '),
-			publisher: data[appid].data.publishers.join(', '),
-			releaseDate: data[appid].data.release_date.date,
-			genre: data[appid].data.genres.map((genre) => genre.description).join(', '),
-			rating: data[appid].data.metacritic ? data[appid].data.metacritic.score : 'N/A',
-			detailed_description: data[appid].data.detailed_description ? data[appid].data.detailed_description : 'N/A',
-		  };
-	
-		  
-			return gameData;
-		} else {
-		  return null;
-		}
-	  } catch (error) {
-		console.error('Error fetching game data: ', error);
-		return null;
-	  }
-}
 
 function SteamReviewData(appid){
 	(async () => {
@@ -74,6 +47,27 @@ function SteamReviewData(appid){
 			console.log(`If Purchase: ${data["reviews"][i].steam_purchase}`);
 		}
 	})();
+}
+
+async function SteamGameReview2(appid){
+	try {
+		const response = await axios.get(`https://store.steampowered.com/appreviews/${appid}?json=1`);
+		const data = response.data;
+	
+		if (data.success) {
+		  const reviewData = {
+			summary: data["query_summary"],
+			review: data["reviews"],
+		  };
+		  
+			return reviewData;
+		} else {
+		  return null;
+		}
+	  } catch (error) {
+		console.error('Error fetching review data: ', error);
+		return null;
+	  }
 }
 
 function SteamAccountName(steamid)
@@ -153,6 +147,7 @@ app.post('/signup',(req, res)=>{
 		return res.json("Added User!, Welcome");
 
 
+
 })
 
 
@@ -185,6 +180,7 @@ app.post('/login', (req, res)=>{
 
 
 
+
 app.get('/game/:appid', async (req, res) => {
 	const appid = req.params.appid;
 	const gameData = await SteamGameData2(appid);
@@ -195,6 +191,7 @@ app.get('/game/:appid', async (req, res) => {
 	  res.status(404).json({ error: 'Game not found' });
 	}
   });
+
 
 app.get('/', async (req, res) => {
 	
