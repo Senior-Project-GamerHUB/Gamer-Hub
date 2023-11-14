@@ -79,7 +79,7 @@ const Submit2 = () => {
             <div className="page-info">
               <h2>Submit Review</h2>
               <div className="site-breadcrumb">
-                <a href="/">Home</a> /
+                <a href="/home">Home</a> /
                 <a href="/submit">Submit</a> /
                 <span>Game</span>
               </div>

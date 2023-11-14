@@ -7,10 +7,6 @@
     margin-top: 50px;
   }
 
-  .user-img{
-    border: 1px solid;
-    margin-bottom: 20px;
-  }
   
   .left-sidebar {
     width: 20%;
@@ -19,10 +15,7 @@
     text-align: center;
   }
   
-  img {
-    max-width: 100%;
-    border-radius: 50%;
-  }
+  
   
   .profile-links {
     list-style: none;
