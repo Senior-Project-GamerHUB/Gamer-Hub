@@ -9,9 +9,9 @@ const Login = () => {
         email: "",
         password: ""
     })
-   
 
     const navigate = useNavigate();
+
     const [errors, setErrors] = useState({})
 
     const handleInput = (event) =>{
@@ -24,18 +24,21 @@ const Login = () => {
     const handleSubmit = (event) =>{
         event.preventDefault();
         setErrors(Valid(values));
-        
+
+
         axios.post('http://localhost:8080/login', values)
             .then(res => {
                 console.log(res.data)
                 if(res.data == "Login Successfull"){
                     navigate('/home');
+
                 }
                 else{
                     alert("Incorrect Login")
                 }
             })
             .catch(err => console.log(err));
+
     }
 
     return(

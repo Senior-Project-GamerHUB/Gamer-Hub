@@ -10,7 +10,7 @@ import IndividualGame from "./pages/individualgame/individualgame";
 import Submit from "./pages/submit/submit";
 import Submit2 from "./pages/submit2/submit2";
 import Profile from "./pages/profile/profile";
-import Forum from "./pages/forum";
+import Forum from "./pages/forum/forum";
 import NotFound from './pages/notfound'; // Import the NotFound component
 
 const Layout = () => {
@@ -74,6 +74,8 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+
+
   return (
     <div className="font-bodyFont">
       <RouterProvider router={router} />

@@ -9,18 +9,26 @@ const Submit2 = () => {
       };
     
       const [gameData, setGameData] = useState(null);
-      const { appid } = useParams(); 
-
-      useEffect(() => {
-        axios.get(`http://localhost:8080/game/${appid}`)
-          .then((response) => {
-            setGameData(response.data);
+      const { appid } = useParams();
     
-      
-          })
-          .catch((error) => {
+     
+    
+      useEffect(() => {
+        const fetchGameDetails = async () => {
+          try {
+            const response = await axios.get(`https://api.rawg.io/api/games/${appid}`, {
+              params: {
+                key: '3f02ae9693244e86b768ab662105fd14', 
+              },
+            });
+    
+            setGameData(response.data);
+          } catch (error) {
             console.error('Error fetching game data: ', error);
-          });
+          }
+        };
+    
+        fetchGameDetails();
       }, [appid]);
      
       const [playtimeHours, setPlaytimeHours] = useState('');
@@ -71,7 +79,7 @@ const Submit2 = () => {
             <div className="page-info">
               <h2>Submit Review</h2>
               <div className="site-breadcrumb">
-                <a href="/">Home</a> /
+                <a href="/home">Home</a> /
                 <a href="/submit">Submit</a> /
                 <span>Game</span>
               </div>
@@ -79,26 +87,38 @@ const Submit2 = () => {
           </section>
     
           <div className="page-container">
-            <div className="game-container">
-              {gameData ? (
-                <div>
-                  <h1>{gameData.name}</h1>
-                  <div className="game-image">
-                    <img src={gameData.imageURL} alt={gameData.name} />
+          <div className="game-container">
+          {gameData ? (
+            <div>
+              <h1>{gameData.name}</h1>
+              <div className="game-image">
+                <img src={gameData.background_image} alt={gameData.name} />
+              </div>
+              <div className="game-info-container">
+                <p>Developer: {gameData.developers && gameData.developers.map((dev) => dev.name).join(', ')}</p>
+                <p>Publisher: {gameData.publishers && gameData.publishers.map((pub) => pub.name).join(', ')}</p>
+                <p>Release Date: {gameData.released}</p>
+                <p>Genre: {gameData.genres && gameData.genres.map((genre) => genre.name).join(', ')}</p>
+                <p>Platforms: {gameData.platforms && gameData.platforms.map((platform) => platform.platform.name).join(', ')}</p>
+                {gameData.stores && gameData.stores.length > 0 && (
+                  <div>
+                    <h5>Available at:</h5>
+                    {gameData.stores.map((store) => (
+                        <li key={store.store.id}>
+                          <a href={store.url} target="_blank" rel="noopener noreferrer">
+                            {store.store.name}
+                          </a>
+                        </li>
+                      ))}
+                
                   </div>
-                  <div className="game-info-container">
-                    <p>Developer: {gameData.developer}</p>
-                    <p>Publisher: {gameData.publisher}</p>
-                    <p>Release Date: {gameData.releaseDate}</p>
-                    <p>Genre: {gameData.genre}</p>
-                    <p>Metacritic Score: {gameData.rating}</p>
-                  </div>
-                 
-                </div>
-              ) : (
-                <p>Loading...</p>
-              )}
+                )}
+              </div>
             </div>
+          ) : (
+            <p>Loading...</p>
+          )}
+        </div>
     
             <div className="right-content">
             <div className="survey">
@@ -131,6 +151,7 @@ const Submit2 = () => {
                   placeholder="Seconds"
                 />
               </div>
+              
               <div className="question">
                 <label>Completion Status:</label>
                 {[1, 2, 3, 4, 5].map((value) => (
@@ -145,9 +166,9 @@ const Submit2 = () => {
               </div>
               <div className="question">
                 <label>Difficulty:</label>
-                {[1, 2, 3, 4, 5].map((value) => (
-                  <input className = "input1"
-                    type="radio"
+                {["Simple", "Easy Peasy", "Average", "Challenging", "Got a Big Kick"].map((value) => (
+                  <input className = "input1 dynamic-button"
+                    type="button"
                     key={value}
                     value={value}
                     checked={difficulty === value}

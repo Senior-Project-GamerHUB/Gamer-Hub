@@ -1,8 +1,12 @@
+
+
 function Valid(values){
 
     let error ={};
     const email_pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const password_pattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{8,}$/;
+
+
 
 
     if(values.name ==="" | values.name[0] ===""){
@@ -17,6 +21,7 @@ function Valid(values){
 
         error.username = "Username Should Not Be Empty"
     }
+   
     else{
         error.username = ""
     }
@@ -39,7 +44,7 @@ function Valid(values){
         error.password = "Password Should Not Be Empty"
     }
     else if(!password_pattern.test(values.password)){
-        error.password = "Invalid Password"
+        error.password = "Password Should Contain a UpperCase first letter and at least 8 Characters Long"
     }
     else{
         error.password = ""
