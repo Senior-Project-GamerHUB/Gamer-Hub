@@ -132,7 +132,7 @@ passport.use(new SteamStrategy({
 // use this for steam sign in <a href="http://localhost:3000/api/auth/steam">Sign in</a>
 
 app = express();
-app.use(express.static(path.join(__dirname, 'static')));
+app.use(express.static(path.join(__dirname, 'build')));
 app.use(express.json());
 app.use(cors());
 app.use(session({
@@ -207,7 +207,7 @@ app.get('/game/:appid', async (req, res) => {
 	}
   });
 
-app.get('/', async (req, res) => {
+app.get('/*', async (req, res) => {
 	
 });
 
