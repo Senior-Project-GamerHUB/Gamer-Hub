@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
-const fetch = require(`node-fetch`);
 const mysql = require('mysql2');
 const passport = require('passport');
 const session = require('express-session');
@@ -16,7 +15,7 @@ key = '6FDE1CAA90BAA7010C02DF447AF228BE';
 
 function SteamGameData(appid){
 	(async () => {
-		const response = await fetch(`https://store.steampowered.com/api/appdetails?appids=${appid}&l=english`)
+		const response = await axios.get(`https://store.steampowered.com/api/appdetails?appids=${appid}&l=english`)
 		const data = await response.json();
 		console.log(`Name: ${data[String(appid)].data.name}`);
 		console.log(`Description: ${data[String(appid)].data.about_the_game}`);
@@ -61,7 +60,7 @@ async function SteamGameData2(appid){
 
 function SteamReviewData(appid){
 	(async () => {
-		const response = await fetch(`https://store.steampowered.com/appreviews/${appid}?json=1`)
+		const response = await axios.get(`https://store.steampowered.com/appreviews/${appid}?json=1`)
 		const data = await response.json();
 		//console.log(data);
 		//from 0-19 as of right now
@@ -101,7 +100,7 @@ function SteamAccountName(steamid)
 {
 	(async () => {
 		// steamids=${steamid} change it after testing
-		const response = await fetch(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${key}&steamids=${steamid}`);
+		const response = await axios.get(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${key}&steamids=${steamid}`);
 		const data = await response.json();
 		console.log(data["response"]["players"]);
 	})();
@@ -119,8 +118,8 @@ passport.deserializeUser((user, done) => {
 
 // Initiate Strategy
 passport.use(new SteamStrategy({
-	returnURL: 'http://localhost:' + port + '/api/auth/steam/return',
-	realm: 'http://localhost:' + port + '/',
+	returnURL: 'https://gamerhub-s7o6.onrender.com:' + port + '/api/auth/steam/return',
+	realm: 'https://gamerhub-s7o6.onrender.com:' + port + '/',
 	apiKey: '6FDE1CAA90BAA7010C02DF447AF228BE'
 	}, function (identifier, profile, done) {
 	 process.nextTick(function () {
