@@ -4,14 +4,14 @@ import React from 'react';
 const GameCard = ({ game }) => {
   return (
     <div className="col-sm-2">
-      <div className="card card-hover" style={{ width: "130px", height: "230px" }}>
+      <div className="card card-hover" style={{ width: "130px", height: "230px",  marginBottom:'20px' }}>
         <div className="card-container" style={{ width: "100%", height: "85%" }}>
-          <a href={`/game/${game.appid}`}>
+          <a href={`/game/${game.id}`}>
             <img 
-              src={game.imageURL || 'default_image_url.jpg'} 
-              className="card-img-top"
+              src={game.background_image || 'default_image_url.jpg'} 
+              className="card-img"
               alt={game.name || 'Game Title'} 
-              style={{ objectFit: "cover", width: "100px", height: "70%" }}
+              style={{ width: "300px", height: "170px" }}
             />
           </a>
         </div>
