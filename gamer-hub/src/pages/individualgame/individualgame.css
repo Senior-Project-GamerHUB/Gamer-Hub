@@ -5,6 +5,7 @@
     justify-content: center;
     background-color:rgb(55, 1, 85);
     color: white;
+    height: 100vh;
 }
 
 .game-container {
@@ -68,6 +69,7 @@ p{
 }
 
 
+
 .summary {
     max-width: 600px;
     height: auto;
@@ -89,8 +91,12 @@ p{
     align-items: center; 
 }
 
-.btn3{
-    margin-top: 200px;
+.btn3 {
+    margin-top: 260px; /* Push the button to the bottom */
+}
+
+.input-search-box::placeholder {
+    color: #808080; /* Set the color you desire */
 }
 
 @media screen and (max-width: 768px) {

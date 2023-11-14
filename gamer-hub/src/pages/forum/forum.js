@@ -6,7 +6,7 @@ const Forum = () => {
       };
     return(
         <div>
-            <section className="page-top-section set-bg" style={heroStyle}>
+        <section className="page-top-section set-bg" style={heroStyle}>
         <div className="page-info">
           <h2>Forum</h2>
           <div className="site-breadcrumb">
@@ -16,7 +16,10 @@ const Forum = () => {
         </div>
       </section>
       
-        </div>
+
+      
+      
+      </div>
     );
 };
 
