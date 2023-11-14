@@ -25,7 +25,6 @@ const Login = () => {
         event.preventDefault();
         setErrors(Valid(values));
 
-        window.localStorage.setItem("isLogedIn", true);
 
         axios.post('http://localhost:8080/login', values)
             .then(res => {

@@ -139,13 +139,30 @@ app.post('/signup',(req, res)=>{
 
 
 	db.query( "INSERT INTO users (name, username, email, password) VALUES(?,?,?,?)", [name_user, username, email, password], (error, result) =>{
-			console.log(error)
-			console.log(result);
+			
+			console.log("error is " + JSON.stringify(error));
+			console.log("results are " + result);
+			
+
+
+
+			if (JSON.stringify(error).indexOf("username_UNIQUE") >0 ){
+				return res.send("error");
+	
+			}
+
+			else if (JSON.stringify(error).indexOf("email_UNIQUE") >0 ){
+				return res.send("error2");
+	
+			}
+	
+			else{
+				return res.send("ok");
+			}
 	
 		})
 	
-		return res.json("Added User!, Welcome");
-
+		
 
 
 })

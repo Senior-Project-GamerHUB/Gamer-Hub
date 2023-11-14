@@ -39,10 +39,20 @@ const SignUp = () => {
             {
 
 
-                if(res.data = "Added User!, Welcome"){
+                if(res.data == "ok"){
                     navigate("/profile");
+                    alert("Welcome " + values.username);
 
-                }    
+                }
+                
+                else if(res.data =='error'){
+                    alert("Username was taken");
+                }
+
+                else if(res.data == "error2"){
+                    alert("Email Used Already")
+                }
+
 
          
             }
