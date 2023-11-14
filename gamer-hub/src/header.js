@@ -4,8 +4,12 @@ import './css/slicknav.min.css';
 import './css/magnific-popup.css';
 import './css/animate.css';
 import './css/style.css'; 
+import axios from 'axios';
+
 
 const Header = () => {
+
+
 
   return (
 	<header className="header-section">
@@ -28,6 +32,8 @@ const Header = () => {
                     <li><a href="/">Home</a></li>
                     <li><a href="/forum">Forum</a></li>
                     <li><a href="/submit">Submit</a></li>
+                    <li><a href="/profile">UserName</a></li>
+                    <li>Picture</li>
                 </ul>
             </nav>
         </div>

@@ -31,11 +31,24 @@ const SignUp = () => {
         event.preventDefault();
         setErrors(Valid(values));
         if(errors.name === "" && errors.username === "" && errors.email==="" && errors.password===""){
-            axios.post('http://localhost:8080/signup', values)
-            .then(res => console.log(res), 
-            navigate('/profile'))
 
-            .catch(err => console.log(err));
+
+         axios.post('http://localhost:8080/signup', values)
+            .then(res =>{console.log(res)
+            {
+
+
+                if(res.data = "Added User!, Welcome"){
+                    navigate("/profile");
+
+                }    
+
+         
+            }
+        
+             })
+              .catch(err => console.log(err));
+
         }
 
         console.log(values.name,values.username,values.email,values.password,values.repass);

@@ -4,7 +4,12 @@ import GameCard from './gamecard';
 import axios from 'axios';
 
 
+
+
 const Home = () => {
+
+
+
   const [gameData, setGameData] = useState(null);
   const appid  = '1817070';
   const heroStyle = {

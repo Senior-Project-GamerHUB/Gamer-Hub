@@ -10,6 +10,8 @@ const passportSteam = require('passport-steam');
 const SteamStrategy = passportSteam.Strategy;
 const axios = require('axios');
 
+
+
 const port = process.env.PORT || 8080;
 key = '6FDE1CAA90BAA7010C02DF447AF228BE';
 // connect to db
@@ -140,13 +142,19 @@ app.post('/signup',(req, res)=>{
 	const email =req.body.email;
 	const password =req.body.password;
 
-	 db.query( "INSERT INTO users (name, username, email, password) VALUES(?,?,?,?)", [name_user, username, email, password], (error, result) =>{
-		console.log(error)
 
-	})
+
+	db.query( "INSERT INTO users (name, username, email, password) VALUES(?,?,?,?)", [name_user, username, email, password], (error, result) =>{
+			console.log(error)
+			console.log(result);
+	
+		})
+	
+		return res.json("Added User!, Welcome");
 
 
 })
+
 
 
 // login checker to database
@@ -167,11 +175,15 @@ app.post('/login', (req, res)=>{
 		if(err) return res.json(err);
 		if(data.length > 0){
 			return res.json("Login Successfull")
+		
+
 		}else{
 			return res.json("No such Record")
 		}
 	})
 })
+
+
 
 app.get('/game/:appid', async (req, res) => {
 	const appid = req.params.appid;
