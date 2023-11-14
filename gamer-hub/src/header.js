@@ -5,7 +5,9 @@ import './css/magnific-popup.css';
 import './css/animate.css';
 import './css/style.css'; 
 
+
 const Header = () => {
+
 
 
   return (
@@ -24,6 +26,8 @@ const Header = () => {
                     <li><a href="/home">Home</a></li>
                     <li><a href="/forum">Forum</a></li>
                     <li><a href="/submit">Submit</a></li>
+                    <li><a href="/profile">UserName</a></li>
+                    <li>Picture</li>
                 </ul>
             </nav>
         </div>

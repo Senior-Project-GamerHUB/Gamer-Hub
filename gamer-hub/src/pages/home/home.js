@@ -4,7 +4,16 @@ import GameCard from './gamecard';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
+
+
 const Home = () => {
+
+
+
+
+  const [gameData, setGameData] = useState(null);
+  const appid  = '1817070';
+
   const [topGames, setTopGames] = useState([]);
   const [newGames, setNewGames] = useState([]);
   const apiKey = '3f02ae9693244e86b768ab662105fd14'; 
@@ -82,6 +91,7 @@ const Home = () => {
 
     fetchNewGames();
   }, [apiKey, lastYearDate, currentDate]);
+
 
   const heroStyle = {
     backgroundImage: 'url("https://i.redd.it/vo9vm1fcqrp71.jpg")',

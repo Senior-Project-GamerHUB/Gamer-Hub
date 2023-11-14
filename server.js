@@ -10,6 +10,8 @@ const passportSteam = require('passport-steam');
 const SteamStrategy = passportSteam.Strategy;
 const axios = require('axios');
 
+
+
 const port = process.env.PORT || 8080;
 key = '6FDE1CAA90BAA7010C02DF447AF228BE';
 // connect to db
@@ -134,13 +136,37 @@ app.post('/signup',(req, res)=>{
 	const email =req.body.email;
 	const password =req.body.password;
 
-	 db.query( "INSERT INTO users (name, username, email, password) VALUES(?,?,?,?)", [name_user, username, email, password], (error, result) =>{
-		console.log(error)
 
-	})
+
+	db.query( "INSERT INTO users (name, username, email, password) VALUES(?,?,?,?)", [name_user, username, email, password], (error, result) =>{
+			
+			console.log("error is " + JSON.stringify(error));
+			console.log("results are " + result);
+			
+
+
+
+			if (JSON.stringify(error).indexOf("username_UNIQUE") >0 ){
+				return res.send("error");
+	
+			}
+
+			else if (JSON.stringify(error).indexOf("email_UNIQUE") >0 ){
+				return res.send("error2");
+	
+			}
+	
+			else{
+				return res.send("ok");
+			}
+	
+		})
+	
+		
 
 
 })
+
 
 
 // login checker to database
@@ -161,11 +187,27 @@ app.post('/login', (req, res)=>{
 		if(err) return res.json(err);
 		if(data.length > 0){
 			return res.json("Login Successfull")
+		
+
 		}else{
 			return res.json("No such Record")
 		}
 	})
 })
+
+
+
+
+app.get('/game/:appid', async (req, res) => {
+	const appid = req.params.appid;
+	const gameData = await SteamGameData2(appid);
+  
+	if (gameData) {
+	  res.json(gameData);
+	} else {
+	  res.status(404).json({ error: 'Game not found' });
+	}
+  });
 
 
 app.get('/', async (req, res) => {

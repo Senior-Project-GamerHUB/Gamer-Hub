@@ -31,11 +31,35 @@ const SignUp = () => {
         event.preventDefault();
         setErrors(Valid(values));
         if(errors.name === "" && errors.username === "" && errors.email==="" && errors.password===""){
-            axios.post('http://localhost:8080/signup', values)
-            .then(res => console.log(res), 
-            navigate('/profile'))
 
-            .catch(err => console.log(err));
+
+
+         axios.post('http://localhost:8080/signup', values)
+            .then(res =>{console.log(res)
+            {
+
+
+                if(res.data == "ok"){
+                    navigate("/profile");
+                    alert("Welcome " + values.username);
+
+                }
+                
+                else if(res.data =='error'){
+                    alert("Username was taken");
+                }
+
+                else if(res.data == "error2"){
+                    alert("Email Used Already")
+                }
+
+
+         
+            }
+        
+             })
+              .catch(err => console.log(err));
+
         }
 
         console.log(values.name,values.username,values.email,values.password,values.repass);
