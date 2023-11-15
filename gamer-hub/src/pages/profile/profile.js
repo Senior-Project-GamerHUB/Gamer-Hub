@@ -1,5 +1,6 @@
 import React from 'react';
 import './profile.css';
+import { Link } from 'react-router-dom';
 
 const Profile = () => {
   const heroStyle = {
@@ -28,15 +29,15 @@ const Profile = () => {
                     alt="avatar"
                     className="rounded-circle img-fluid" style={{ width: '150px' }} />
                   <h5 className="my-3">John Smith</h5>
-                  <p className="text-muted mb-1">Full Stack Developer</p>
-                  <p className="text-muted mb-4">Bay Area, San Francisco, CA</p>
-                  <div className="d-flex justify-content-center mb-2">
-                    <button type="button" className="btn btn-primary">Follow</button>
-                    <button type="button" className="btn btn-outline-primary ms-1">Message</button>
-                  </div>
+                 
                 </div>
               </div>
-            
+               <div className="d-flex justify-content-center mb-2">
+                  <Link to={`/`}>
+                      <button type="button" className="btnlogout btn-danger">Log Out</button>  
+                  </Link>
+                  
+              </div>
             </div>
             <div className="col-lg-8">
               <div className="card mb-4">
