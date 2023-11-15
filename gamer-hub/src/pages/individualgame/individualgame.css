@@ -10,7 +10,7 @@
 
 .game-container {
     width: 270px;
-    height: 800px;
+    height: 600x;
     border: 1px solid #333;
     display: flex;
     flex-direction: column;
@@ -20,6 +20,7 @@
     background-color: rgb(46, 46, 52);
     border-radius:15px;
     margin-left: 200px;
+    margin-bottom: 50px;
 
 
     
@@ -92,7 +93,7 @@ p{
 }
 
 .btn3 {
-    margin-top: 260px; /* Push the button to the bottom */
+    margin-top: 200px; /* Push the button to the bottom */
 }
 
 .input-search-box::placeholder {

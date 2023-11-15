@@ -1,33 +1,5 @@
-.profile-container {
-    display: flex;
-    border: 1px solid rgb(4, 0, 9)e0e; 
-    background-color: #828181; 
-    margin: 0 auto; 
-    max-width: 800px; 
-    margin-top: 50px;
-  }
+.btnlogout{
+  width: 300px;
+  border-radius: 30px;
 
-  
-  .left-sidebar {
-    width: 20%;
-    padding: 20px;
-    background-color: #f0f0f0;
-    text-align: center;
-  }
-  
-  
-  
-  .profile-links {
-    list-style: none;
-    padding: 0;
-  
-  }
-  
-  .profile-links li {
-    margin-bottom: 10px;
-  }
-  
-  .right-content {
-    flex: 1;
-    padding: 20px;
-  }
+}
