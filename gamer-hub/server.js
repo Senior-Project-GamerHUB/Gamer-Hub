@@ -209,7 +209,7 @@ app.get('/game/:appid', async (req, res) => {
   });
 
 app.get('*', async (req, res) => {
-	res.sendFile(path.join(buildPath, 'index.html'))
+	res.sendFile(path.join(path.join(__dirname, 'build'), 'index.html'))
 });
 
 app.get('/SteamLogin', async (req, res) => {
