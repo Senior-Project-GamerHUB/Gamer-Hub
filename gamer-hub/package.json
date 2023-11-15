@@ -6,7 +6,6 @@
     "node": "18.13.0"
   },
   "private": true,
-  "homepage": "https://gamerhub-s7o6.onrender.com",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
