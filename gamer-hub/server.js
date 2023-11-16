@@ -224,16 +224,16 @@ app.post('/login', (req, res)=>{
 
 
 
-app.get('/game/:appid', async (req, res) => {
-	const appid = req.params.appid;
-	const gameData = await SteamGameData2(appid);
+// app.get('/game/:appid', async (req, res) => {
+// 	const appid = req.params.appid;
+// 	const gameData = await SteamGameData2(appid);
   
-	if (gameData) {
-	  res.json(gameData);
-	} else {
-	  res.status(404).json({ error: 'Game not found' });
-	}
-  });
+// 	if (gameData) {
+// 	  res.json(gameData);
+// 	} else {
+// 	  res.status(404).json({ error: 'Game not found' });
+// 	}
+//   });
 
 
 app.get('*', async (req, res) => {
