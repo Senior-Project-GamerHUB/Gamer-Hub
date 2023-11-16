@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import "./individualgame.css";
-import ReactApexChart from 'react-apexcharts';
+import ApexChart from "./apexchart"
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -11,9 +11,8 @@ const IndividualGame = () => {
   };
 
   const [gameData, setGameData] = useState(null);
+  const [savedGames, setSavedGames] = useState([]);
   const { appid } = useParams();
-
-
 
   useEffect(() => {
     const fetchGameDetails = async () => {
@@ -32,6 +31,17 @@ const IndividualGame = () => {
 
     fetchGameDetails();
   }, [appid]);
+
+  const handleSaveGame = () => {
+    // Check if the game is not already saved
+    if (!savedGames.find((savedGame) => savedGame.id === gameData.id)) {
+      const newSavedGames = [...savedGames, gameData];
+      setSavedGames(newSavedGames);
+
+      // Save to local storage (you can replace this with server-side storage)
+      localStorage.setItem('savedGames', JSON.stringify(newSavedGames));
+    }
+  }; 
 
   return (
     <div>
@@ -86,10 +96,12 @@ const IndividualGame = () => {
                   <Link to={`/submit/game/${gameData.id}`}>
                     <button className="btn3">Submit Review</button>
                   </Link>
-                )}
-                <Link to={`/submit/game`}>
-                  <button className="btn3">Save game</button>
-                </Link>
+                )}  
+                  {gameData && (
+                    <button className="btn3" onClick={handleSaveGame}>
+                   Save Game
+                 </button>
+            )}
               </div>
           </div>
         </div>
@@ -101,9 +113,13 @@ const IndividualGame = () => {
             ) : (
               <p>Loading...</p>
             )}
-            
+             
           </div>
+          
           <div>
+            <h2>Completion</h2>
+            <ApexChart />
+
             
           </div>
         </div>

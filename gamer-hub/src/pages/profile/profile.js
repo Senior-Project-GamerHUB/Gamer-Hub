@@ -1,11 +1,54 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './profile.css';
 import { Link } from 'react-router-dom';
 
 const Profile = () => {
+  const [userData, setUserData] = useState(null);
+  const [profilePicture, setProfilePicture] = useState(null);
+
+  useEffect(() => {
+    // Fetch user data from your database or API
+    // Replace the following line with your actual fetchUserData function
+    // const userId = /* Get the user ID, you may get it from authentication */;
+    // fetchUserData(userId)
+    //   .then((data) => setUserData(data))
+    //   .catch((error) => console.error('Error fetching user data:', error));
+
+    // Example mock data - replace this with your actual data fetching logic
+    const mockUserData = {
+      fullName: 'John Doe',
+      avatar: 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp',
+      // Add other user data fields as needed
+    };
+
+    // Simulate asynchronous data fetching
+    const fetchData = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setUserData(mockUserData);
+    };
+
+    fetchData();
+  }, []); // The empty dependency array ensures the effect runs only once when the component mounts
+
+  const handleProfilePictureChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfilePicture(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const heroStyle = {
     backgroundImage: 'url("https://i.redd.it/vo9vm1fcqrp71.jpg")',
   };
+
+  if (!userData) {
+    // Display a loading spinner or message while data is being fetched
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="profile-background">
@@ -13,7 +56,7 @@ const Profile = () => {
         <div className="page-info">
           <h2>Profile</h2>
           <div className="site-breadcrumb">
-            <a href="/home">Home</a> /
+            <Link to="/home">Home</Link> /
             <span>Profile</span>
           </div>
         </div>
@@ -25,18 +68,30 @@ const Profile = () => {
             <div className="col-lg-4">
               <div className="card mb-4">
                 <div className="card-body text-center">
-                  <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
-                    alt="avatar"
-                    className="rounded-circle img-fluid" style={{ width: '150px' }} />
-                  <h5 className="my-3">John Smith</h5>
-                 
+                  <label htmlFor="profilePictureInput" className="profile-picture-label">
+                    <img
+                      src={profilePicture || userData?.avatar || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp'}
+                      alt="avatar"
+                      className="rounded-circle img-fluid"
+                      style={{ width: '150px', cursor: 'pointer' }}
+                    />
+                  </label>
+                  <input
+                    id="profilePictureInput"
+                    type="file"
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    onChange={handleProfilePictureChange}
+                  />
+                  <h5 className="my-3">{userData.fullName || 'John Smith'}</h5>
                 </div>
               </div>
-               <div className="d-flex justify-content-center mb-2">
-                  <Link to={`/`}>
-                      <button type="button" className="btnlogout btn-danger">Log Out</button>  
-                  </Link>
-                  
+              <div className="d-flex justify-content-center mb-2">
+                <Link to="/">
+                  <button type="button" className="btnlogout btn-danger">
+                    Log Out
+                  </button>
+                </Link>
               </div>
             </div>
             <div className="col-lg-8">
@@ -47,7 +102,7 @@ const Profile = () => {
                       <p className="mb-0">Full Name</p>
                     </div>
                     <div className="col-sm-9">
-                      <p className="text-muted mb-0"></p>
+                      <p className="text-muted mb-0">{userData.fullName || 'John Smith'}</p>
                     </div>
                   </div>
                   {/* ... Other rows and content */}
