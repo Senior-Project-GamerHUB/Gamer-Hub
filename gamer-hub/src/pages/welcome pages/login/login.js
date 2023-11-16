@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import Valid from './loginValidation.js';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2'
 
 const Login = () => {
 
@@ -30,11 +31,16 @@ const Login = () => {
             .then(res => {
                 console.log(res.data)
                 if(res.data == "Login Successfull"){
+                    Swal.fire("Welcome Back to GamerHub!");
                     navigate('/home');
 
                 }
                 else{
-                    alert("Incorrect Login")
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Incorrect Login!",
+                      });
                 }
             })
             .catch(err => console.log(err));
