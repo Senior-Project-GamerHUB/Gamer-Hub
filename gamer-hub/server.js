@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
-const fetch = require(`node-fetch`);
 const mysql = require('mysql2');
 const passport = require('passport');
 const session = require('express-session');
@@ -10,44 +9,42 @@ const passportSteam = require('passport-steam');
 const SteamStrategy = passportSteam.Strategy;
 const axios = require('axios');
 
-
-
 const port = process.env.PORT || 8080;
 key = '6FDE1CAA90BAA7010C02DF447AF228BE';
 // connect to db
 
-function SteamGameData(appid){
-	(async () => {
-		const response = await fetch(`https://store.steampowered.com/api/appdetails?appids=${appid}&l=english`)
-		const data = await response.json();
-		console.log(`Name: ${data[String(appid)].data.name}`);
-		console.log(`Description: ${data[String(appid)].data.about_the_game}`);
-		console.log(`Spec: ${data[String(appid)].data.pc_requirements}`);
-		console.log(`Price: ${data[String(appid)].data.price_overview.final_formatted}`);
-		console.log(`User Score: ${data[String(appid)].data.metacritic.score}`);
-		console.log(`Screenshots: ${data[String(appid)].data.screenshots}`);
-		console.log(`Videos: ${data[String(appid)].data.movies}`);
-		console.log(`Release date: ${data[String(appid)].data.release_date.date}`);
-	})();
-}
+// function SteamGameData(appid){
+// 	(async () => {
+// 		const response = await fetch(`https://store.steampowered.com/api/appdetails?appids=${appid}&l=english`)
+// 		const data = await response.json();
+// 		console.log(`Name: ${data[String(appid)].data.name}`);
+// 		console.log(`Description: ${data[String(appid)].data.about_the_game}`);
+// 		console.log(`Spec: ${data[String(appid)].data.pc_requirements}`);
+// 		console.log(`Price: ${data[String(appid)].data.price_overview.final_formatted}`);
+// 		console.log(`User Score: ${data[String(appid)].data.metacritic.score}`);
+// 		console.log(`Screenshots: ${data[String(appid)].data.screenshots}`);
+// 		console.log(`Videos: ${data[String(appid)].data.movies}`);
+// 		console.log(`Release date: ${data[String(appid)].data.release_date.date}`);
+// 	})();
+// }
 
 
-function SteamReviewData(appid){
-	(async () => {
-		const response = await fetch(`https://store.steampowered.com/appreviews/${appid}?json=1`)
-		const data = await response.json();
-		//console.log(data);
-		//from 0-19 as of right now
-		console.log(`Summary: ${data["query_summary"]}`);
-		for (var i = 0; i < 20; i++){
-			console.log(`Author: ${data["reviews"][i].author.steamid}`);
-			console.log(`Review: ${data["reviews"][i].review}`);
-			console.log(`Score: ${data["reviews"][i].weighted_vote_score}`);
-			console.log(`Votes Up: ${data["reviews"][i].votes_up}`);
-			console.log(`If Purchase: ${data["reviews"][i].steam_purchase}`);
-		}
-	})();
-}
+// function SteamReviewData(appid){
+// 	(async () => {
+// 		const response = await axios.get(`https://store.steampowered.com/appreviews/${appid}?json=1`)
+// 		const data = await response.json();
+// 		//console.log(data);
+// 		//from 0-19 as of right now
+// 		console.log(`Summary: ${data["query_summary"]}`);
+// 		for (var i = 0; i < 20; i++){
+// 			console.log(`Author: ${data["reviews"][i].author.steamid}`);
+// 			console.log(`Review: ${data["reviews"][i].review}`);
+// 			console.log(`Score: ${data["reviews"][i].weighted_vote_score}`);
+// 			console.log(`Votes Up: ${data["reviews"][i].votes_up}`);
+// 			console.log(`If Purchase: ${data["reviews"][i].steam_purchase}`);
+// 		}
+// 	})();
+// }
 
 async function SteamGameReview2(appid){
 	try {
@@ -74,7 +71,7 @@ function SteamAccountName(steamid)
 {
 	(async () => {
 		// steamids=${steamid} change it after testing
-		const response = await fetch(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${key}&steamids=${steamid}`);
+		const response = await axios.get(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${key}&steamids=${steamid}`);
 		const data = await response.json();
 		console.log(data["response"]["players"]);
 	})();
