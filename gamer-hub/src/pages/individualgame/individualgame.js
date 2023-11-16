@@ -56,7 +56,7 @@ const IndividualGame = () => {
               <div className="game-info-container">
                 <p>Developer: {gameData.developers && gameData.developers.map((dev) => dev.name).join(', ')}</p>
                 <p>Publisher: {gameData.publishers && gameData.publishers.map((pub) => pub.name).join(', ')}</p>
-                <p>Release Date: {gameData.released}</p>
+                <p>Release Date: {gameData.released || 'U'}</p>
                 <p>Genre: {gameData.genres && gameData.genres.map((genre) => genre.name).join(', ')}</p>
                 <p>Platforms: {gameData.platforms && gameData.platforms.map((platform) => platform.platform.name).join(', ')}</p>
                 {gameData.stores && gameData.stores.length > 0 && (
@@ -73,15 +73,25 @@ const IndividualGame = () => {
                   </div>
                 )}
               </div>
+              
             </div>
+
           ) : (
             <p>Loading...</p>
           )}
-           {gameData && (
+          
+          <div>
+          <div className="button-container">
+                {gameData && (
                   <Link to={`/submit/game/${gameData.id}`}>
                     <button className="btn3">Submit Review</button>
                   </Link>
                 )}
+                <Link to={`/submit/game`}>
+                  <button className="btn3">Save game</button>
+                </Link>
+              </div>
+          </div>
         </div>
         
         <div className="right-content">

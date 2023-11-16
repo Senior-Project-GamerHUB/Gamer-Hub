@@ -3,3 +3,8 @@
   border-radius: 30px;
 
 }
+
+.profile-background{
+  height: auto;
+  background-color: rgb(55, 1, 85);
+}
