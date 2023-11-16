@@ -6,6 +6,8 @@ import password_icon from '../Assets/password.png'
 import Valid from './signupValidation';
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2'
+
 
 const SignUp = () => {
 
@@ -20,9 +22,16 @@ const SignUp = () => {
     const navigate = useNavigate();
     const [errors, setErrors] = useState({})
 
+    const [usernameTaken, setUsernameTaken] = useState("");
+    
+    const [emailTaken, setEmailTaken] = useState("");
+
+
     const handleInput = (event) =>{
         setValues(prev => ({...prev, [event.target.name]: [event.target.value]}))
         console.log(event.target.name, event.target.value);
+        setUsernameTaken("");
+        setEmailTaken("");
         
 
     }
@@ -41,16 +50,32 @@ const SignUp = () => {
 
                 if(res.data == "ok"){
                     navigate("/profile");
-                    alert("Welcome " + values.username);
-
+                    Swal.fire({
+                        title: "Welcome " + values.username + "!",
+                        text: "Thanks for joining GamerHub!",
+                        icon: "success"
+                      });
+                    setUsernameTaken("");
+                    setEmailTaken("");
                 }
                 
                 else if(res.data =='error'){
-                    alert("Username was taken");
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "That Username was Taken!",
+                      });
+                    setUsernameTaken("Username was Taken");
+    
                 }
 
                 else if(res.data == "error2"){
-                    alert("Email Used Already")
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "That Email was Used already!",
+                      });
+                    setEmailTaken("Email Used Already");
                 }
 
 
@@ -103,6 +128,7 @@ const SignUp = () => {
 
                     <div class="form-outline form-white mb-4">
                     {errors.username && <span className = "text=danger" >{errors.username}</span>}
+                    <span> {usernameTaken} </span>
 
                         
                         <img src= {user_icon} alt="" />
@@ -114,12 +140,14 @@ const SignUp = () => {
                         form-control-lg" 
                         placeholder='Username' 
                         onChange={handleInput}
+
                         />
             
                     </div>
 
                     <div class="form-outline form-white mb-4">
                     {errors.email && <span className = "text=danger" >{errors.email}</span>}
+                    <span> {emailTaken} </span>
 
 
                         <img src= {email_icon} alt="" />
