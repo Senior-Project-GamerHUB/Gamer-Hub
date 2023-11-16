@@ -8,7 +8,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="background-1">
+    <div className="profile-background">
       <section className="page-top-section set-bg" style={heroStyle}>
         <div className="page-info">
           <h2>Profile</h2>

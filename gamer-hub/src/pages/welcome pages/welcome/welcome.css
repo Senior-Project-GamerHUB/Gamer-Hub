@@ -1,13 +1,7 @@
 .background-1{
     background-color: rgb(55, 1, 85);
-    height: 930px;
+    height: 800px;
+    width: auto;
 }
 
-.container-1 {
-    background-color: rgb(29, 86, 243);
-    height: 930px;
-}
 
-.green-bg {
-    background-color: rgb(101, 195, 24);
-  }
