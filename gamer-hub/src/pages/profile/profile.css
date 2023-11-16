@@ -1,10 +1,10 @@
 .btnlogout{
   width: 300px;
   border-radius: 30px;
-
+  margin-bottom: 110px;
 }
 
 .profile-background{
-  height: auto;
+  height: 100%;
   background-color: rgb(55, 1, 85);
 }

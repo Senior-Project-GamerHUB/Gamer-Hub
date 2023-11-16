@@ -8,12 +8,6 @@ import { Link } from 'react-router-dom';
 
 const Home = () => {
 
-
-
-
-  const [gameData, setGameData] = useState(null);
-  const appid  = '1817070';
-
   const [topGames, setTopGames] = useState([]);
   const [newGames, setNewGames] = useState([]);
   const apiKey = '3f02ae9693244e86b768ab662105fd14'; 

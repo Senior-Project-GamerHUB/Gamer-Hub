@@ -11,7 +11,6 @@ const Submit2 = () => {
       const [gameData, setGameData] = useState(null);
       const { appid } = useParams();
     
-     
     
       useEffect(() => {
         const fetchGameDetails = async () => {
@@ -54,15 +53,15 @@ const Submit2 = () => {
       const handleCompletionStatusChange = (value) => {
         setCompletionStatus(value);
       }
-    
+      
       const handleDifficultyChange = (value) => {
         setDifficulty(value);
       }
-    
+      
       const handleRatingChange = (value) => {
         setRating(value);
       }
-    
+      
       const handleWorthPriceChange = (value) => {
         setWorthPrice(value);
       }
@@ -118,85 +117,106 @@ const Submit2 = () => {
           ) : (
             <p>Loading...</p>
           )}
+        
         </div>
     
-            <div className="right-content">
-            <div className="survey">
+          <div className="right-content">
+          <div className="survey">
 
             <form onSubmit={handleSubmit}>
-              <div className="question">
+            <div className="question">
               <label htmlFor="playtimeHours">Playtime:</label>
-                <input className = "input1"
-                  type="number"
-                  id="playtimeHours"
-                  name="playtimeHours"
-                  value={playtimeHours}
-                  onChange={handlePlaytimeHoursChange}
-                  placeholder="Hours"
-                />
-                <input className = "input1"
-                  type="number"
-                  id="playtimeMinutes"
-                  name="playtimeMinutes"
-                  value={playtimeMinutes}
-                  onChange={handlePlaytimeMinutesChange}
-                  placeholder="Minutes"
-                />
-                <input className = "input1"
-                  type="number"
-                  id="playtimeSeconds"
-                  name="playtimeSeconds"
-                  value={playtimeSeconds}
-                  onChange={handlePlaytimeSecondsChange}
-                  placeholder="Seconds"
-                />
-              </div>
+              <input
+                className="input1"
+                type="number"
+                id="playtimeHours"
+                name="playtimeHours"
+                value={playtimeHours}
+                onChange={handlePlaytimeHoursChange}
+                placeholder="hr"
+                min="0"
+                pattern="\d+" // Use a regular expression to allow only positive integers
+                style={{ width: '80px' }}
+              />
+              <input
+                className="input1"
+                type="number"
+                id="playtimeMinutes"
+                name="playtimeMinutes"
+                value={playtimeMinutes}
+                onChange={handlePlaytimeMinutesChange}
+                placeholder="min"
+                min="0"
+                pattern="\d+"
+                style={{ width: '80px' }}
+              />
+              <input
+                className="input1"
+                type="number"
+                id="playtimeSeconds"
+                name="playtimeSeconds"
+                value={playtimeSeconds}
+                onChange={handlePlaytimeSecondsChange}
+                placeholder="sec"
+                min="0"
+                pattern="\d+"
+                style={{ width: '80px' }}
+              />
+            </div>
+
+
               
               <div className="question">
+                <label>Rating:</label>
+                {["Embarrassing", "Bad", "Average", "Good", "Eh-Mazing"].map((value, index) => (
+                <input
+                  className={`dynamic-button button-${index}`}
+                  type="submit"
+                  key={value}
+                  value={value}
+                  checked={rating === value}
+                  onClick={() => handleRatingChange(value)}
+                />
+              ))}
+              </div>
+              <div className="question">
                 <label>Completion Status:</label>
-                {[1, 2, 3, 4, 5].map((value) => (
-                  <input className = "input1"
-                    type="radio"
+                {["Tried It", "Hooked", "Halfway", "Finished Most", "Conquered It"].map((value, index) => (
+                  <input
+                    className={`dynamic-button button-${index}`}
+                    type="submit"
                     key={value}
                     value={value}
-                    checked={completionStatus === value}
-                    onChange={() => handleCompletionStatusChange(value)}
+                    checked={completionStatus === value} // Fix here
+                    onClick={() => handleCompletionStatusChange(value)}
                   />
                 ))}
               </div>
+
               <div className="question">
                 <label>Difficulty:</label>
-                {["Simple", "Easy Peasy", "Average", "Challenging", "Got a Big Kick"].map((value) => (
-                  <input className = "input1 dynamic-button"
-                    type="button"
+                {["Simple", "Easy Peasy", "Got a Little Kick", "Challenging", "Got a Big Kick"].map((value, index) => (
+                  <input
+                    className={`dynamic-button button-${index}`}
+                    type="submit"
                     key={value}
                     value={value}
-                    checked={difficulty === value}
-                    onChange={() => handleDifficultyChange(value)}
+                    checked={difficulty === value} // Fix here
+                    onClick={() => handleDifficultyChange(value)}
                   />
                 ))}
               </div>
+
               <div className="question">
-                <label>Rating:</label>
-                {[1, 2, 3, 4, 5].map((value) => (
-                  <input className = "input1"
-                    type="radio"
+                <label>Worth The Price?:</label>
+                {["Pass", "Wait For Sale", "Reasonable", "Great Deal", "Worth Every Penny"].map((value, index) => (
+                  <input
+                    className={`dynamic-button button-${index}`}
+                    type="submit"
                     key={value}
                     value={value}
-                    checked={rating === value}
-                    onChange={() => handleRatingChange(value)}
-                  />
-                ))}
-              </div>
-              <div className="question">
-                <label>Worth Price:</label>
-                {[1, 2, 3, 4, 5].map((value) => (
-                  <input className = "input1"
-                    type="radio"
-                    key={value}
-                    value={value}
-                    checked={worthPrice === value}
-                    onChange={() => handleWorthPriceChange(value)}
+                    checked={worthPrice === value} // Fix here
+                    onClick={() => handleWorthPriceChange(value)}
                   />
                 ))}
               </div>
