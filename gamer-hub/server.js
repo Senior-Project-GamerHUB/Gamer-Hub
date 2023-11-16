@@ -9,6 +9,8 @@ const passportSteam = require('passport-steam');
 const SteamStrategy = passportSteam.Strategy;
 const axios = require('axios');
 
+
+
 const port = process.env.PORT || 8080;
 key = '6FDE1CAA90BAA7010C02DF447AF228BE';
 // connect to db

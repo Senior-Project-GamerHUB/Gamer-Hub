@@ -21,12 +21,13 @@ const Header = () => {
             <nav className="top-nav-area w-100">
                 <div className="user-panel">
                     <a href="/profile/user/id">UserName</a>
+                    <a href="/profile/user/id">   Picture</a>
                 </div>
                 <ul className="main-menu primary-menu">
                     <li><a href="/home">Home</a></li>
                     <li><a href="/forum">Forum</a></li>
                     <li><a href="/submit">Submit</a></li>
-                    <li>Picture</li>
+                
                 </ul>
             </nav>
         </div>
