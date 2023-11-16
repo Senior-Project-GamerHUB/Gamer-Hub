@@ -26,7 +26,7 @@ const Login = () => {
         setErrors(Valid(values));
 
 
-        axios.post('http://localhost:8080/login', values)
+        axios.post('https://gamerhub-s7o6.onrender.com/login', values)
             .then(res => {
                 console.log(res.data)
                 if(res.data == "Login Successfull"){

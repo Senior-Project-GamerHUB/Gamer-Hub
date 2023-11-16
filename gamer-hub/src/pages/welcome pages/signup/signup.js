@@ -34,7 +34,7 @@ const SignUp = () => {
 
 
 
-         axios.post('http://localhost:8080/signup', values)
+         axios.post('https://gamerhub-s7o6.onrender.com/signup', values)
             .then(res =>{console.log(res)
             {
 
