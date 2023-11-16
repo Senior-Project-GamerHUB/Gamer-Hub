@@ -45,6 +45,35 @@ key = '6FDE1CAA90BAA7010C02DF447AF228BE';
 // 		}
 // 	})();
 // }
+async function SteamGameData2(appid){
+	try {
+		const response = await axios.get(`https://store.steampowered.com/api/appdetails?appids=${appid}&l=english`);
+		const data = response.data;
+	
+		if (data[appid].success) {
+		  const gameData = {
+			name: data[appid].data.name,
+			imageURL: data[appid].data.header_image,
+			developer: data[appid].data.developers.join(', '),
+			publisher: data[appid].data.publishers.join(', '),
+			price: data[appid].data.price_overview.final_formatted,
+			pc_specs: data[appid].data.pc_requirements,
+			releaseDate: data[appid].data.release_date.date,
+			genre: data[appid].data.genres.map((genre) => genre.description).join(', '),
+			rating: data[appid].data.metacritic ? data[appid].data.metacritic.score : 'N/A',
+			detailed_description: data[appid].data.detailed_description ? data[appid].data.detailed_description : 'N/A',
+		  };
+	
+		  
+			return gameData;
+		} else {
+		  return null;
+		}
+	  } catch (error) {
+		console.error('Error fetching game data: ', error);
+		return null;
+	  }
+}
 
 async function SteamGameReview2(appid){
 	try {
