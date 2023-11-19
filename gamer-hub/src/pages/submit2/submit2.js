@@ -37,6 +37,15 @@ const Submit2 = () => {
       const [difficulty, setDifficulty] = useState(0); 
       const [rating, setRating] = useState(0);
       const [worthPrice, setWorthPrice] = useState(0);
+
+      //When Selected
+      // ...
+      const [selectedRating, setSelectedRating] = useState('');
+      const [selectedCompletionStatus, setSelectedCompletionStatus] = useState('');
+      const [selectedDifficulty, setSelectedDifficulty] = useState('');
+      const [selectedWorthPrice, setSelectedWorthPrice] = useState('');
+      // ...
+
        
       const handlePlaytimeHoursChange = (e) => {
         setPlaytimeHours(e.target.value);
@@ -49,23 +58,27 @@ const Submit2 = () => {
       const handlePlaytimeSecondsChange = (e) => {
         setPlaytimeSeconds(e.target.value);
       }
-     
-      const handleCompletionStatusChange = (value) => {
-        setCompletionStatus(value);
-      }
-      
-      const handleDifficultyChange = (value) => {
-        setDifficulty(value);
-      }
-      
+
       const handleRatingChange = (value) => {
         setRating(value);
+        setSelectedRating(value);
       }
-      
+
+      const handleCompletionStatusChange = (value) => {
+        setCompletionStatus(value);
+        setSelectedCompletionStatus(value);
+      }
+
+      const handleDifficultyChange = (value) => {
+        setDifficulty(value);
+        setSelectedDifficulty(value);
+      }
+
       const handleWorthPriceChange = (value) => {
         setWorthPrice(value);
+        setSelectedWorthPrice(value);
       }
-    
+
       const handleSubmit = (e) => {
         e.preventDefault();
         const playtime = `${playtimeHours} hours ${playtimeMinutes} minutes ${playtimeSeconds} seconds`;
@@ -168,58 +181,80 @@ const Submit2 = () => {
               
               <div className="question">
                 <label>Rating:</label>
+                <div className="button-container">
                 {["Embarrassing", "Bad", "Average", "Good", "Eh-Mazing"].map((value, index) => (
-                <input
-                  className={`dynamic-button button-${index}`}
-                  type="submit"
-                  key={value}
-                  value={value}
-                  checked={rating === value}
-                  onClick={() => handleRatingChange(value)}
-                />
-              ))}
+                  <label key={value} className={`dynamic-button button-${index} ${selectedRating === value ? 'selected' : ''}`}>
+                    <input
+                      type="radio"
+                      name="rating"
+                      value={value}
+                      checked={selectedRating === value}
+                      onChange={() => handleRatingChange(value)}
+                      style={{ display: 'none' }} // Hide the actual radio button
+                    />
+                    {value}
+                  </label>
+                ))}
+                </div>
               </div>
+
               <div className="question">
                 <label>Completion Status:</label>
-                {["Tried It", "Hooked", "Halfway", "Finished Most", "Conquered It"].map((value, index) => (
-                  <input
-                    className={`dynamic-button button-${index}`}
-                    type="submit"
-                    key={value}
-                    value={value}
-                    checked={completionStatus === value} // Fix here
-                    onClick={() => handleCompletionStatusChange(value)}
-                  />
-                ))}
+                <div className="button-container">
+                  {["Tried It", "Hooked", "Halfway", "Finished Most", "Conquered It"].map((value, index) => (
+                    <label key={value} className={`dynamic-button button-${index} ${selectedCompletionStatus === value ? 'selected' : ''}`}>
+                      <input
+                        type="radio"
+                        name="completionStatus"
+                        value={value}
+                        checked={selectedCompletionStatus === value}
+                        onChange={() => handleCompletionStatusChange(value)}
+                        style={{ display: 'none' }}
+                      />
+                      {value}
+                    </label>
+                  ))}
+                </div>
               </div>
 
               <div className="question">
                 <label>Difficulty:</label>
-                {["Simple", "Easy Peasy", "Got a Little Kick", "Challenging", "Got a Big Kick"].map((value, index) => (
-                  <input
-                    className={`dynamic-button button-${index}`}
-                    type="submit"
-                    key={value}
-                    value={value}
-                    checked={difficulty === value} // Fix here
-                    onClick={() => handleDifficultyChange(value)}
-                  />
-                ))}
+                <div className="button-container">
+                  {["Simple", "Easy Peasy", "Got a Little Kick", "Challenging", "Got a Big Kick"].map((value, index) => (
+                    <label key={value} className={`dynamic-button button-${index} ${difficulty === value ? 'selected' : ''}`}>
+                      <input
+                        type="radio"
+                        name="difficulty"
+                        value={value}
+                        checked={difficulty === value}
+                        onChange={() => handleDifficultyChange(value)}
+                        style={{ display: 'none' }}
+                      />
+                      {value}
+                    </label>
+                  ))}
+                </div>
               </div>
 
               <div className="question">
-                <label>Worth The Price?:</label>
+              <label>Worth The Price?:</label>
+              <div className="button-container">
                 {["Pass", "Wait For Sale", "Reasonable", "Great Deal", "Worth Every Penny"].map((value, index) => (
-                  <input
-                    className={`dynamic-button button-${index}`}
-                    type="submit"
-                    key={value}
-                    value={value}
-                    checked={worthPrice === value} // Fix here
-                    onClick={() => handleWorthPriceChange(value)}
-                  />
+                  <label key={value} className={`dynamic-button button-${index} ${worthPrice === value ? 'selected' : ''}`}>
+                    <input
+                      type="radio"
+                      name="worthPrice"
+                      value={value}
+                      checked={worthPrice === value}
+                      onChange={() => handleWorthPriceChange(value)}
+                      style={{ display: 'none' }}
+                    />
+                    {value}
+                  </label>
                 ))}
+                </div>
               </div>
+
               <button className="submit">Submit Review</button>
             </form> 
                  
