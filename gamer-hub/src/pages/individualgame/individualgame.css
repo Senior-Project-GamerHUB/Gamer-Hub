@@ -3,7 +3,7 @@
     display: flex;
     width: 100%;
     justify-content: center;
-    background-color:rgb(55, 1, 85);
+    background-color:rgb(46, 5, 69);
     color: white;
     height: auto;
 
@@ -12,18 +12,18 @@
 
 .game-container {
     width: 350px;
-    height: 750x;
-    border: 1px solid #333;
+    height: auto;
+    border: 3px solid hsl(0, 0%, 100%);
     display: flex;
     flex-direction: column;
     align-items: center; 
     overflow-y: auto;
     margin-top: 30px;
-    background-color: rgb(46, 46, 52);
+    background-color: rgb(48, 46, 52);
     border-radius:15px;
     margin-left: 100px;
     margin-bottom: 50px;
-
+    padding: 20px;
 
     
 }
@@ -34,13 +34,14 @@ p{
 
 .game-info-container {
     width: 245px;
-    height: 200px;
- 
- 
+    height: auto;
+    margin-top: 20px;
+  
+
 }
 
 .info {
-    border-bottom: 1px solid #333;
+    border-bottom: 3px solid #333;
     height: 25px;
     width: 245px;
     font-size: 12px;
@@ -48,27 +49,6 @@ p{
     display: flex;
     flex-direction: column;
  
-}
-
-.addButton {
-    width: 252px;
-    height: 40px;
-    border: 2px solid #0074D9;
-    background-color: #0074D9;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    transition: background-color 0.3s, border-color 0.3s;
-}
-
-.addButton:hover {
-    background-color: #0056b3;
-    border-color: #0056b3;
 }
 
 
@@ -87,6 +67,8 @@ p{
     margin-top: 31px;
     margin-bottom: 100px;
     border-radius:15px;
+    padding: 20px;
+    border: 3px solid #ffffff;
 }
 
 .right-content {
@@ -95,13 +77,12 @@ p{
 }
 
 .btn3 {
-    margin-top: 250px; /* Push the button to the bottom */
+    margin-top: 50px; /* Push the button to the bottom */
+    margin-bottom: 50px;
     width: 150px;
 }
 
-.input-search-box::placeholder {
-    color: #808080; /* Set the color you desire */
-}
+
 
 @media screen and (max-width: 768px) {
     .page-container {
