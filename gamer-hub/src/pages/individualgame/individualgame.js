@@ -66,7 +66,7 @@ const IndividualGame = () => {
               <div className="game-info-container">
                 <p>Developer: {gameData.developers && gameData.developers.map((dev) => dev.name).join(', ')}</p>
                 <p>Publisher: {gameData.publishers && gameData.publishers.map((pub) => pub.name).join(', ')}</p>
-                <p>Release Date: {gameData.released || 'U'}</p>
+                <p>Release Date: {gameData.released || 'TBD'}</p>
                 <p>Genre: {gameData.genres && gameData.genres.map((genre) => genre.name).join(', ')}</p>
                 <p>Platforms: {gameData.platforms && gameData.platforms.map((platform) => platform.platform.name).join(', ')}</p>
                 {gameData.stores && gameData.stores.length > 0 && (
