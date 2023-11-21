@@ -9,55 +9,19 @@ const passportSteam = require('passport-steam');
 const SteamStrategy = passportSteam.Strategy;
 const axios = require('axios');
 
-
-
 const port = process.env.PORT || 8080;
 key = '6FDE1CAA90BAA7010C02DF447AF228BE';
-// connect to db
 
-// function SteamGameData(appid){
-// 	(async () => {
-// 		const response = await fetch(`https://store.steampowered.com/api/appdetails?appids=${appid}&l=english`)
-// 		const data = await response.json();
-// 		console.log(`Name: ${data[String(appid)].data.name}`);
-// 		console.log(`Description: ${data[String(appid)].data.about_the_game}`);
-// 		console.log(`Spec: ${data[String(appid)].data.pc_requirements}`);
-// 		console.log(`Price: ${data[String(appid)].data.price_overview.final_formatted}`);
-// 		console.log(`User Score: ${data[String(appid)].data.metacritic.score}`);
-// 		console.log(`Screenshots: ${data[String(appid)].data.screenshots}`);
-// 		console.log(`Videos: ${data[String(appid)].data.movies}`);
-// 		console.log(`Release date: ${data[String(appid)].data.release_date.date}`);
-// 	})();
-// }
-
-
-// function SteamReviewData(appid){
-// 	(async () => {
-// 		const response = await axios.get(`https://store.steampowered.com/appreviews/${appid}?json=1`)
-// 		const data = await response.json();
-// 		//console.log(data);
-// 		//from 0-19 as of right now
-// 		console.log(`Summary: ${data["query_summary"]}`);
-// 		for (var i = 0; i < 20; i++){
-// 			console.log(`Author: ${data["reviews"][i].author.steamid}`);
-// 			console.log(`Review: ${data["reviews"][i].review}`);
-// 			console.log(`Score: ${data["reviews"][i].weighted_vote_score}`);
-// 			console.log(`Votes Up: ${data["reviews"][i].votes_up}`);
-// 			console.log(`If Purchase: ${data["reviews"][i].steam_purchase}`);
-// 		}
-// 	})();
-// }
-
-async function SteamGameReview2(appid){
+async function SteamGameReview(appid){
 	try {
 		const response = await axios.get(`https://store.steampowered.com/appreviews/${appid}?json=1`);
 		const data = response.data;
-	
-		if (data.success) {
-		  const reviewData = {
-			summary: data["query_summary"],
-			review: data["reviews"],
-		  };
+		if (data.success == 1) {
+			console.log(data["query_summary"]);
+			const reviewData = {
+				summary: data["query_summary"],
+				review: data["reviews"],
+		  	};
 		  
 			return reviewData;
 		} else {
@@ -74,7 +38,7 @@ function SteamAccountName(steamid)
 	(async () => {
 		// steamids=${steamid} change it after testing
 		const response = await axios.get(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${key}&steamids=${steamid}`);
-		const data = await response.json();
+		const data = await response.data;
 		console.log(data["response"]["players"]);
 	})();
 }
@@ -128,14 +92,12 @@ const db = mysql.createConnection({
 })
 
 // signup data into mysql
-app.post('/signup',(req, res)=>{
+app.post('/signup', async(req, res)=>{
 
 	const name_user =req.body.name;
 	const username = req.body.username;
-	const email =req.body.email;
-	const password =req.body.password;
-
-
+	const email = req.body.email;
+	const password = await bcrypt.hash(JSON.stringify(req.body.password), 10);
 
 	db.query( "INSERT INTO users (name, username, email, password) VALUES(?,?,?,?)", [name_user, username, email, password], (error, result) =>{
 			
@@ -170,24 +132,14 @@ app.post('/signup',(req, res)=>{
 
 // login checker to database
 app.post('/login', (req, res)=>{
-	// let compare = await bcrypt.compare(req.body.password, hash);
-	// res.render('passwordResult', {
-	// 	password: req.body.password,
-	// 	hash: hash,
-	// 	compare: compare
-	// });
-	const dbsql = "SELECT * FROM users WHERE email = ? AND password = ?";
-	const values = [
-		req.body.email,
-		req.body.password
-	]
 
-	db.query(dbsql, [req.body.email, req.body.password], (err,data)=>{
+	const dbsql = "SELECT * FROM users WHERE email = ?";
+
+	db.query(dbsql, [req.body.email], async(err,data)=>{
 		if(err) return res.json(err);
+		let compare = await bcrypt.compare(JSON.stringify(req.body.password), data[0].password);
 		if(data.length > 0){
 			return res.json("Login Successfull")
-		
-
 		}else{
 			return res.json("No such Record")
 		}
@@ -195,51 +147,25 @@ app.post('/login', (req, res)=>{
 })
 
 
-
-
-app.get('/game/:appid', async (req, res) => {
-	const appid = req.params.appid;
-	const gameData = await SteamGameData2(appid);
-  
-	if (gameData) {
-	  res.json(gameData);
-	} else {
-	  res.status(404).json({ error: 'Game not found' });
-	}
-  });
-
-
 app.get('/', async (req, res) => {
-	
+
 });
 
-app.get('/SteamLogin', async (req, res) => {
-	//res.send(req.user);
-	SteamAccountName();
-	//res.json({});
-});
 
 app.get('/api/auth/steam', passport.authenticate('steam', {failureRedirect: '/'}), function (req, res) {
-	res.redirect('/SteamLogin');
+	res.redirect('http://localhost:3000/home');
    });
 
 app.get('/api/auth/steam/return', passport.authenticate('steam', {failureRedirect: '/'}), function (req, res) {
-	res.redirect('/SteamLogin');
+	console.log(req.user.id);
+	res.redirect('http://localhost:3000/home');
    });
 
-app.get('/getGameInfo', async (req, res) => {
-	// SteamGameData();
-	// const game = await db.all(`SELECT * FROM Game_Catalog`)
-	// res.json({game});
+app.get('/getReview', async (req, res) => {
+	res.send(await SteamGameReview(220));
 });
 
 app.get('/getSteamReview', async (req, res) => {
-	SteamReviewData(220);
-	// const game = await db.all(`SELECT * FROM Review`);
-	// res.json({game});
-});
-
-app.get('/getSteamList', async (req, res) => {
 	(async () => {
 		const response = await fetch(`http://api.steampowered.com/ISteamApps/GetAppList/v0002/?key=${key}&format=json`);
 		const data = await response.json();
