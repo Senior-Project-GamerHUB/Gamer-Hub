@@ -20,8 +20,8 @@ const Header = () => {
             </a>
             <nav className="top-nav-area w-100">
                 <div className="user-panel">
-                    <a href="/profile/user/id">UserName</a>
-                    <a href="/profile/user/id">   Picture</a>
+                    <a href="/profile/user/:user">UserName</a>
+                    <a href="/profile/user/:user">   Picture</a>
                 </div>
                 <ul className="main-menu primary-menu">
                     <li><a href="/home">Home</a></li>
