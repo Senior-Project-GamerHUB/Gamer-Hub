@@ -27,16 +27,24 @@
 }
 
 .submit{
-  margin-left: 150px;
-  margin-top: 50px;
-  margin-left: 20px;
+  margin-left: 25px;
+  margin-top: 25px;
+  font-size: 24px;
+  font-weight: bold;
+  font-family: sans-serif;
   align-self: center;
+  border-radius: 5px;
+  border-color: white;
+  padding: 5px 20px;
+}
+.submit:hover {
+  color: #ffffff; /* Replace with your desired hover color */
+  background-color: black;
 }
 
 .input1{
     width: 50px;
 }
-
 
 .dynamic-button {
     display: inline-block;
@@ -50,7 +58,7 @@
     font-size: 18px;
     cursor: pointer;
     border-radius: 5px;
-    min-width: 170px;
+    min-width: 200px;
 }
 
 .button-0 {

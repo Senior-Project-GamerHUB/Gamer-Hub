@@ -37,14 +37,14 @@ const Submit2 = () => {
       const [difficulty, setDifficulty] = useState(0); 
       const [rating, setRating] = useState(0);
       const [worthPrice, setWorthPrice] = useState(0);
+      const [submissionText, setSubmissionText] = useState('');
 
       //When Selected
-      // ...
       const [selectedRating, setSelectedRating] = useState('');
       const [selectedCompletionStatus, setSelectedCompletionStatus] = useState('');
       const [selectedDifficulty, setSelectedDifficulty] = useState('');
       const [selectedWorthPrice, setSelectedWorthPrice] = useState('');
-      // ...
+
 
        
       const handlePlaytimeHoursChange = (e) => {
@@ -182,7 +182,7 @@ const Submit2 = () => {
               <div className="question">
                 <label>Rating:</label>
                 <div className="button-container">
-                {["Embarrassing", "Bad", "Average", "Good", "Eh-Mazing"].map((value, index) => (
+                {["Bad", "Mediocre", "Average", "Good", "Amazing"].map((value, index) => (
                   <label key={value} className={`dynamic-button button-${index} ${selectedRating === value ? 'selected' : ''}`}>
                     <input
                       type="radio"
@@ -190,7 +190,7 @@ const Submit2 = () => {
                       value={value}
                       checked={selectedRating === value}
                       onChange={() => handleRatingChange(value)}
-                      style={{ display: 'none' }} // Hide the actual radio button
+                      style={{ display: 'none' }}
                     />
                     {value}
                   </label>
@@ -220,7 +220,7 @@ const Submit2 = () => {
               <div className="question">
                 <label>Difficulty:</label>
                 <div className="button-container">
-                  {["Simple", "Easy Peasy", "Got a Little Kick", "Challenging", "Got a Big Kick"].map((value, index) => (
+                  {["Easy Peasy", "Simple", "Moderate", "Challenging", "Relentless"].map((value, index) => (
                     <label key={value} className={`dynamic-button button-${index} ${difficulty === value ? 'selected' : ''}`}>
                       <input
                         type="radio"
@@ -255,7 +255,19 @@ const Submit2 = () => {
                 </div>
               </div>
 
-              <button className="submit">Submit Review</button>
+              <div>
+                <input
+                  type="text"
+                  placeholder="Enter your submission text"
+                  value={submissionText}
+                  onChange={(e) => setSubmissionText(e.target.value)}
+                />
+              </div>
+
+
+              <div>
+                <button className="submit">Submit</button>
+              </div>
             </form> 
                  
             </div>
