@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import './submit2.css'
 
+
 const Submit2 = () => {
     const heroStyle = {
         backgroundImage: 'url("https://i.redd.it/vo9vm1fcqrp71.jpg")', 
@@ -37,14 +38,14 @@ const Submit2 = () => {
       const [difficulty, setDifficulty] = useState(0); 
       const [rating, setRating] = useState(0);
       const [worthPrice, setWorthPrice] = useState(0);
-      const [submissionText, setSubmissionText] = useState('');
 
       //When Selected
+      // ...
       const [selectedRating, setSelectedRating] = useState('');
       const [selectedCompletionStatus, setSelectedCompletionStatus] = useState('');
       const [selectedDifficulty, setSelectedDifficulty] = useState('');
       const [selectedWorthPrice, setSelectedWorthPrice] = useState('');
-
+      // ...
 
        
       const handlePlaytimeHoursChange = (e) => {
@@ -79,11 +80,50 @@ const Submit2 = () => {
         setSelectedWorthPrice(value);
       }
 
-      const handleSubmit = (e) => {
-        e.preventDefault();
-        const playtime = `${playtimeHours} hours ${playtimeMinutes} minutes ${playtimeSeconds} seconds`;
-      }
- 
+      
+      const areAllFieldsFilled = () => {
+        return (
+          playtimeHours !== '' &&
+          playtimeMinutes !== '' &&
+          playtimeSeconds !== '' &&
+          rating !== 0 &&
+          completionStatus !== 0 &&
+          difficulty !== 0 &&
+          worthPrice !== 0
+        );
+      };
+
+      const handleButtonClick = () => {
+        if (!areAllFieldsFilled()) {
+          alert('Please fill in all required fields.');
+          return;
+        }
+      
+        // If all fields are filled, proceed with the submission
+        handleSubmit();
+      };
+      
+      const handleSubmit = async () => {
+        // Remove the (e) parameter as it's not used
+        const playtime = `${playtimeHours} hours ${playtimeMinutes} minutes ${playtimeSeconds}`;
+      
+        try {
+          const response = await axios.post('YOUR_BACKEND_API_ENDPOINT', {
+            playtime,
+            rating,
+            completionStatus,
+            difficulty,
+            worthPrice,
+            // Include any other relevant data
+          });
+      
+          console.log('Review submitted successfully:', response.data);
+          // You can show a success message or redirect the user after a successful submission
+        } catch (error) {
+          console.error('Error submitting review: ', error);
+          // Handle error (e.g., show an error message to the user)
+        }
+      };
     
       return (
         <div>
@@ -104,7 +144,11 @@ const Submit2 = () => {
             <div>
               <h1>{gameData.name}</h1>
               <div className="game-image">
+              <a href={`/game/${gameData.id}`}>
+              <div className="game-image">
                 <img src={gameData.background_image} alt={gameData.name} />
+              </div>
+            </a>
               </div>
               <div className="game-info-container">
                 <p>Developer: {gameData.developers && gameData.developers.map((dev) => dev.name).join(', ')}</p>
@@ -115,13 +159,16 @@ const Submit2 = () => {
                 {gameData.stores && gameData.stores.length > 0 && (
                   <div>
                     <h5>Available at:</h5>
-                    {gameData.stores.map((store) => (
-                        <li key={store.store.id}>
-                          <a href={store.url} target="_blank" rel="noopener noreferrer">
-                            {store.store.name}
-                          </a>
-                        </li>
-                      ))}
+                    {gameData.stores.map((store) => {
+                    console.log("Store URL:", store.url);
+                    return (
+                      <li key={store.store.id}>
+                        <a href={store.url} >
+                          {store.store.name}
+                        </a>
+                      </li>
+                    );
+                  })}
                 
                   </div>
                 )}
@@ -190,7 +237,7 @@ const Submit2 = () => {
                       value={value}
                       checked={selectedRating === value}
                       onChange={() => handleRatingChange(value)}
-                      style={{ display: 'none' }}
+                      style={{ display: 'none' }} // Hide the actual radio button
                     />
                     {value}
                   </label>
@@ -255,23 +302,19 @@ const Submit2 = () => {
                 </div>
               </div>
 
-              <div>
-                <input
-                  type="text"
-                  placeholder="Enter your submission text"
-                  value={submissionText}
-                  onChange={(e) => setSubmissionText(e.target.value)}
-                />
-              </div>
 
-
-              <div>
-                <button className="submit">Submit</button>
-              </div>
+              <button
+                  className="submit"
+                  type="button" // Change the type to "button" to prevent the form submission
+                  onClick={handleButtonClick}
+                >
+              Submit Review
+            </button>
             </form> 
-                 
-            </div>
+           
                
+            </div>
+           
     
         
             </div>
