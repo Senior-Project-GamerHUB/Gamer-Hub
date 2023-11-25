@@ -11,6 +11,7 @@ import Submit from "./pages/submit/submit";
 import Submit2 from "./pages/submit2/submit2";
 import Profile from "./pages/profile/profile";
 import Forum from "./pages/forum/forum";
+import Forum2 from "./pages/forum/forum2/forum2";
 import NotFound from './pages/notfound/notfound';
 
 const Layout = () => {
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
       {
         path: '/forum',
         element: <Forum />,
+      },
+      {
+        path: '/forum/game/:appid',
+        element: <Forum2/>,
       },
       {
         path: '*', 

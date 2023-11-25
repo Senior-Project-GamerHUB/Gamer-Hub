@@ -27,12 +27,23 @@
     color: white;
 }
 
-.submit{
+.submit {
   margin-left: 150px;
   margin-top: 50px;
-  margin-left: 20px;
+  margin-bottom: 20px;
+  margin-left: 20px; /* Note: you have "margin-left" twice, you may want to remove one */
   align-self: center;
+  /* Set initial background color */
+  background-color: #ffffff; /* Replace with your desired initial color */
+  /* Add transition for a smooth color change */
+  transition: background-color 0.3s ease;
 }
+
+.submit:hover {
+  /* Change background color on hover */
+  background-color: #800080; /* Replace with your desired hover color (purple in this case) */
+}
+
 
 .input1{
     width: 50px;
@@ -115,3 +126,17 @@
     margin-top: 5px; /* Add spacing between label and buttons */
   }
 
+  .star-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .star {
+    font-size: 48px;
+    cursor: pointer;
+    color: #ccc; /* Color of unfilled stars */
+  }
+  
+  .star.filled {
+    color: gold; /* Color of filled stars */
+  }

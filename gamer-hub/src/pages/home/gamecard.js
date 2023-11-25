@@ -17,7 +17,7 @@ const GameCard = ({ game }) => {
     console.log('Card Clicked!');
   };
 
-  const textColor = isHovered ? 'black' : 'white';
+  const textColor = isHovered ? 'purple' : 'white';
 
   return (
     <div className="col-sm-2">
