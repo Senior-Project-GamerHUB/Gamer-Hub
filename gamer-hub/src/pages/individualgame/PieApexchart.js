@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactApexChart from 'react-apexcharts';
 
-class ApexChart extends React.Component {
+class PieApexChart extends React.Component {
   constructor(props) {
     super(props);
 
@@ -10,10 +10,9 @@ class ApexChart extends React.Component {
       series: [44, 55, 13, 43, 22],
       options: {
         chart: {
-          width: 380,
           type: 'pie',
         },
-        labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
+        labels: ['Tried', 'Hooked', 'Halfway', 'Finished Most', 'Conquered It'],
         responsive: [{
           breakpoint: 480,
           options: {
@@ -44,4 +43,4 @@ class ApexChart extends React.Component {
   }
 }
 
-export default ApexChart;
+export default PieApexChart;

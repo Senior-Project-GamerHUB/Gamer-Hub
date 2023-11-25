@@ -30,7 +30,7 @@ const Submit2 = () => {
     
         fetchGameDetails();
       }, [appid]);
-     
+    
       const [playtimeHours, setPlaytimeHours] = useState('');
       const [playtimeMinutes, setPlaytimeMinutes] = useState('');
       const [playtimeSeconds, setPlaytimeSeconds] = useState('');
@@ -61,9 +61,12 @@ const Submit2 = () => {
       }
 
       const handleRatingChange = (value) => {
-        setRating(value);
+        // Convert the star rating to a numerical value (e.g., 1 to 5)
+        const numericValue = parseInt(value, 10);
+        setRating(numericValue);
         setSelectedRating(value);
-      }
+      };
+    
 
       const handleCompletionStatusChange = (value) => {
         setCompletionStatus(value);
@@ -79,6 +82,9 @@ const Submit2 = () => {
         setWorthPrice(value);
         setSelectedWorthPrice(value);
       }
+
+     
+    
 
       
       const areAllFieldsFilled = () => {
@@ -224,26 +230,18 @@ const Submit2 = () => {
               />
             </div>
 
-
-              
-              <div className="question">
-                <label>Rating:</label>
-                <div className="button-container">
-                {["Bad", "Mediocre", "Average", "Good", "Amazing"].map((value, index) => (
-                  <label key={value} className={`dynamic-button button-${index} ${selectedRating === value ? 'selected' : ''}`}>
-                    <input
-                      type="radio"
-                      name="rating"
-                      value={value}
-                      checked={selectedRating === value}
-                      onChange={() => handleRatingChange(value)}
-                      style={{ display: 'none' }} // Hide the actual radio button
-                    />
-                    {value}
+            <div className="question">
+              <label>Rating:</label>
+              <div className="star-container">
+                {[1, 2, 3, 4, 5].map((value, index) => (
+                  <label key={value} className={`star ${value <= rating ? 'filled' : ''}`} onClick={() => handleRatingChange(value)}>
+                    ★
                   </label>
                 ))}
-                </div>
               </div>
+             </div>
+              
+              
 
               <div className="question">
                 <label>Completion Status:</label>
@@ -305,7 +303,7 @@ const Submit2 = () => {
 
               <button
                   className="submit"
-                  type="button" // Change the type to "button" to prevent the form submission
+                  type="button" 
                   onClick={handleButtonClick}
                 >
               Submit Review

@@ -1,0 +1,14 @@
+.create-post-button {
+    width: 600px; /* Adjust the width as needed */
+    margin: auto;
+    background-color: rgb(203, 85, 233);
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 30px;
+}
+.create-post-button:hover {
+    background-color: rgb(129, 52, 201);
+}
