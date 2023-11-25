@@ -138,7 +138,7 @@ app.post('/login', (req, res)=>{
 	db.query(dbsql, [req.body.email], async(err,data)=>{
 		if(err) return res.json(err);
 		let compare = await bcrypt.compare(JSON.stringify(req.body.password), data[0].password);
-		if(data.length > 0){
+		if(compare == true){
 			return res.json("Login Successfull")
 		}else{
 			return res.json("No such Record")
