@@ -8,6 +8,9 @@ const session = require('express-session');
 const passportSteam = require('passport-steam');
 const SteamStrategy = passportSteam.Strategy;
 const axios = require('axios');
+const cookieParser = require('cookie-parser');
+const bodyParser = require("body-parser");
+
 
 
 
@@ -107,17 +110,35 @@ passport.use(new SteamStrategy({
 app = express();
 app.use(express.static(path.join(__dirname, 'static')));
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+	origin: 'http://localhost:3000', 
+    credentials: true,
+
+}));
+
+app.use(cookieParser());
+
+app.use(bodyParser.urlencoded({extended: true}));
+
 app.use(session({
-	secret: 'Whatever_You_Want',
-	saveUninitialized: true,
+	key: "userId",
+	secret: 'secretKey',
+	saveUninitialized: false,
 	resave: false,
+
 	cookie: {
+	secure: false,
 	 maxAge: 3600000
 	}
 }));
+
+
+
 app.use(passport.initialize());
 app.use(passport.session());
+
+
+
 
 // mysql database
 const db = mysql.createConnection({
@@ -127,6 +148,72 @@ const db = mysql.createConnection({
 	database: "GamerHub_DATA"
 })
 
+
+
+
+
+app.get('/', (req, res)=>{
+
+
+	res.send("SERVER WELCOME")
+
+
+})
+
+app.get('/loggedIn', (req, res)=>{
+
+
+	db.query("SELECT * FROM users WHERE user_id = ?", [req.session.userId], (error, data)=>{
+
+		if(error){
+			throw error;
+		}
+		else{
+			
+			res.send(data)
+		}
+
+	});
+
+})
+
+
+app.get('/loggout', (req, res)=>{
+
+req.session.destroy(err=>{
+	if(err){
+		return res.send(err);
+	}
+
+	res.clearCookie("userId");
+	return res.send("Deleted Session");
+})
+
+
+})
+
+
+
+
+app.get('/users', (req, res)=>{
+
+	db.query("SELECT * FROM users ", (error, data)=>{
+
+		if(error){
+			throw error;
+		}
+		else{
+			res.json(data)
+		}
+
+	});
+
+
+})
+
+
+
+
 // signup data into mysql
 app.post('/signup',(req, res)=>{
 
@@ -134,6 +221,7 @@ app.post('/signup',(req, res)=>{
 	const username = req.body.username;
 	const email =req.body.email;
 	const password =req.body.password;
+
 
 
 
@@ -168,6 +256,9 @@ app.post('/signup',(req, res)=>{
 
 
 
+
+
+
 // login checker to database
 app.post('/login', (req, res)=>{
 	// let compare = await bcrypt.compare(req.body.password, hash);
@@ -176,6 +267,8 @@ app.post('/login', (req, res)=>{
 	// 	hash: hash,
 	// 	compare: compare
 	// });
+	
+	
 	const dbsql = "SELECT * FROM users WHERE email = ? AND password = ?";
 	const values = [
 		req.body.email,
@@ -185,8 +278,15 @@ app.post('/login', (req, res)=>{
 	db.query(dbsql, [req.body.email, req.body.password], (err,data)=>{
 		if(err) return res.json(err);
 		if(data.length > 0){
+			console.log(data);
+			const SESS = data[0].user_id;
+			console.log("User ID: " + SESS);
+
+			req.session.userId=SESS;
+			
+			console.log("Session ID: " + req.session.userId);
+
 			return res.json("Login Successfull")
-		
 
 		}else{
 			return res.json("No such Record")
@@ -194,6 +294,10 @@ app.post('/login', (req, res)=>{
 	})
 })
 
+
+app.get('/login', (req, res)=>{
+
+})
 
 
 

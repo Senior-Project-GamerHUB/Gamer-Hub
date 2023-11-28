@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Valid from './loginValidation.js';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +15,8 @@ const Login = () => {
 
     const [errors, setErrors] = useState({})
 
+
+
     const handleInput = (event) =>{
         setValues(prev => ({...prev, [event.target.name]: [event.target.value]}))
         console.log(event.target.name);
@@ -27,7 +29,7 @@ const Login = () => {
         setErrors(Valid(values));
 
 
-        axios.post('http://localhost:8080/login', values)
+        axios.post('http://localhost:8080/login', values,  {withCredentials: true})
             .then(res => {
                 console.log(res.data)
                 if(res.data == "Login Successfull"){

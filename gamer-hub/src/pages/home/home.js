@@ -115,6 +115,11 @@ const Home = () => {
     }
   }, [searchQuery, apiKey]);
 
+
+
+
+
+
   return (
     <div>
       <section className="hero-section overflow-hidden">

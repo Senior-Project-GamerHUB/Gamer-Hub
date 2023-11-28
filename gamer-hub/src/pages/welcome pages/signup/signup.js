@@ -49,7 +49,8 @@ const SignUp = () => {
 
 
                 if(res.data == "ok"){
-                    navigate("/profile");
+
+                    navigate("/login");
                     Swal.fire({
                         title: "Welcome " + values.username + "!",
                         text: "Thanks for joining GamerHub!",
