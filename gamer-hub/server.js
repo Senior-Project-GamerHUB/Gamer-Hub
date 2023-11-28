@@ -8,6 +8,9 @@ const session = require('express-session');
 const passportSteam = require('passport-steam');
 const SteamStrategy = passportSteam.Strategy;
 const axios = require('axios');
+const cookieParser = require('cookie-parser');
+const bodyParser = require("body-parser");
+
 
 const port = process.env.PORT || 8080;
 key = '6FDE1CAA90BAA7010C02DF447AF228BE';
@@ -71,17 +74,35 @@ passport.use(new SteamStrategy({
 app = express();
 app.use(express.static(path.join(__dirname, 'static')));
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+	origin: 'http://localhost:3000', 
+    credentials: true,
+
+}));
+
+app.use(cookieParser());
+
+app.use(bodyParser.urlencoded({extended: true}));
+
 app.use(session({
-	secret: 'Whatever_You_Want',
-	saveUninitialized: true,
+	key: "userId",
+	secret: 'secretKey',
+	saveUninitialized: false,
 	resave: false,
+
 	cookie: {
+	secure: false,
 	 maxAge: 3600000
 	}
 }));
+
+
+
 app.use(passport.initialize());
 app.use(passport.session());
+
+
+
 
 // mysql database
 const db = mysql.createConnection({
@@ -91,6 +112,72 @@ const db = mysql.createConnection({
 	database: "GamerHub_DATA"
 })
 
+
+
+
+
+app.get('/', (req, res)=>{
+
+
+	res.send("SERVER WELCOME")
+
+
+})
+
+app.get('/loggedIn', (req, res)=>{
+
+
+	db.query("SELECT * FROM users WHERE user_id = ?", [req.session.userId], (error, data)=>{
+
+		if(error){
+			throw error;
+		}
+		else{
+			
+			res.send(data)
+		}
+
+	});
+
+})
+
+
+app.get('/loggout', (req, res)=>{
+
+req.session.destroy(err=>{
+	if(err){
+		return res.send(err);
+	}
+
+	res.clearCookie("userId");
+	return res.send("Deleted Session");
+})
+
+
+})
+
+
+
+
+app.get('/users', (req, res)=>{
+
+	db.query("SELECT * FROM users ", (error, data)=>{
+
+		if(error){
+			throw error;
+		}
+		else{
+			res.json(data)
+		}
+
+	});
+
+
+})
+
+
+
+
 // signup data into mysql
 app.post('/signup', async(req, res)=>{
 
@@ -98,6 +185,7 @@ app.post('/signup', async(req, res)=>{
 	const username = req.body.username;
 	const email = req.body.email;
 	const password = await bcrypt.hash(JSON.stringify(req.body.password), 10);
+
 
 	db.query( "INSERT INTO users (name, username, email, password) VALUES(?,?,?,?)", [name_user, username, email, password], (error, result) =>{
 			
@@ -127,21 +215,70 @@ app.post('/signup', async(req, res)=>{
 
 
 
+
+
+
 // login checker to database
 app.post('/login', (req, res)=>{
 
-	const dbsql = "SELECT * FROM users WHERE email = ?";
+	// let compare = await bcrypt.compare(req.body.password, hash);
+	// res.render('passwordResult', {
+	// 	password: req.body.password,
+	// 	hash: hash,
+	// 	compare: compare
+	// });
+	
+	
+	const dbsql = "SELECT * FROM users WHERE email = ? AND password = ?";
+	const values = [
+		req.body.email,
+		req.body.password
+	]
 
-	db.query(dbsql, [req.body.email], async(err,data)=>{
+
+	db.query(dbsql, [req.body.email, req.body.password], async(err,data)=>{
 		if(err) return res.json(err);
-		let compare = await bcrypt.compare(JSON.stringify(req.body.password), data[0].password);
-		if(compare === true){
+
+		if(data.length > 0){
+			console.log(data);
+			const SESS = data[0].user_id;
+			console.log("User ID: " + SESS);
+
+			req.session.userId=SESS;
+			
+			console.log("Session ID: " + req.session.userId);
+
+
+
+
+		//let compare = await bcrypt.compare(JSON.stringify(req.body.password), data[0].password);
+		//if(compare === true){
 			return res.json("Login Successfull")
+
 		}else{
 			return res.json("No such Record")
 		}
 	})
 })
+
+
+app.get('/login', (req, res)=>{
+
+})
+
+
+
+app.get('/game/:appid', async (req, res) => {
+	const appid = req.params.appid;
+	const gameData = await SteamGameData2(appid);
+  
+	if (gameData) {
+	  res.json(gameData);
+	} else {
+	  res.status(404).json({ error: 'Game not found' });
+	}
+  });
+
 
 
 app.get('/', async (req, res) => {

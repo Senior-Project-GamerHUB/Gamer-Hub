@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import './profile.css';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 
 const Profile = () => {
   const [userData, setUserData] = useState(null);
   const [profilePicture, setProfilePicture] = useState(null);
+  const [user_name, setUser_Name] = useState([]);
+  const [userLog, setUserLog] = useState([]);
+  const [userid, setUserID] = useState([]);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     // Fetch user data from your database or API
@@ -50,6 +58,41 @@ const Profile = () => {
     return <div>Loading...</div>;
   }
 
+
+  const handleSubmit = (event) =>{
+    event.preventDefault();
+
+    console.log("CLICKED LOGOUT");
+
+        axios.get('http://localhost:8080/loggout',  {withCredentials: true})
+        .then(res => {
+
+            console.log(res.data);
+        
+            
+   
+        })
+        .catch(err => console.log(err));
+
+        navigate('/');
+
+      }
+
+
+   axios.get('http://localhost:8080/loggedIn', {withCredentials: true})
+                .then(res => {
+                    console.log(res.data[0].username);
+                    setUserLog(res.data[0].username);
+                    setUser_Name(res.data[0].name);
+                    setUserID(res.data[0].user_id);
+    
+                })
+                .catch(err => console.log(err));
+  
+
+
+
+
   return (
     <div className="profile-background">
       <section className="page-top-section set-bg" style={heroStyle}>
@@ -83,16 +126,16 @@ const Profile = () => {
                     style={{ display: 'none' }}
                     onChange={handleProfilePictureChange}
                   />
-                  <h5 className="my-3">{userData.fullName || 'John Smith'}</h5>
+                  <h5 className="my-3">{userLog}</h5>
                 </div>
               </div>
+             
               <div className="d-flex justify-content-center mb-2">
-                <Link to="/">
-                  <button type="button" className="btnlogout btn-danger">
+                  <button type="button" className="btnlogout btn-danger" onClick= {handleSubmit}>
                     Log Out
                   </button>
-                </Link>
               </div>
+             
             </div>
             <div className="col-lg-8">
               <div className="card mb-4">
@@ -102,7 +145,7 @@ const Profile = () => {
                       <p className="mb-0">Full Name</p>
                     </div>
                     <div className="col-sm-9">
-                      <p className="text-muted mb-0">{userData.fullName || 'John Smith'}</p>
+                      <p className="text-muted mb-0">{user_name}</p>
                     </div>
                   </div>
                   {/* ... Other rows and content */}

@@ -1,12 +1,29 @@
-import React, {useState} from 'react';
+import React, {useEffect,useState} from 'react';
 import './css/bootstrap.min.css'; 
 import './css/slicknav.min.css';
 import './css/magnific-popup.css';
 import './css/animate.css';
 import './css/style.css'; 
+import axios from 'axios';
 
+
+
+const test = "test this ";
 
 const Header = () => {
+
+    const [user, setUser] = useState([]);
+
+
+    axios.get('http://localhost:8080/loggedIn', {withCredentials: true})
+              .then(res => {
+                  console.log(res.data[0].username);
+                  setUser(res.data[0].username);
+  
+              })
+              .catch(err => console.log(err));
+
+    
 
 
 
@@ -20,8 +37,10 @@ const Header = () => {
             </a>
             <nav className="top-nav-area w-100">
                 <div className="user-panel">
-                    <a href="/profile/user/:user">UserName</a>
-                    <a href="/profile/user/:user">   Picture</a>
+                    <a href="/profile/user/id">
+                        {user}
+                    </a>
+                    <a href="/profile/user/id">   Picture</a>
                 </div>
                 <ul className="main-menu primary-menu">
                     <li><a href="/home">Home</a></li>
