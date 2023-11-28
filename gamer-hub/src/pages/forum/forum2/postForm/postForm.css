@@ -1,0 +1,25 @@
+.post-form-container {
+    width: 600px; /* Adjust the width as needed */
+    margin: auto;
+  }
+  
+  .input-field,
+  .textarea-field {
+    width: 600px;
+    padding: 8px;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+  }
+  
+  .submit-button {
+    padding: 10px;
+    background-color: #007bff; /* Change the color to your preference */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .submit-button:hover {
+    background-color: #0056b3; /* Change the hover color to your preference */
+  }

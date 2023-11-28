@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import "./individualgame.css";
-import ApexChart from "./apexchart"
+import PieApexChart from "./PieApexchart"
+import StackApexChart from "./StackApexchart"
+import DonutApexChart from "./DonutApexChart"
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -33,12 +35,10 @@ const IndividualGame = () => {
   }, [appid]);
 
   const handleSaveGame = () => {
-    // Check if the game is not already saved
     if (!savedGames.find((savedGame) => savedGame.id === gameData.id)) {
       const newSavedGames = [...savedGames, gameData];
       setSavedGames(newSavedGames);
 
-      // Save to local storage (you can replace this with server-side storage)
       localStorage.setItem('savedGames', JSON.stringify(newSavedGames));
     }
   }; 
@@ -66,9 +66,10 @@ const IndividualGame = () => {
               <div className="game-info-container">
                 <p>Developer: {gameData.developers && gameData.developers.map((dev) => dev.name).join(', ')}</p>
                 <p>Publisher: {gameData.publishers && gameData.publishers.map((pub) => pub.name).join(', ')}</p>
-                <p>Release Date: {gameData.released || 'U'}</p>
+                <p>Release Date: {gameData.released || 'TBD'}</p>
                 <p>Genre: {gameData.genres && gameData.genres.map((genre) => genre.name).join(', ')}</p>
                 <p>Platforms: {gameData.platforms && gameData.platforms.map((platform) => platform.platform.name).join(', ')}</p>
+                <p>GamerHub Rating: {'Not Yet Rated'}</p>
                 {gameData.stores && gameData.stores.length > 0 && (
                   <div>
                     <h5>Available at:</h5>
@@ -101,8 +102,14 @@ const IndividualGame = () => {
                     <button className="btn3" onClick={handleSaveGame}>
                    Save Game
                  </button>
-            )}
+                )}
+                 
               </div>
+              {gameData && (
+                  <Link to={`/forum/game/${gameData.id}`}>
+                    <button className="btnForum">Forum</button>
+                  </Link>
+                )}  
           </div>
         </div>
         
@@ -113,15 +120,27 @@ const IndividualGame = () => {
             ) : (
               <p>Loading...</p>
             )}
-             
+  
+          </div>
+
+          <div className='completion'>
+            <p>Average Completion Time: </p>
           </div>
           
-          <div>
+          <div className='charts'>
             <h2>Completion</h2>
-            <ApexChart />
-
-            
+            <PieApexChart />
           </div>
+          <div className='charts'>
+            <h2>Difficulty</h2>
+            <StackApexChart />
+          </div>
+          <div className='charts'>
+            <h2>Worth the Price</h2>
+            <DonutApexChart />
+          </div>
+          
+
         </div>
       </div>
     </div>

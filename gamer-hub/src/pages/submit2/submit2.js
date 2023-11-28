@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import './submit2.css'
 
+
 const Submit2 = () => {
     const heroStyle = {
         backgroundImage: 'url("https://i.redd.it/vo9vm1fcqrp71.jpg")', 
@@ -29,7 +30,7 @@ const Submit2 = () => {
     
         fetchGameDetails();
       }, [appid]);
-     
+    
       const [playtimeHours, setPlaytimeHours] = useState('');
       const [playtimeMinutes, setPlaytimeMinutes] = useState('');
       const [playtimeSeconds, setPlaytimeSeconds] = useState('');
@@ -37,6 +38,15 @@ const Submit2 = () => {
       const [difficulty, setDifficulty] = useState(0); 
       const [rating, setRating] = useState(0);
       const [worthPrice, setWorthPrice] = useState(0);
+
+      //When Selected
+      // ...
+      const [selectedRating, setSelectedRating] = useState('');
+      const [selectedCompletionStatus, setSelectedCompletionStatus] = useState('');
+      const [selectedDifficulty, setSelectedDifficulty] = useState('');
+      const [selectedWorthPrice, setSelectedWorthPrice] = useState('');
+      // ...
+
        
       const handlePlaytimeHoursChange = (e) => {
         setPlaytimeHours(e.target.value);
@@ -49,28 +59,77 @@ const Submit2 = () => {
       const handlePlaytimeSecondsChange = (e) => {
         setPlaytimeSeconds(e.target.value);
       }
-     
+
+      const handleRatingChange = (value) => {
+        // Convert the star rating to a numerical value (e.g., 1 to 5)
+        const numericValue = parseInt(value, 10);
+        setRating(numericValue);
+        setSelectedRating(value);
+      };
+    
+
       const handleCompletionStatusChange = (value) => {
         setCompletionStatus(value);
+        setSelectedCompletionStatus(value);
       }
-      
+
       const handleDifficultyChange = (value) => {
         setDifficulty(value);
+        setSelectedDifficulty(value);
       }
-      
-      const handleRatingChange = (value) => {
-        setRating(value);
-      }
-      
+
       const handleWorthPriceChange = (value) => {
         setWorthPrice(value);
+        setSelectedWorthPrice(value);
       }
+
+     
     
-      const handleSubmit = (e) => {
-        e.preventDefault();
-        const playtime = `${playtimeHours} hours ${playtimeMinutes} minutes ${playtimeSeconds} seconds`;
-      }
- 
+
+      
+      const areAllFieldsFilled = () => {
+        return (
+          playtimeHours !== '' &&
+          playtimeMinutes !== '' &&
+          playtimeSeconds !== '' &&
+          rating !== 0 &&
+          completionStatus !== 0 &&
+          difficulty !== 0 &&
+          worthPrice !== 0
+        );
+      };
+
+      const handleButtonClick = () => {
+        if (!areAllFieldsFilled()) {
+          alert('Please fill in all required fields.');
+          return;
+        }
+      
+        // If all fields are filled, proceed with the submission
+        handleSubmit();
+      };
+      
+      const handleSubmit = async () => {
+        // Remove the (e) parameter as it's not used
+        const playtime = `${playtimeHours} hours ${playtimeMinutes} minutes ${playtimeSeconds}`;
+      
+        try {
+          const response = await axios.post('YOUR_BACKEND_API_ENDPOINT', {
+            playtime,
+            rating,
+            completionStatus,
+            difficulty,
+            worthPrice,
+            // Include any other relevant data
+          });
+      
+          console.log('Review submitted successfully:', response.data);
+          // You can show a success message or redirect the user after a successful submission
+        } catch (error) {
+          console.error('Error submitting review: ', error);
+          // Handle error (e.g., show an error message to the user)
+        }
+      };
     
       return (
         <div>
@@ -91,7 +150,11 @@ const Submit2 = () => {
             <div>
               <h1>{gameData.name}</h1>
               <div className="game-image">
+              <a href={`/game/${gameData.id}`}>
+              <div className="game-image">
                 <img src={gameData.background_image} alt={gameData.name} />
+              </div>
+            </a>
               </div>
               <div className="game-info-container">
                 <p>Developer: {gameData.developers && gameData.developers.map((dev) => dev.name).join(', ')}</p>
@@ -102,13 +165,16 @@ const Submit2 = () => {
                 {gameData.stores && gameData.stores.length > 0 && (
                   <div>
                     <h5>Available at:</h5>
-                    {gameData.stores.map((store) => (
-                        <li key={store.store.id}>
-                          <a href={store.url} target="_blank" rel="noopener noreferrer">
-                            {store.store.name}
-                          </a>
-                        </li>
-                      ))}
+                    {gameData.stores.map((store) => {
+                    console.log("Store URL:", store.url);
+                    return (
+                      <li key={store.store.id}>
+                        <a href={store.url} >
+                          {store.store.name}
+                        </a>
+                      </li>
+                    );
+                  })}
                 
                   </div>
                 )}
@@ -164,67 +230,89 @@ const Submit2 = () => {
               />
             </div>
 
-
-              
-              <div className="question">
-                <label>Rating:</label>
-                {["Embarrassing", "Bad", "Average", "Good", "Eh-Mazing"].map((value, index) => (
-                <input
-                  className={`dynamic-button button-${index}`}
-                  type="submit"
-                  key={value}
-                  value={value}
-                  checked={rating === value}
-                  onClick={() => handleRatingChange(value)}
-                />
-              ))}
+            <div className="question">
+              <label>Rating:</label>
+              <div className="star-container">
+                {[1, 2, 3, 4, 5].map((value, index) => (
+                  <label key={value} className={`star ${value <= rating ? 'filled' : ''}`} onClick={() => handleRatingChange(value)}>
+                    ★
+                  </label>
+                ))}
               </div>
+             </div>
+              
+              
+
               <div className="question">
                 <label>Completion Status:</label>
-                {["Tried It", "Hooked", "Halfway", "Finished Most", "Conquered It"].map((value, index) => (
-                  <input
-                    className={`dynamic-button button-${index}`}
-                    type="submit"
-                    key={value}
-                    value={value}
-                    checked={completionStatus === value} // Fix here
-                    onClick={() => handleCompletionStatusChange(value)}
-                  />
-                ))}
+                <div className="button-container">
+                  {["Tried It", "Hooked", "Halfway", "Finished Most", "Conquered It"].map((value, index) => (
+                    <label key={value} className={`dynamic-button button-${index} ${selectedCompletionStatus === value ? 'selected' : ''}`}>
+                      <input
+                        type="radio"
+                        name="completionStatus"
+                        value={value}
+                        checked={selectedCompletionStatus === value}
+                        onChange={() => handleCompletionStatusChange(value)}
+                        style={{ display: 'none' }}
+                      />
+                      {value}
+                    </label>
+                  ))}
+                </div>
               </div>
 
               <div className="question">
                 <label>Difficulty:</label>
-                {["Simple", "Easy Peasy", "Got a Little Kick", "Challenging", "Got a Big Kick"].map((value, index) => (
-                  <input
-                    className={`dynamic-button button-${index}`}
-                    type="submit"
-                    key={value}
-                    value={value}
-                    checked={difficulty === value} // Fix here
-                    onClick={() => handleDifficultyChange(value)}
-                  />
-                ))}
+                <div className="button-container">
+                  {["Easy Peasy", "Simple", "Moderate", "Challenging", "Relentless"].map((value, index) => (
+                    <label key={value} className={`dynamic-button button-${index} ${difficulty === value ? 'selected' : ''}`}>
+                      <input
+                        type="radio"
+                        name="difficulty"
+                        value={value}
+                        checked={difficulty === value}
+                        onChange={() => handleDifficultyChange(value)}
+                        style={{ display: 'none' }}
+                      />
+                      {value}
+                    </label>
+                  ))}
+                </div>
               </div>
 
               <div className="question">
-                <label>Worth The Price?:</label>
+              <label>Worth The Price?:</label>
+              <div className="button-container">
                 {["Pass", "Wait For Sale", "Reasonable", "Great Deal", "Worth Every Penny"].map((value, index) => (
-                  <input
-                    className={`dynamic-button button-${index}`}
-                    type="submit"
-                    key={value}
-                    value={value}
-                    checked={worthPrice === value} // Fix here
-                    onClick={() => handleWorthPriceChange(value)}
-                  />
+                  <label key={value} className={`dynamic-button button-${index} ${worthPrice === value ? 'selected' : ''}`}>
+                    <input
+                      type="radio"
+                      name="worthPrice"
+                      value={value}
+                      checked={worthPrice === value}
+                      onChange={() => handleWorthPriceChange(value)}
+                      style={{ display: 'none' }}
+                    />
+                    {value}
+                  </label>
                 ))}
+                </div>
               </div>
-              <button className="submit">Submit Review</button>
+
+
+              <button
+                  className="submit"
+                  type="button" 
+                  onClick={handleButtonClick}
+                >
+              Submit Review
+            </button>
             </form> 
-                 
-            </div>
+           
                
+            </div>
+           
     
         
             </div>
