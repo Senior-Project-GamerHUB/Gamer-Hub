@@ -161,9 +161,9 @@ app.get('/api/auth/steam/return', passport.authenticate('steam', {failureRedirec
 	res.redirect('http://localhost:3000/home');
    });
 
-app.get('/getReview', async (req, res) => {
-	res.send(await SteamGameReview(220));
-});
+// app.get('/getReview', async (req, res) => {
+// 	res.send(await SteamGameReview(220));
+// });
 
 app.get('/getSteamReview', async (req, res) => {
 	(async () => {
@@ -172,7 +172,7 @@ app.get('/getSteamReview', async (req, res) => {
 		index = data["applist"]["apps"].map(function(e) {return e.name;}).indexOf('ELDEN RING');
 		res.send(data["applist"]["apps"][index]);
 		appid = data["applist"]["apps"][index]["appid"];
-		SteamGameData(appid);
+		res.send(SteamGameData(appid));
 	})();
 });
 
@@ -184,12 +184,74 @@ app.post('/addNewGame', async (req, res) => {
 });
 
 app.post('/addReview', async (req, res) => {
-	//await db.get(`INSERT INTO Review (Rating, Text, gameID, userID, date)
-	//VALUES (?, ?, ?, ?, ?)` (req.body.author, req.body.review, req.body.weighted_vote_score));
+	const userID =req.body.user;
+	const gameID = req.body.game;
+	const votes = req.body.title;
+	const review = req.body.text;
+	const playtime_h = req.body.playtime_hour;
+	const playtime_m = req.body.playtime_minutes;
+	const playtime_s = req.body.playtime_seconds;
+	const rating = req.body.review;
+	const comp_status = req.body.completion_status;
+	const difficulty = req.body.difficulty;
+	const wtp = req.body.worth_the_price;
+
+	db.query( "INSERT INTO Review (userID, gameID, vote_up_num, review, playtime_hour, playtime_minutes, playtime_seconds, rating, comp_status, difficulty, wtp) VALUES(?,?,?,?,?,?,?,?,?,?,?)", 
+	[userID, gameID, votes, review, playtime_h, playtime_m, playtime_s, rating, comp_status, difficulty, wtp], (error, result) =>{
+			
+			console.log("error is " + JSON.stringify(error));
+			console.log("results are " + result);
+			
+
+
+
+			// if (JSON.stringify(error).indexOf("username_UNIQUE") >0 ){
+			// 	return res.send("error");
+	
+			// }
+
+			// else if (JSON.stringify(error).indexOf("email_UNIQUE") >0 ){
+			// 	return res.send("error2");
+	
+			// }
+	
+			// else{
+			// 	return res.send("ok");
+			// }
+	
+		})
 });
 
 app.post('/addForum', async (req, res) => {
-	res.json({});
+	const userID =req.body.user;
+	const gameID = req.body.game;
+	const title = req.body.title;
+	const text = req.body.text;
+	const picture = req.body.picture;
+
+	db.query( "INSERT INTO Fourm (userID, gameID, title, text, picture) VALUES(?,?,?,?)", [userID, gameID, title, text, picture], (error, result) =>{
+			
+			console.log("error is " + JSON.stringify(error));
+			console.log("results are " + result);
+			
+
+
+
+			// if (JSON.stringify(error).indexOf("username_UNIQUE") >0 ){
+			// 	return res.send("error");
+	
+			// }
+
+			// else if (JSON.stringify(error).indexOf("email_UNIQUE") >0 ){
+			// 	return res.send("error2");
+	
+			// }
+	
+			// else{
+			// 	return res.send("ok");
+			// }
+	
+		})
 });
 
 
