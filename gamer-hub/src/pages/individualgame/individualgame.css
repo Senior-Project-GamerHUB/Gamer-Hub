@@ -22,7 +22,7 @@
     background-color: rgb(48, 46, 52);
     border-radius:15px;
     margin-left: 100px;
-    margin-bottom: 650px;
+    margin-bottom: 1000px;
     padding: 20px;
 
     
@@ -80,30 +80,27 @@ p{
     margin-top: 50px;
     align-items: center;
     width: 150px;
-    /* Set initial background color */
-    background-color: #ffffff; /* Replace with your desired initial color */
-    /* Add transition for a smooth color change */
+  
+    background-color: #ffffff; 
     transition: background-color 0.3s ease;
 }
 
 .btn3:hover {
-    /* Change background color on hover */
-    background-color: #800080; /* Replace with your desired hover color (purple in this case) */
+   
+    background-color: #800080; 
 }
 
 .btnForum {
     margin-left: 70px;
     margin-top: 20px;
     width: 150px;
-    /* Set initial background color */
-    background-color: #ffffff; /* Replace with your desired initial color */
-    /* Add transition for a smooth color change */
+    background-color: #ffffff; 
     transition: background-color 0.3s ease;
 }
 
 .btnForum:hover {
-    /* Change background color on hover */
-    background-color: #800080; /* Replace with your desired hover color (purple in this case) */
+   
+    background-color: #800080; 
 }
 
 .completion{

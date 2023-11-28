@@ -354,7 +354,7 @@ app.post('/addReview', async (req, res) => {
 });
 
 app.post('/addForum', async (req, res) => {
-	const userID =req.body.user;
+	const userID = req.body.user;
 	const gameID = req.body.game;
 	const title = req.body.title;
 	const text = req.body.text;
@@ -367,7 +367,7 @@ app.post('/addForum', async (req, res) => {
 			
 			// if (JSON.stringify(error).indexOf("username_UNIQUE") >0 ){
 			// 	return res.send("error");
-	
+	  
 			// }
 
 			// else if (JSON.stringify(error).indexOf("email_UNIQUE") >0 ){

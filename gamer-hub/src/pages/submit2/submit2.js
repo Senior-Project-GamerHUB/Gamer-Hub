@@ -38,6 +38,7 @@ const Submit2 = () => {
       const [difficulty, setDifficulty] = useState(0); 
       const [rating, setRating] = useState(0);
       const [worthPrice, setWorthPrice] = useState(0);
+      const [reviewText, setReviewText] = useState('');
 
       //When Selected
       // ...
@@ -83,10 +84,11 @@ const Submit2 = () => {
         setSelectedWorthPrice(value);
       }
 
-     
+      const handleReviewTextChange = (e) => {
+        setReviewText(e.target.value);
+      };
     
 
-      
       const areAllFieldsFilled = () => {
         return (
           playtimeHours !== '' &&
@@ -95,32 +97,42 @@ const Submit2 = () => {
           rating !== 0 &&
           completionStatus !== 0 &&
           difficulty !== 0 &&
-          worthPrice !== 0
+          worthPrice !== 0 
+          
         );
       };
-
-      const handleButtonClick = () => {
+      const handleButtonClick = async () => {
         if (!areAllFieldsFilled()) {
           alert('Please fill in all required fields.');
           return;
         }
-      
+    
         // If all fields are filled, proceed with the submission
-        handleSubmit();
+        await handleSubmit();
+    
+        // Redirect to the home page
+        window.location.href = '/home';
+    
+        // Show a thank you message
+        alert('Thank you for your review!');
       };
       
       const handleSubmit = async () => {
-        // Remove the (e) parameter as it's not used
         const playtime = `${playtimeHours} hours ${playtimeMinutes} minutes ${playtimeSeconds}`;
       
         try {
-          const response = await axios.post('YOUR_BACKEND_API_ENDPOINT', {
-            playtime,
-            rating,
-            completionStatus,
-            difficulty,
-            worthPrice,
-            // Include any other relevant data
+          const response = await axios.post('/addReview', {
+            user: 'replace_with_actual_user_id', // Replace with actual user ID
+            game: appid,  
+            title: 'replace_with_actual_title', // Replace with actual title
+            text: reviewText,   
+            playtime_hour: playtimeHours,
+            playtime_minutes: playtimeMinutes,
+            playtime_seconds: playtimeSeconds,
+            review: rating,
+            completion_status: completionStatus,
+            difficulty: difficulty,
+            worth_the_price: worthPrice,
           });
       
           console.log('Review submitted successfully:', response.data);
@@ -300,6 +312,17 @@ const Submit2 = () => {
                 </div>
               </div>
 
+              <div className="question">
+              <label htmlFor="reviewText">Review:</label>
+                <textarea
+                  id="reviewText"
+                  name="reviewText"
+                  value={reviewText}
+                  onChange={handleReviewTextChange}
+                  placeholder="Write your review here..."
+                />
+            
+              </div>
 
               <button
                   className="submit"
