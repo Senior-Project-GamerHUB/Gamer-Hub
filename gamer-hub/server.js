@@ -103,9 +103,6 @@ app.post('/signup', async(req, res)=>{
 			
 			console.log("error is " + JSON.stringify(error));
 			console.log("results are " + result);
-			
-
-
 
 			if (JSON.stringify(error).indexOf("username_UNIQUE") >0 ){
 				return res.send("error");
@@ -138,7 +135,7 @@ app.post('/login', (req, res)=>{
 	db.query(dbsql, [req.body.email], async(err,data)=>{
 		if(err) return res.json(err);
 		let compare = await bcrypt.compare(JSON.stringify(req.body.password), data[0].password);
-		if(data.length > 0){
+		if(compare === true){
 			return res.json("Login Successfull")
 		}else{
 			return res.json("No such Record")
@@ -169,7 +166,7 @@ app.get('/getSteamReview', async (req, res) => {
 	(async () => {
 		const response = await fetch(`http://api.steampowered.com/ISteamApps/GetAppList/v0002/?key=${key}&format=json`);
 		const data = await response.json();
-		index = data["applist"]["apps"].map(function(e) {return e.name;}).indexOf('ELDEN RING');
+		index = data["applist"]["apps"].map(function(e) {return e.name;}).indexOf(JSON.stringify(req.body.game_name));
 		res.send(data["applist"]["apps"][index]);
 		appid = data["applist"]["apps"][index]["appid"];
 		res.send(SteamGameData(appid));
@@ -201,9 +198,6 @@ app.post('/addReview', async (req, res) => {
 			
 			console.log("error is " + JSON.stringify(error));
 			console.log("results are " + result);
-			
-
-
 
 			// if (JSON.stringify(error).indexOf("username_UNIQUE") >0 ){
 			// 	return res.send("error");
@@ -234,9 +228,6 @@ app.post('/addForum', async (req, res) => {
 			console.log("error is " + JSON.stringify(error));
 			console.log("results are " + result);
 			
-
-
-
 			// if (JSON.stringify(error).indexOf("username_UNIQUE") >0 ){
 			// 	return res.send("error");
 	
