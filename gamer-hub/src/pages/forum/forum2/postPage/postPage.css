@@ -1,0 +1,62 @@
+.thread-box{
+    justify-content: center;
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: rgb(80, 80, 80);
+    padding: 10px;
+    width: 1000px;
+    border-radius: 2px;
+    
+}
+
+
+
+.backgroundPost{
+    justify-content: center;
+    background-color:rgb(37, 6, 56);
+    color: white;
+    height: auto;
+    width: auto;
+    min-height: 150vh;
+
+}
+
+.submitComment{
+    width: 500px;
+}
+
+.comments-section{
+    justify-content: center;
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: rgb(80, 80, 80);
+    padding: 10px;
+    width: 1000px;
+    border-radius: 2px;
+    margin-bottom: 200px;
+    width: 1000px;
+    height: auto;
+  
+}
+
+.comments-title{
+    margin-bottom: 20px;
+}
+
+.comment-box p {
+    margin: 0;
+    word-wrap: break-word; /* Wrap long words to the next line */
+    overflow-wrap: break-word; /* For non-firefox browsers */
+    white-space: pre-wrap; /* Wrap the text to the next line at the end of a word */
+    
+}
+  
+.comment-box {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+    overflow: hidden; /* Ensure content stays within the box */
+}
+

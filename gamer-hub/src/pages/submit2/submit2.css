@@ -140,3 +140,15 @@
   .star.filled {
     color: gold; /* Color of filled stars */
   }
+
+  .question textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 8px;
+    resize: vertical;
+  }
+  
+  .question label {
+    display: block;
+    margin-top: 8px;
+  }

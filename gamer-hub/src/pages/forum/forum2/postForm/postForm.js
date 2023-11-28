@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import './postForm.css'; // Create a separate CSS file for styling
+import './postForm.css'; 
 
-const PostForm = ({ onPostSubmit }) => {
+const PostForm = ({ onPostSubmit, gameID, userID }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
@@ -15,8 +15,17 @@ const PostForm = ({ onPostSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     // Perform validation or additional checks if needed
-    onPostSubmit({ title, content });
+
+    // Call the onPostSubmit callback with the necessary data
+    onPostSubmit({
+      title,
+      content,
+      gameID,
+      userID,
+    });
+
     // Reset the form after submission
     setTitle('');
     setContent('');

@@ -19,13 +19,17 @@ const Forum2 = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get(`/api/posts/${gameData?.id}`);
+        const response = await axios.get(`/api/posts`, {
+          params: {
+            gameID: gameData?.id, // Include the gameID as a query parameter
+          },
+        });
         setPosts(response.data);
       } catch (error) {
         console.error('Error fetching posts: ', error);
       }
     };
-
+  
     if (gameData) {
       fetchPosts();
     }

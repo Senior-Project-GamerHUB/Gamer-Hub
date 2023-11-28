@@ -138,35 +138,51 @@ const Profile = () => {
              
             </div>
             <div className="col-lg-8">
-              <div className="card mb-4">
+            
+            <div className="card mb-4">
+          <div className="card-body">
+            <div className="row border-bottom mb-2" style={{ padding: '8px 0' }}>
+              <div className="col-sm-9">
+                <p className="text-muted mb-0 text-left">FullName: {user_name}</p>
+              </div>
+            </div>
+            <div className="row border-bottom mb-2" style={{ padding: '8px 0' }}>
+              <div className="col-sm-9">
+                <p className="text-muted mb-0 text-left">Username: {userLog}</p>
+              </div>
+            </div>
+            <div className="row border-bottom mb-2" style={{ padding: '8px 0' }}>
+              <div className="col-sm-9">
+                <p className="text-muted mb-0 text-left"> Email: {/* userEmail */}</p>
+              </div>
+            </div>
+            <div className="row mb-2" style={{ padding: '8px 0' }}>
+              <div className="col-sm-9">
+                <p className="text-muted mb-0 text-left">Password: {/* userPass */}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+          <div className="row">
+            <div className="col-md-6">
+              <div className="card mb-4 mb-md-0">
+              <h5 style={{ display: 'inline', color: 'black' }}>Saved Games</h5>
                 <div className="card-body">
-                  <div className="row">
-                    <div className="col-sm-3">
-                      <p className="mb-0">Full Name</p>
-                    </div>
-                    <div className="col-sm-9">
-                      <p className="text-muted mb-0">{user_name}</p>
-                    </div>
-                  </div>
-                  {/* ... Other rows and content */}
+                  {/* ... Card content with inline styles */}
                 </div>
               </div>
-              <div className="row">
-                <div className="col-md-6">
-                  <div className="card mb-4 mb-md-0">
-                    <div className="card-body">
-                      {/* ... Card content with inline styles */}
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="card mb-4 mb-md-0">
-                    <div className="card-body">
-                      {/* ... Card content with inline styles */}
-                    </div>
-                  </div>
+            </div>
+            <div className="col-md-6">
+              <div className="card mb-4 mb-md-0">
+              <h5 style={{ display: 'inline', color: 'black' }}>Reviewed Games</h5>
+                <div className="card-body">
+                  {/* ... Card content with inline styles */}
                 </div>
               </div>
+            </div>
+            </div>
             </div>
           </div>
         </div>
