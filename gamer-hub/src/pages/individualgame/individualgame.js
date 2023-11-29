@@ -73,14 +73,18 @@ const IndividualGame = () => {
                 {gameData.stores && gameData.stores.length > 0 && (
                   <div>
                     <h5>Available at:</h5>
-                    {gameData.stores.map((store) => (
-                        <li key={store.store.id}>
-                          <a href={store.url} target="_blank" rel="noopener noreferrer">
-                            {store.store.name}
-                          </a>
-                        </li>
-                      ))}
-                
+                    <ul>
+                      {gameData.stores.map((store) => {
+                        console.log('Store URL:', store.url);
+                        return (
+                          <li key={store.store.id}>
+                            <a href={store.url} rel="noopener noreferrer" target="_blank">
+                              {store.store.name}
+                            </a>
+                          </li>
+                        );
+                      })}
+                    </ul>
                   </div>
                 )}
               </div>

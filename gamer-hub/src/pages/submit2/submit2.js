@@ -11,7 +11,7 @@ const Submit2 = () => {
     
       const [gameData, setGameData] = useState(null);
       const { appid } = useParams();
-    
+     
     
       useEffect(() => {
         const fetchGameDetails = async () => {
@@ -122,9 +122,9 @@ const Submit2 = () => {
       
         try {
           const response = await axios.post('/addReview', {
-            user: 'replace_with_actual_user_id', // Replace with actual user ID
+            user: '',
             game: appid,  
-            title: 'replace_with_actual_title', // Replace with actual title
+            title: gameData.name, 
             text: reviewText,   
             playtime_hour: playtimeHours,
             playtime_minutes: playtimeMinutes,
@@ -136,10 +136,10 @@ const Submit2 = () => {
           });
       
           console.log('Review submitted successfully:', response.data);
-          // You can show a success message or redirect the user after a successful submission
+         
         } catch (error) {
           console.error('Error submitting review: ', error);
-          // Handle error (e.g., show an error message to the user)
+       
         }
       };
     
