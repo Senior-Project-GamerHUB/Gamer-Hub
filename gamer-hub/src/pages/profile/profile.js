@@ -95,99 +95,97 @@ const Profile = () => {
 
   return (
     <div className="profile-background">
-      <section className="page-top-section set-bg" style={heroStyle}>
-        <div className="page-info">
-          <h2>Profile</h2>
-          <div className="site-breadcrumb">
-            <Link to="/home">Home</Link> /
-            <span>Profile</span>
-          </div>
+    <section className="page-top-section set-bg" style={heroStyle}>
+      <div className="page-info">
+        <h2 style={{ color: 'white' }}>Profile</h2>
+        <div className="site-breadcrumb">
+          <Link to="/home" style={{ color: 'white' }}>Home</Link> /
+          <span style={{ color: 'white' }}>Profile</span>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section>
-        <div className="container py-5">
-          <div className="row">
-            <div className="col-lg-4">
-              <div className="card mb-4">
-                <div className="card-body text-center">
-                  <label htmlFor="profilePictureInput" className="profile-picture-label">
-                    <img
-                      src={profilePicture || userData?.avatar || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp'}
-                      alt="avatar"
-                      className="rounded-circle img-fluid"
-                      style={{ width: '150px', cursor: 'pointer' }}
-                    />
-                  </label>
-                  <input
-                    id="profilePictureInput"
-                    type="file"
-                    accept="image/*"
-                    style={{ display: 'none' }}
-                    onChange={handleProfilePictureChange}
+    <section>
+      <div className="container py-5">
+        <div className="row">
+          <div className="col-lg-4">
+            <div className="card mb-4" style={{ backgroundColor: 'rgb(48, 46, 52)' }}>
+              <div className="card-body text-center">
+                <label htmlFor="profilePictureInput" className="profile-picture-label">
+                  <img
+                    src={profilePicture || userData?.avatar || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp'}
+                    alt="avatar"
+                    className="rounded-circle img-fluid"
+                    style={{ width: '150px', cursor: 'pointer' }}
                   />
-                  <h5 className="my-3">{userLog}</h5>
+                </label>
+                <input
+                  id="profilePictureInput"
+                  type="file"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={handleProfilePictureChange}
+                />
+                <h5 className="my-3" style={{ color: 'white' }}>{userLog}</h5>
+              </div>
+            </div>
+
+            <div className="d-flex justify-content-center mb-2">
+              <button type="button" className="btnlogout btn-danger" onClick={handleSubmit} style={{ color: 'white' }}>
+                Log Out
+              </button>
+            </div>
+          </div>
+
+          <div className="col-lg-8">
+            <div className="card mb-4" style={{ backgroundColor: 'rgb(48, 46, 52)' }}>
+              <div className="card-body" style={{ backgroundColor: 'rgb(48, 46, 52)', color: 'white' }}>
+                <div className="row border-bottom mb-2" style={{ padding: '8px 0' }}>
+                  <div className="col-sm-9">
+                    <p  style={{ color: 'white' }}>FullName: {user_name}</p>
+                  </div>
+                </div>
+                <div className="row border-bottom mb-2" style={{ padding: '8px 0' }}>
+                  <div className="col-sm-9">
+                    <p style={{ color: 'white' }}>Username: {userLog}</p>
+                  </div>
+                </div>
+                <div className="row border-bottom mb-2" style={{ padding: '8px 0' }}>
+                  <div className="col-sm-9">
+                    <p style={{ color: 'white' }}> Email: {/* userEmail */}</p>
+                  </div>
+                </div>
+                <div className="row mb-2" style={{ padding: '8px 0' }}>
+                  <div className="col-sm-9">
+                    <p style={{ color: 'white' }}>Password: {/* userPass */}</p>
+                  </div>
                 </div>
               </div>
-             
-              <div className="d-flex justify-content-center mb-2">
-                  <button type="button" className="btnlogout btn-danger" onClick= {handleSubmit}>
-                    Log Out
-                  </button>
-              </div>
-             
             </div>
-            <div className="col-lg-8">
-            
-            <div className="card mb-4">
-          <div className="card-body">
-            <div className="row border-bottom mb-2" style={{ padding: '8px 0' }}>
-              <div className="col-sm-9">
-                <p className="text-muted mb-0 text-left">FullName: {user_name}</p>
+
+            <div className="row">
+              <div className="col-md-6">
+                <div className="card mb-4 mb-md-0" style={{ backgroundColor: 'rgb(48, 46, 52)' }}>
+                  <h5 style={{ display: 'inline', color: 'white' }}>Saved Games</h5>
+                  <div className="card-body">
+                    {/* ... Card content with inline styles */}
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="row border-bottom mb-2" style={{ padding: '8px 0' }}>
-              <div className="col-sm-9">
-                <p className="text-muted mb-0 text-left">Username: {userLog}</p>
-              </div>
-            </div>
-            <div className="row border-bottom mb-2" style={{ padding: '8px 0' }}>
-              <div className="col-sm-9">
-                <p className="text-muted mb-0 text-left"> Email: {/* userEmail */}</p>
-              </div>
-            </div>
-            <div className="row mb-2" style={{ padding: '8px 0' }}>
-              <div className="col-sm-9">
-                <p className="text-muted mb-0 text-left">Password: {/* userPass */}</p>
+              <div className="col-md-6">
+                <div className="card mb-4 mb-md-0" style={{ backgroundColor: 'rgb(48, 46, 52)' }}>
+                  <h5 style={{ display: 'inline', color: 'white' }}>Reviewed Games</h5>
+                  <div className="card-body">
+                    {/* ... Card content with inline styles */}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-
-          <div className="row">
-            <div className="col-md-6">
-              <div className="card mb-4 mb-md-0">
-              <h5 style={{ display: 'inline', color: 'black' }}>Saved Games</h5>
-                <div className="card-body">
-                  {/* ... Card content with inline styles */}
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6">
-              <div className="card mb-4 mb-md-0">
-              <h5 style={{ display: 'inline', color: 'black' }}>Reviewed Games</h5>
-                <div className="card-body">
-                  {/* ... Card content with inline styles */}
-                </div>
-              </div>
-            </div>
-            </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
+      </div>
+    </section>
+  </div>
   );
 };
 
