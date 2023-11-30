@@ -10,6 +10,7 @@ const SteamStrategy = passportSteam.Strategy;
 const axios = require('axios');
 const cookieParser = require('cookie-parser');
 const bodyParser = require("body-parser");
+const validator = require('node-email-validation');
 
 
 const port = process.env.PORT || 8080;
@@ -183,7 +184,17 @@ app.post('/signup', async(req, res)=>{
 
 	const name_user =req.body.name;
 	const username = req.body.username;
-	const email = req.body.email;
+	var email = null;
+	var email_error = false;
+	const response = await axios.get(`https://api.kickbox.com/v2/verify?email=${req.body.email}&apikey=test_11f4118a926d868891e1da3905508635401c858fef8825da564e3c17250a918d`)
+	const data = await response.data;
+	console.log(data);
+	if(data.success != true) {
+		email_error = true;
+	} else {
+		email = req.body.email;
+	}
+	
 	const password = await bcrypt.hash(JSON.stringify(req.body.password), 10);
 
 
@@ -201,7 +212,21 @@ app.post('/signup', async(req, res)=>{
 				return res.send("error2");
 	
 			}
-	
+
+			else if (email_error == true){
+				return res.send("error4");
+			} 
+			
+			else if(JSON.stringify(error).indexOf("cannot be null") >0 ){
+				// var indexNum = JSON.stringify(error).indexOf("Column") + 8;
+				// let string = "";
+				// for(let i = indexNum; JSON.stringify(error)[i] != "'"; i++){
+				// 	string += JSON.stringify(error)[i];
+				// }
+				// console.log("String: "+ string)
+				return res.send("error3");
+			} 
+
 			else{
 				return res.send("ok");
 			}
@@ -220,25 +245,16 @@ app.post('/signup', async(req, res)=>{
 
 // login checker to database
 app.post('/login', (req, res)=>{
-
-	// let compare = await bcrypt.compare(req.body.password, hash);
-	// res.render('passwordResult', {
-	// 	password: req.body.password,
-	// 	hash: hash,
-	// 	compare: compare
-	// });
 	
-	
-	const dbsql = "SELECT * FROM users WHERE email = ? AND password = ?";
+	const dbsql = "SELECT * FROM users WHERE email = ?";
 	const values = [
 		req.body.email,
 		req.body.password
 	]
 
 
-	db.query(dbsql, [req.body.email, req.body.password], async(err,data)=>{
+	db.query(dbsql, [req.body.email], async(err,data)=>{
 		if(err) return res.json(err);
-
 		if(data.length > 0){
 			console.log(data);
 			const SESS = data[0].user_id;
@@ -251,13 +267,14 @@ app.post('/login', (req, res)=>{
 
 
 
-		//let compare = await bcrypt.compare(JSON.stringify(req.body.password), data[0].password);
-		//if(compare === true){
+		let compare = await bcrypt.compare(JSON.stringify(req.body.password), data[0].password);
+		if(compare === true){
 			return res.json("Login Successfull")
 
 		}else{
 			return res.json("No such Record")
 		}
+	}
 	})
 })
 
@@ -299,7 +316,7 @@ app.get('/api/auth/steam/return', passport.authenticate('steam', {failureRedirec
 // 	res.send(await SteamGameReview(220));
 // });
 
-app.get('/getSteamReview', async (req, res) => {
+app.post('/getSteamReview', async (req, res) => {
 	(async () => {
 		const response = await fetch(`http://api.steampowered.com/ISteamApps/GetAppList/v0002/?key=${key}&format=json`);
 		const data = await response.json();

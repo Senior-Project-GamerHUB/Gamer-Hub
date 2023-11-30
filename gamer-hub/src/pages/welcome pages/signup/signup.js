@@ -26,12 +26,17 @@ const SignUp = () => {
     
     const [emailTaken, setEmailTaken] = useState("");
 
+    const [emptyString, setEmptyString] = useState("");
+    const [invalidEmail, setInvalidEmail] = useState("");
+
 
     const handleInput = (event) =>{
         setValues(prev => ({...prev, [event.target.name]: [event.target.value]}))
         console.log(event.target.name, event.target.value);
         setUsernameTaken("");
         setEmailTaken("");
+        setEmptyString("");
+        setInvalidEmail("");
         
 
     }
@@ -58,6 +63,7 @@ const SignUp = () => {
                       });
                     setUsernameTaken("");
                     setEmailTaken("");
+                    setEmptyString("");
                 }
                 
                 else if(res.data =='error'){
@@ -77,6 +83,22 @@ const SignUp = () => {
                         text: "That Email was Used already!",
                       });
                     setEmailTaken("Email Used Already");
+                }
+                else if(res.data == "error3"){
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Empty Form",
+                      });
+                      setEmptyString("Can't leave form empty (Email, Password, Name, or Username)");
+                }
+                else if(res.data == "error4"){
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Email Invalid",
+                      });
+                      setInvalidEmail("Email is invalid");
                 }
 
 
