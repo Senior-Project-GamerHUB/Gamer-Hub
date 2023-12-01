@@ -12,28 +12,10 @@ const Forum2 = () => {
 
   const [gameData, setGameData] = useState(null);
   const { appid } = useParams();
-
-  const [posts, setPosts] = useState([]);
   const [showPostForm, setShowPostForm] = useState(false);
+  const [userid, setUserID] = useState([]);
+  const [forumPosts, setForumPosts] = useState([]);
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await axios.get(`/api/posts`, {
-          params: {
-            gameID: gameData?.id, // Include the gameID as a query parameter
-          },
-        });
-        setPosts(response.data);
-      } catch (error) {
-        console.error('Error fetching posts: ', error);
-      }
-    };
-  
-    if (gameData) {
-      fetchPosts();
-    }
-  }, [gameData]);
 
   useEffect(() => {
     const fetchGameDetails = async () => {
@@ -53,16 +35,51 @@ const Forum2 = () => {
     fetchGameDetails();
   }, [appid]);
 
-  const handlePostSubmit = (newPost) => {
-    // You can perform actions with the new post data, such as sending it to the server
-    console.log('New Post:', newPost);
+    axios.get('http://localhost:8080/loggedIn', {withCredentials: true})
+    .then(res => {
+        setUserID(res.data[0].user_id);
+    })
+    .catch(err => console.log(err));
 
-    // For this example, just updating the state with the new post
-    setPosts((prevPosts) => [...prevPosts, newPost]);
-    // Hide the post form after submission
-    setShowPostForm(false);
-  };
+   
+    const handlePostSubmit = async (newPost) => {
+      try {
+        const response = await axios.post('http://localhost:8080/addForum', {
+          user: userid,
+          game: appid,
+          title: newPost.title,
+          text: newPost.content,
+        });
+  
+        console.log('Server response:', response.data);
+  
+        setForumPosts((prevForumPosts) => [...prevForumPosts, response.data]);
+  
+        setShowPostForm(false);
+  
+      } catch (error) {
+        console.error('Error submitting post:', error);
+        // Handle error, e.g., display an error message to the user
+      }
+    };
+  
 
+  useEffect(() => {
+    const fetchForumPosts = async () => {
+      try {
+        console.log('Fetching forum posts for gameID:', appid);
+        const response = await axios.get(`http://localhost:8080/getForumPosts`);
+        console.log('Fetched forum posts:', response.data);
+        setForumPosts(response.data);
+      } catch (error) {
+        console.error('Error fetching forum posts:', error);
+      }
+    };
+
+    fetchForumPosts();
+  }, [appid]);
+
+  
   return (
     <div>
       <section className="page-top-section set-bg" style={heroStyle}>
@@ -118,15 +135,19 @@ const Forum2 = () => {
 
           {showPostForm && (
           <div>
-            {/* Render the PostForm component */}
+
             <PostForm onPostSubmit={handlePostSubmit} />
           </div>
           )}
 
-          {posts.map((post) => (
-            // Use the PostCard component here
-            <PostCard key={post.id} post={post} />
+          {forumPosts.map((post) => (
+            <PostCard key={post.post_id} post={post} />
           ))}
+
+
+        
+
+          
 
         </div>
       </div>

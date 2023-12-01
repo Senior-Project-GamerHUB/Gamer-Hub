@@ -2,6 +2,7 @@ import React, { useEffect, useState} from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import './submit2.css'
+import { useNavigate } from 'react-router-dom';
 
 
 const Submit2 = () => {
@@ -87,62 +88,74 @@ const Submit2 = () => {
       const handleReviewTextChange = (e) => {
         setReviewText(e.target.value);
       };
+      
     
+      const [userid, setUserID] = useState([]);
+      const navigate = useNavigate();
 
-      const areAllFieldsFilled = () => {
-        return (
-          playtimeHours !== '' &&
-          playtimeMinutes !== '' &&
-          playtimeSeconds !== '' &&
-          rating !== 0 &&
-          completionStatus !== 0 &&
-          difficulty !== 0 &&
-          worthPrice !== 0 
-          
-        );
-      };
-      const handleButtonClick = async () => {
-        if (!areAllFieldsFilled()) {
-          alert('Please fill in all required fields.');
-          return;
-        }
-    
-        // If all fields are filled, proceed with the submission
-        await handleSubmit();
-    
-        // Redirect to the home page
-        window.location.href = '/home';
-    
-        // Show a thank you message
-        alert('Thank you for your review!');
-      };
-      
-      const handleSubmit = async () => {
-        const playtime = `${playtimeHours} hours ${playtimeMinutes} minutes ${playtimeSeconds}`;
-      
-        try {
-          const response = await axios.post('/addReview', {
-            user: '',
-            game: appid,  
-            title: gameData.name, 
-            text: reviewText,   
-            playtime_hour: playtimeHours,
-            playtime_minutes: playtimeMinutes,
-            playtime_seconds: playtimeSeconds,
-            review: rating,
-            completion_status: completionStatus,
-            difficulty: difficulty,
-            worth_the_price: worthPrice,
-          });
-      
-          console.log('Review submitted successfully:', response.data);
-         
-        } catch (error) {
-          console.error('Error submitting review: ', error);
-       
-        }
-      };
-    
+      axios.get('http://localhost:8080/loggedIn', {withCredentials: true})
+      .then(res => {
+          setUserID(res.data[0].user_id);
+      })
+      .catch(err => console.log(err));
+
+
+  const handleSubmit = async () => {
+    const playtime = `${playtimeHours} hours ${playtimeMinutes} minutes ${playtimeSeconds}`;
+
+    try {
+     
+      const response = await axios.post('http://localhost:8080/addReview', {
+        user: userid,
+        game: appid,
+        title: gameData.name,
+        text: reviewText,
+        playtime_hour: playtimeHours,
+        playtime_minutes: playtimeMinutes,
+        playtime_seconds: playtimeSeconds,
+        review: rating,
+        completion_status: completionStatus,
+        difficulty: difficulty,
+        worth_the_price: worthPrice,
+      });
+
+      console.log('Review submitted successfully:', response.data);
+    } catch (error) {
+      console.error('Error submitting review: ', error);
+    }
+  };
+
+  const areAllFieldsFilled = () => {
+    return (
+      playtimeHours !== '' &&
+      playtimeMinutes !== '' &&
+      playtimeSeconds !== '' &&
+      rating !== 0 &&
+      completionStatus !== 0 &&
+      difficulty !== 0 &&
+      worthPrice !== 0
+    );
+  };
+
+  const handleButtonClick = async (e) => {
+    e.preventDefault(); // Add this line
+  
+    if (!areAllFieldsFilled()) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+  
+    // If all fields are filled and userId is available, proceed with the submission
+    await handleSubmit();
+
+
+
+    // Show a thank you message
+    alert('Thank you for your review!');
+   
+    navigate('/home');
+  };
+
       return (
         <div>
           <section className="page-top-section set-bg" style={heroStyle}>
