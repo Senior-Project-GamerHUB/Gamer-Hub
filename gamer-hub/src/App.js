@@ -63,7 +63,7 @@ const router = createBrowserRouter([
         element: <Forum2/>,
       },
       {
-        path: '/forum/post/:appid',
+        path: '/forum/post/:postid',
         element: <Post/>,
       },
       {

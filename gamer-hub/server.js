@@ -318,7 +318,7 @@ app.post('/addNewGame', async (req, res) => {
 });
 
 app.post('/addReview', async (req, res) => {
-	const userID =req.body.user;
+	const userID = req.body.user;
 	const gameID = req.body.game;
 	const votes = req.body.title;
 	const review = req.body.text;
@@ -329,57 +329,96 @@ app.post('/addReview', async (req, res) => {
 	const comp_status = req.body.completion_status;
 	const difficulty = req.body.difficulty;
 	const wtp = req.body.worth_the_price;
+  
+	db.query(
+	  "INSERT INTO Review (userID, gameID, vote_up_num, review, playtime_hour, playtime_minutes, playtime_seconds, rating, comp_status, difficulty, wtp) VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+	  [userID, gameID, votes, review, playtime_h, playtime_m, playtime_s, rating, comp_status, difficulty, wtp],
+	  (error, result) => {
+		console.log("error is " + JSON.stringify(error));
+		console.log("results are " + result);
+  
+		// Handle the response or send it back to the client
+		if (error) {
+		  res.status(500).send("Error inserting review.");
+		} else {
+		  res.status(200).send("Review inserted successfully.");
+		}
+	  }
+	);
+  });
+app.get('/getReviews', async (req, res) => {
+	try {
+	  // Perform a query to fetch reviews from the database
+	  db.query("SELECT * FROM Review", (error, result) => {
+		if (error) {
+		  console.error("Error fetching reviews:", error);
+		  return res.status(500).json({ error: "Internal Server Error" });
+		}
+  
+		// Send the retrieved reviews as a JSON response
+		res.json(result);
+	  });
+	} catch (error) {
+	  console.error("Unexpected error:", error);
+	  res.status(500).json({ error: "Internal Server Error" });
+	}
+  });
 
-	db.query( "INSERT INTO Review (userID, gameID, vote_up_num, review, playtime_hour, playtime_minutes, playtime_seconds, rating, comp_status, difficulty, wtp) VALUES(?,?,?,?,?,?,?,?,?,?,?)", 
-	[userID, gameID, votes, review, playtime_h, playtime_m, playtime_s, rating, comp_status, difficulty, wtp], (error, result) =>{
-			
-			console.log("error is " + JSON.stringify(error));
-			console.log("results are " + result);
 
-			// if (JSON.stringify(error).indexOf("username_UNIQUE") >0 ){
-			// 	return res.send("error");
-	
-			// }
-
-			// else if (JSON.stringify(error).indexOf("email_UNIQUE") >0 ){
-			// 	return res.send("error2");
-	
-			// }
-	
-			// else{
-			// 	return res.send("ok");
-			// }
-	
-		})
-});
-
-app.post('/addForum', async (req, res) => {
+  app.post('/addForum', async (req, res) => {
 	const userID = req.body.user;
 	const gameID = req.body.game;
 	const title = req.body.title;
 	const text = req.body.text;
-	const picture = req.body.picture;
+  
+	db.query(
+	  'INSERT INTO Forum (userID, gameID, title, text) VALUES (?, ?, ?, ?)',
+	  [userID, gameID, title, text],
+	  (error, result) => {
+		if (error) {
+		  console.error('Error adding forum post:', error);
+		  
+		  // Check if it's a duplicate entry error
+		  if (error.code === 'ER_DUP_ENTRY') {
+			return res.status(400).json({ error: 'Duplicate entry for user and game' });
+		  } else {
+			return res.status(500).json({ error: 'Internal Server Error' });
+		  }
+		}
+  
+		// Assuming your backend sends back the inserted post data
+		const insertedPost = {
+		  post_id: result.insertId,
+		  user_id: userID,
+		  game_id: gameID,
+		  title: title,
+		  text: text,
+		  created_at: new Date(), // You might want to adjust this based on your actual schema
+		  // Add other properties as needed
+		};
+  
+		// Send the inserted post data as a JSON response
+		res.json(insertedPost);
+	  }
+	);
+  });
 
-	db.query( "INSERT INTO Fourm (userID, gameID, title, text, picture) VALUES(?,?,?,?)", [userID, gameID, title, text, picture], (error, result) =>{
-			
-			console.log("error is " + JSON.stringify(error));
-			console.log("results are " + result);
-			
-			// if (JSON.stringify(error).indexOf("username_UNIQUE") >0 ){
-			// 	return res.send("error");
-	  
-			// }
-
-			// else if (JSON.stringify(error).indexOf("email_UNIQUE") >0 ){
-			// 	return res.send("error2");
-	
-			// }
-	
-			// else{
-			// 	return res.send("ok");
-			// }
-	
-		})
+app.get('/getForumPosts', async (req, res) => {
+	try {
+	  // Perform a query to fetch forum posts from the database
+	  db.query("SELECT * FROM Forum", (error, result) => {
+		if (error) {
+		  console.error("Error fetching forum posts:", error);
+		  return res.status(500).json({ error: "Internal Server Error" });
+		}
+  
+		// Send the retrieved forum posts as a JSON response
+		res.json(result);
+	  });
+	} catch (error) {
+	  console.error("Unexpected error:", error);
+	  res.status(500).json({ error: "Internal Server Error" });
+	}
 });
 
 

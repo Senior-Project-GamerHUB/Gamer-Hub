@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './postForm.css'; 
 
-const PostForm = ({ onPostSubmit, gameID, userID }) => {
+const PostForm = ({ onPostSubmit, onSubmissionComplete, gameID, userID }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
@@ -13,13 +13,13 @@ const PostForm = ({ onPostSubmit, gameID, userID }) => {
     setContent(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Perform validation or additional checks if needed
 
     // Call the onPostSubmit callback with the necessary data
-    onPostSubmit({
+    await onPostSubmit({
       title,
       content,
       gameID,
@@ -29,6 +29,8 @@ const PostForm = ({ onPostSubmit, gameID, userID }) => {
     // Reset the form after submission
     setTitle('');
     setContent('');
+
+  
   };
 
   return (
