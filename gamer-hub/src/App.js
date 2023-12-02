@@ -12,7 +12,7 @@ import Submit2 from "./pages/submit2/submit2";
 import Profile from "./pages/profile/profile";
 import Forum from "./pages/forum/forum";
 import Forum2 from "./pages/forum/forum2/forum2";
-import Post from "./pages/forum/forum2/postPage/postPage";
+import PostPage from "./pages/forum/forum2/postPage/postPage";
 import NotFound from './pages/notfound/notfound';
 
 const Layout = () => {
@@ -64,7 +64,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/forum/post/:postid',
-        element: <Post/>,
+        element: <PostPage/>,
       },
       {
         path: '*', 

@@ -145,7 +145,7 @@ const Forum2 = () => {
           )}
 
           {forumPosts.map((post) => (
-            <PostCard key={post.post_id} post={post} />
+            <PostCard key={post.postID} post={{ id: post.postID, title: post.title, text: post.text }}/>
           ))}
 
 
