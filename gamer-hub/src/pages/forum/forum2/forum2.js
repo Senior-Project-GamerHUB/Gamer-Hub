@@ -59,25 +59,29 @@ const Forum2 = () => {
   
       } catch (error) {
         console.error('Error submitting post:', error);
-        // Handle error, e.g., display an error message to the user
+        
       }
     };
   
 
-  useEffect(() => {
-    const fetchForumPosts = async () => {
-      try {
-        console.log('Fetching forum posts for gameID:', appid);
-        const response = await axios.get(`http://localhost:8080/getForumPosts`);
-        console.log('Fetched forum posts:', response.data);
-        setForumPosts(response.data);
-      } catch (error) {
-        console.error('Error fetching forum posts:', error);
-      }
-    };
-
-    fetchForumPosts();
-  }, [appid]);
+    useEffect(() => {
+      const fetchForumPosts = async () => {
+        try {
+          console.log('Fetching forum posts for gameID:', appid);
+          const response = await axios.get('http://localhost:8080/getForumPosts', {
+            params: {
+              gameID: appid,
+            },
+          });
+          console.log('Fetched forum posts:', response.data);
+          setForumPosts(response.data);
+        } catch (error) {
+          console.error('Error fetching forum posts:', error);
+        }
+      };
+    
+      fetchForumPosts();
+    }, [appid]);
 
   
   return (

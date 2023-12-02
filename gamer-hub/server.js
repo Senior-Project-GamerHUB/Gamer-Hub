@@ -346,16 +346,22 @@ app.post('/addReview', async (req, res) => {
 	  }
 	);
   });
-app.get('/getReviews', async (req, res) => {
+
+  app.get('/getReviewsByGame', async (req, res) => {
 	try {
-	  // Perform a query to fetch reviews from the database
-	  db.query("SELECT * FROM Review", (error, result) => {
+	  const { gameID } = req.query;
+  
+	  if (!gameID) {
+		return res.status(400).json({ error: "Missing gameID parameter" });
+	  }
+	  console.log('Received gameID:', gameID);
+  
+	  db.query("SELECT * FROM Review WHERE gameID = ?", [gameID], (error, result) => {
 		if (error) {
 		  console.error("Error fetching reviews:", error);
 		  return res.status(500).json({ error: "Internal Server Error" });
 		}
   
-		// Send the retrieved reviews as a JSON response
 		res.json(result);
 	  });
 	} catch (error) {
@@ -386,40 +392,45 @@ app.get('/getReviews', async (req, res) => {
 		  }
 		}
   
-		// Assuming your backend sends back the inserted post data
+	
 		const insertedPost = {
 		  post_id: result.insertId,
 		  user_id: userID,
 		  game_id: gameID,
 		  title: title,
 		  text: text,
-		  created_at: new Date(), // You might want to adjust this based on your actual schema
-		  // Add other properties as needed
+		  created_at: new Date(), 
 		};
   
-		// Send the inserted post data as a JSON response
+		
 		res.json(insertedPost);
 	  }
 	);
   });
 
-app.get('/getForumPosts', async (req, res) => {
+  app.get('/getForumPosts', async (req, res) => {
 	try {
-	  // Perform a query to fetch forum posts from the database
-	  db.query("SELECT * FROM Forum", (error, result) => {
+	  const { gameID } = req.query;
+  
+	  if (!gameID) {
+		return res.status(400).json({ error: "Missing gameID parameter" });
+	  }
+	  console.log('Received gameID:', gameID);
+	 
+	  db.query("SELECT * FROM Forum WHERE gameID = ?", [gameID], (error, result) => {
 		if (error) {
 		  console.error("Error fetching forum posts:", error);
 		  return res.status(500).json({ error: "Internal Server Error" });
 		}
   
-		// Send the retrieved forum posts as a JSON response
+		
 		res.json(result);
 	  });
 	} catch (error) {
 	  console.error("Unexpected error:", error);
 	  res.status(500).json({ error: "Internal Server Error" });
 	}
-});
+  });
 
 
 app.listen(port, () => console.log(`Server listening on port ${port}`));

@@ -35,10 +35,10 @@ const Submit2 = () => {
       const [playtimeHours, setPlaytimeHours] = useState('');
       const [playtimeMinutes, setPlaytimeMinutes] = useState('');
       const [playtimeSeconds, setPlaytimeSeconds] = useState('');
-      const [completionStatus, setCompletionStatus] = useState(0); 
-      const [difficulty, setDifficulty] = useState(0); 
+      const [completionStatus, setCompletionStatus] = useState(''); 
+      const [difficulty, setDifficulty] = useState(''); 
       const [rating, setRating] = useState(0);
-      const [worthPrice, setWorthPrice] = useState(0);
+      const [worthPrice, setWorthPrice] = useState('');
       const [reviewText, setReviewText] = useState('');
 
       //When Selected
@@ -68,22 +68,23 @@ const Submit2 = () => {
         setRating(numericValue);
         setSelectedRating(value);
       };
-    
+      
 
       const handleCompletionStatusChange = (value) => {
         setCompletionStatus(value);
         setSelectedCompletionStatus(value);
       }
-
+      
       const handleDifficultyChange = (value) => {
         setDifficulty(value);
         setSelectedDifficulty(value);
       }
-
+      
       const handleWorthPriceChange = (value) => {
         setWorthPrice(value);
         setSelectedWorthPrice(value);
       }
+
 
       const handleReviewTextChange = (e) => {
         setReviewText(e.target.value);
