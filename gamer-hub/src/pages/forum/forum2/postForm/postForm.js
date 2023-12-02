@@ -16,9 +16,7 @@ const PostForm = ({ onPostSubmit, onSubmissionComplete, gameID, userID }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Perform validation or additional checks if needed
 
-    // Call the onPostSubmit callback with the necessary data
     await onPostSubmit({
       title,
       content,
@@ -26,7 +24,6 @@ const PostForm = ({ onPostSubmit, onSubmissionComplete, gameID, userID }) => {
       userID,
     });
 
-    // Reset the form after submission
     setTitle('');
     setContent('');
 

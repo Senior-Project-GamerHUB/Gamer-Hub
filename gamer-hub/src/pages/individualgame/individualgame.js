@@ -3,6 +3,7 @@ import "./individualgame.css";
 import PieApexChart from "./PieApexchart"
 import StackApexChart from "./StackApexchart"
 import DonutApexChart from "./DonutApexChart"
+import StarRating from './StarRating';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -15,6 +16,7 @@ const IndividualGame = () => {
   const [gameData, setGameData] = useState(null);
   const [savedGames, setSavedGames] = useState([]);
   const { appid } = useParams();
+  const [averageRating, setAverageRating] = useState(null);
 
   useEffect(() => {
     const fetchGameDetails = async () => {
@@ -43,6 +45,32 @@ const IndividualGame = () => {
     }
   }; 
 
+  useEffect(() => {
+    const fetchUserReviews = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/getReviewsByGame`, {
+          params: {
+            gameID: appid, // Assuming 'appid' is the game ID you want to fetch reviews for
+          },
+        });
+  
+        const reviews = response.data;
+  
+        if (reviews.length > 0) {
+          const totalRating = reviews.reduce((sum, review) => sum + review.review, 0);
+          const avgRating = totalRating / reviews.length;
+          setAverageRating(avgRating);
+        } else {
+          setAverageRating(0); // No reviews yet
+        }
+      } catch (error) {
+        console.error('Error fetching user reviews: ', error);
+      }
+    };
+  
+    fetchUserReviews();
+  }, [appid]);
+
   return (
     <div>
       <section className="page-top-section set-bg" style={heroStyle}>
@@ -69,7 +97,7 @@ const IndividualGame = () => {
                 <p>Release Date: {gameData.released || 'TBD'}</p>
                 <p>Genre: {gameData.genres && gameData.genres.map((genre) => genre.name).join(', ')}</p>
                 <p>Platforms: {gameData.platforms && gameData.platforms.map((platform) => platform.platform.name).join(', ')}</p>
-                <p>GamerHub Rating: {'Not Yet Rated'}</p>
+                <p>GamerHub Rating: {averageRating !== null ? <StarRating rating={averageRating} /> : 'Not Yet Rated'}</p>
                 {gameData.stores && gameData.stores.length > 0 && (
                   <div>
                     <h5>Available at:</h5>
