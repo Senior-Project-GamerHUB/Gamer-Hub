@@ -433,4 +433,47 @@ app.post('/addReview', async (req, res) => {
   });
 
 
+  app.get('/getPost/:postID', async (req, res) => {
+	try {
+	  const { postID } = req.params;
+  
+	  if (!postID) {
+		console.error('Missing postID parameter');
+		return res.status(400).json({ error: 'Missing postID parameter' });
+	  }
+  
+	  console.log('Received postID:', postID);
+  
+	  db.query(
+		'SELECT userID, title, text FROM Forum WHERE postID = ?',
+		[postID],
+		(error, result) => {
+		  if (error) {
+			console.error('Error fetching posts:', error);
+			return res.status(500).json({ error: 'Internal Server Error' });
+		  }
+  
+		  console.log('Fetched Forum posts from the database:', result);
+  
+		  const posts = result.map((row) => ({
+			username: row.userID,
+			title: row.title,
+			text: row.text,
+		  }));
+  
+		  console.log('Extracted posts:', posts);
+  
+		  res.json(posts);
+		}
+	  );
+	} catch (error) {
+	  console.error('Unexpected error:', error);
+	  res.status(500).json({ error: 'Internal Server Error' });
+	}
+  });
+  
+  
+
+
+
 app.listen(port, () => console.log(`Server listening on port ${port}`));
