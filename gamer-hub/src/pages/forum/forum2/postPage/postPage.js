@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import './postPage.css';
 
 const PostPage = () => {
@@ -6,17 +8,16 @@ const PostPage = () => {
     backgroundImage: 'url("https://i.redd.it/vo9vm1fcqrp71.jpg")',
   };
 
-  const post = {
-    username: 'Author',
-    date: '11-25-2023',
-    title: 'Post Title',
-    content:
-      'This is the content of the sample post. This is the content of the sample post.This is the content of the sample post.This is the content of the sample post.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu risus eget odio vehicula tincidunt non in nulla. Nullam eu libero eget metus fermentum laoreet.',
-  };
-
   const [showCommentForm, setShowCommentForm] = useState(false);
   const [newComment, setNewComment] = useState('');
   const [comments, setComments] = useState([]);
+
+  const dummyData = {
+    title: 'Title this bitch',
+    text: "Text me or I won't talk to you",
+  };
+  const [postData, setPostData] = useState(dummyData);
+  
 
   const handleAddComment = () => {
     setShowCommentForm(true);
@@ -28,20 +29,36 @@ const PostPage = () => {
 
   const handleCommentSubmit = (e) => {
     e.preventDefault();
-    // Add logic to submit the comment to the backend or store it in the state
     const submittedComment = {
-      username: 'Current User', // Replace with the actual username from your authentication system
+      username: 'Current User',
       content: newComment,
     };
     setComments((prevComments) => [...prevComments, submittedComment]);
-    // Reset the comment form
     setNewComment('');
-    // Hide the comment form after submission
     setShowCommentForm(false);
   };
 
+  const { postId } = useParams();
 
+  useEffect(() => {
+    console.log('Fetching post data for postId:', postId);
   
+    const fetchPostData = async () => {
+      try {
+        const response = await axios.get(`/getPost/${postId}`);
+        console.log('Response from server:', response.data);
+        setPostData(response.data);
+      } catch (error) {
+        console.error('Error fetching post data:', error);
+        setPostData(null);
+      }
+    };
+  
+    if (postId !== undefined && postId !== null) {
+      console.log('Calling fetchPostData');
+      fetchPostData();
+    }
+  }, [postId]);
 
   return (
     <div className="backgroundPost">
@@ -59,20 +76,25 @@ const PostPage = () => {
 
       <div className="thread-box">
         <div className="post-content">
-        <p style={{ fontFamily: 'monospace', fontSize: '16px', marginBottom: '4px' }}>{post.username}</p>
-        <p style={{ fontFamily: 'monospace', fontSize: '12px', marginTop: '0' }}>{post.date}</p>
-          <h3 style={{ fontFamily: 'Georgia, serif', fontSize: '32px', color: 'lightblue' }}>{post.title}</h3>
-          <p style={{ fontSize: '16px' }}>{post.content}</p>
-          <button onClick={handleAddComment} className="add-comment-button">
-            +
-          </button>
+          <div className="backgroundPost">
+            {postData ? (
+              <div>
+                <h2>Title: {postData.title}</h2>
+                <p>Text: {postData.text}</p>
+              </div>
+            ) : (
+              <p>Loading...</p>
+            )}
+          </div>
         </div>
+
         {showCommentForm && (
           <div className="comment-form">
             <form onSubmit={handleCommentSubmit}>
-              <textarea className='submitComment'
+              <textarea
+                className='submitComment'
                 value={newComment}
-                onChange={handleCommentChange}
+                onChange={handleAddComment}
                 placeholder="Write your comment here..."
                 rows="4"
               />
@@ -82,7 +104,6 @@ const PostPage = () => {
         )}
       </div>
 
-      
       <div className="thread-box">
         <h3 className="text-center mb-4 pb-2">Comments</h3>
         {comments.map((comment, index) => (
@@ -93,8 +114,6 @@ const PostPage = () => {
           </div>
         ))}
       </div>
-
-
     </div>
   );
 };
