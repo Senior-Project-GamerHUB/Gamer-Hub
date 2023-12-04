@@ -4,6 +4,7 @@ import PieApexChart from "./PieApexchart"
 import StackApexChart from "./StackApexchart"
 import DonutApexChart from "./DonutApexChart"
 import StarRating from './StarRating';
+import ReviewCard from './reviewCard/reviewCard';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -14,62 +15,94 @@ const IndividualGame = () => {
   };
 
   const [gameData, setGameData] = useState(null);
-  const [savedGames, setSavedGames] = useState([]);
   const { appid } = useParams();
-  const [averageRating, setAverageRating] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [averagePlaytime, setAveragePlaytime] = useState(null);
 
   useEffect(() => {
     const fetchGameDetails = async () => {
       try {
         const response = await axios.get(`https://api.rawg.io/api/games/${appid}`, {
           params: {
-            key: '3f02ae9693244e86b768ab662105fd14', 
+            key: '3f02ae9693244e86b768ab662105fd14',
           },
         });
-
+  
         setGameData(response.data);
       } catch (error) {
         console.error('Error fetching game data: ', error);
       }
     };
-
+  
     fetchGameDetails();
   }, [appid]);
-
-  const handleSaveGame = () => {
-    if (!savedGames.find((savedGame) => savedGame.id === gameData.id)) {
-      const newSavedGames = [...savedGames, gameData];
-      setSavedGames(newSavedGames);
-
-      localStorage.setItem('savedGames', JSON.stringify(newSavedGames));
-    }
-  }; 
-
+  
+  
   useEffect(() => {
-    const fetchUserReviews = async () => {
+    const fetchReviews = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/getReviewsByGame`, {
+        const reviewsResponse = await axios.get(`http://localhost:8080/getReviewsForGame`, {
           params: {
-            gameID: appid, // Assuming 'appid' is the game ID you want to fetch reviews for
+            gameID: appid,
           },
         });
   
-        const reviews = response.data;
+        const formattedReviews = reviewsResponse.data.map((review) => ({
+          userID: review.userID,
+          userName: review.userName,
+          review: review.review,
+          playtime_hour: review.playtime_hour,
+          playtime_minutes: review.playtime_minutes,
+          playtime_seconds: review.playtime_seconds,
+          completion_status: review.completion_status,
+          difficulty: review.difficulty,
+          worth_the_price: review.worth_the_price,
+          rating: review.rating,
+        }));
   
-        if (reviews.length > 0) {
-          const totalRating = reviews.reduce((sum, review) => sum + review.review, 0);
-          const avgRating = totalRating / reviews.length;
-          setAverageRating(avgRating);
-        } else {
-          setAverageRating(0); // No reviews yet
-        }
+        setReviews(formattedReviews);
+  
+        const totalPlaytimeSeconds = formattedReviews.reduce(
+          (total, review) =>
+            total +
+            review.playtime_hour * 3600 +
+            review.playtime_minutes * 60 +
+            review.playtime_seconds,
+          0
+        );
+  
+        const totalReviews = formattedReviews.length;
+  
+        const avgPlaytimeInSeconds = totalReviews > 0 ? totalPlaytimeSeconds / totalReviews : 0;
+  
+       
+        const avgPlaytimeHour = Math.floor(avgPlaytimeInSeconds / 3600);
+        const avgPlaytimeMinute = Math.floor((avgPlaytimeInSeconds % 3600) / 60);
+        const avgPlaytimeSecond = Math.floor(avgPlaytimeInSeconds % 60);
+  
+      
+        const totalRating = formattedReviews.reduce((total, review) => total + review.rating, 0);
+        const avgRating = totalReviews > 0 ? totalRating / totalReviews : 0;
+  
+        
+        const roundedAvgRating = Math.round(avgRating * 100) / 100;
+  
+        setAveragePlaytime({
+          hour: avgPlaytimeHour,
+          minute: avgPlaytimeMinute,
+          second: avgPlaytimeSecond,
+          rating: roundedAvgRating,
+        });
       } catch (error) {
-        console.error('Error fetching user reviews: ', error);
+        console.error('Error fetching reviews for the game: ', error);
       }
     };
   
-    fetchUserReviews();
+    fetchReviews();
   }, [appid]);
+ 
+
+
 
   return (
     <div>
@@ -97,21 +130,16 @@ const IndividualGame = () => {
                 <p>Release Date: {gameData.released || 'TBD'}</p>
                 <p>Genre: {gameData.genres && gameData.genres.map((genre) => genre.name).join(', ')}</p>
                 <p>Platforms: {gameData.platforms && gameData.platforms.map((platform) => platform.platform.name).join(', ')}</p>
-                <p>GamerHub Rating: {averageRating !== null ? <StarRating rating={averageRating} /> : 'Not Yet Rated'}</p>
                 {gameData.stores && gameData.stores.length > 0 && (
                   <div>
                     <h5>Available at:</h5>
                     <ul>
-                      {gameData.stores.map((store) => {
-                        console.log('Store URL:', store.url);
-                        return (
-                          <li key={store.store.id}>
-                            <a href={store.url} rel="noopener noreferrer" target="_blank">
-                              {store.store.name}
-                            </a>
-                          </li>
-                        );
-                      })}
+                    {gameData.stores.map((store) => (
+                      <li key={store.store.id}>
+                          {store.store.name}
+                    
+                      </li>
+                    ))}
                     </ul>
                   </div>
                 )}
@@ -131,7 +159,7 @@ const IndividualGame = () => {
                   </Link>
                 )}  
                   {gameData && (
-                    <button className="btn3" onClick={handleSaveGame}>
+                    <button className="btn3" >
                    Save Game
                  </button>
                 )}
@@ -155,22 +183,56 @@ const IndividualGame = () => {
   
           </div>
 
+          <div className='rating'>
+            <p>GamerHub Rating: {averagePlaytime?.rating ? <StarRating rating={averagePlaytime?.rating} />: 'Not rated yet'}</p>
+          </div>
+
           <div className='completion'>
-            <p>Average Completion Time: </p>
-          </div>
-          
-          <div className='charts'>
-            <h2>Completion</h2>
-            <PieApexChart />
-          </div>
-          <div className='charts'>
-            <h2>Difficulty</h2>
-            <StackApexChart />
-          </div>
-          <div className='charts'>
-            <h2>Worth the Price</h2>
+            {averagePlaytime ? (
+              <p>Average Completion Time: {`${averagePlaytime?.hour}h ${averagePlaytime?.minute}m ${averagePlaytime?.second}s`}</p>
+            ) : (
+              <p>No reviews available to calculate average completion time.</p>
+            )}
+          </div> 
+
+
+         <div className='charts'>
+          <h2>Completion</h2>
+          {reviews.length > 0 ? (
+            <PieApexChart completionStatusData={reviews.map(review => review.completion_status)} />
+          ) : (
+            <p>No reviews available to display completion chart.</p>
+          )}
+        </div>
+
+        <div className='charts'>
+        <h2>Difficulty</h2>
+        {reviews.length > 0 ? (
+          <StackApexChart />
+        ) : (
+          <p>No reviews available to display difficulty chart.</p>
+        )}
+      </div>
+      
+        <div className='charts'>
+          <h2>Worth the Price</h2>
+          {reviews.length > 0 ? (
             <DonutApexChart />
-          </div>
+          ) : (
+            <p>No reviews available to display worth the price chart.</p>
+          )}
+        </div>
+
+          <h2>Reviews</h2>
+          {reviews.length > 0 ? (
+            reviews.map((review, index) => (
+              <ReviewCard key={index} review={review} />
+            ))
+          ) : (
+            <p>No written review yet for this game. Be the first one to submit a written review!</p>
+          )}
+
+     
           
 
         </div>

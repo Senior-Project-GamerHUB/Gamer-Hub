@@ -1,7 +1,9 @@
 import React from 'react';
 
+
 const StarRating = ({ rating }) => {
   const fullStars = Math.floor(rating);
+  const remainingStars = 5 - fullStars;
   const hasHalfStar = rating % 1 !== 0;
 
   const starElements = [];
@@ -11,6 +13,10 @@ const StarRating = ({ rating }) => {
 
   if (hasHalfStar) {
     starElements.push(<span key="half" className="star half">★</span>);
+  }
+
+  for (let i = 0; i < remainingStars; i++) {
+    starElements.push(<span key={`empty-${i}`} className="star">☆</span>);
   }
 
   return <div className="star-rating">{starElements}</div>;

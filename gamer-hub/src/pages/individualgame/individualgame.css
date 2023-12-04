@@ -13,6 +13,7 @@
 .game-container {
     width: 350px;
     height: auto;
+    
     border: 3px solid hsl(0, 0%, 100%);
     display: flex;
     flex-direction: column;
@@ -22,7 +23,7 @@
     background-color: rgb(48, 46, 52);
     border-radius:15px;
     margin-left: 100px;
-    margin-bottom: 1000px;
+    margin-bottom: 1300px;
     padding: 20px;
 
     
@@ -80,27 +81,43 @@ p{
     margin-top: 50px;
     align-items: center;
     width: 150px;
-  
-    background-color: #ffffff; 
+    padding: 10px;
+    background-color: rgb(203, 85, 233); 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
     transition: background-color 0.3s ease;
+    margin-right: 2px;
 }
 
 .btn3:hover {
    
-    background-color: #800080; 
+    background-color: #610f61; 
 }
 
 .btnForum {
     margin-left: 70px;
     margin-top: 20px;
+    padding: 10px;
+    background-color: rgb(203, 85, 233); 
+    align-items: center;
     width: 150px;
-    background-color: #ffffff; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .btnForum:hover {
    
     background-color: #800080; 
+}
+
+.rating{
+    margin-top: 20px;
+    margin-bottom: 50px;
 }
 
 .completion{

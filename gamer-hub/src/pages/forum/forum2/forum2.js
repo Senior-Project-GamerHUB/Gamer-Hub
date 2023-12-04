@@ -15,6 +15,7 @@ const Forum2 = () => {
   const [showPostForm, setShowPostForm] = useState(false);
   const [userid, setUserID] = useState([]);
   const [forumPosts, setForumPosts] = useState([]);
+  const [username, setUserLog] = useState([]);
 
 
   useEffect(() => {
@@ -38,6 +39,7 @@ const Forum2 = () => {
     axios.get('http://localhost:8080/loggedIn', {withCredentials: true})
     .then(res => {
         setUserID(res.data[0].user_id);
+        setUserLog(res.data[0].username);
     })
     .catch(err => console.log(err));
 
@@ -46,20 +48,19 @@ const Forum2 = () => {
       try {
         const response = await axios.post('http://localhost:8080/addForum', {
           user: userid,
+          username: username, 
           game: appid,
           title: newPost.title,
           text: newPost.content,
         });
-  
+    
         console.log('Server response:', response.data);
-  
+    
         setForumPosts((prevForumPosts) => [...prevForumPosts, response.data]);
-  
+    
         setShowPostForm(false);
-  
       } catch (error) {
         console.error('Error submitting post:', error);
-        
       }
     };
   
@@ -82,6 +83,11 @@ const Forum2 = () => {
     
       fetchForumPosts();
     }, [appid]);
+
+    const handleCancel = () => {
+      setShowPostForm(false);
+    };
+  
 
   
   return (
@@ -117,11 +123,12 @@ const Forum2 = () => {
                   <div>
                     <h5>Available at:</h5>
                     <ul>
-                      {gameData.stores.map((store) => (
-                        <li key={store.store.id}>
-                          <a href={store.url}>{store.store.name}</a>
-                        </li>
-                      ))}
+                    {gameData.stores.map((store) => (
+                      <li key={store.store.id}>
+                          {store.store.name}
+                    
+                      </li>
+                    ))}
                     </ul>
                   </div>
                 )}
@@ -139,13 +146,12 @@ const Forum2 = () => {
 
           {showPostForm && (
           <div>
-
-            <PostForm onPostSubmit={handlePostSubmit} />
+            <PostForm onPostSubmit={handlePostSubmit} onCancel={handleCancel} />
           </div>
           )}
 
           {forumPosts.map((post) => (
-            <PostCard key={post.postID} post={{ id: post.postID, title: post.title, text: post.text }}/>
+            <PostCard key={post.postID} post={{ id: post.postID, username: post.userName, title: post.title, text: post.text }}/>
           ))}
 
 

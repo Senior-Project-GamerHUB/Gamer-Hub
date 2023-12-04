@@ -4,7 +4,7 @@ import "./notfound.css";
 const NotFound = () => {
 
     const heroStyle = {
-        backgroundImage: 'url("https://i.redd.it/vo9vm1fcqrp71.jpg")', // Replace this URL with the actual image URL
+        backgroundImage: 'url("https://i.redd.it/vo9vm1fcqrp71.jpg")', 
       };
 
   return (

@@ -12,7 +12,9 @@ const Submit2 = () => {
     
       const [gameData, setGameData] = useState(null);
       const { appid } = useParams();
-     
+      const [username, setUserLog] = useState([]);
+    
+    
     
       useEffect(() => {
         const fetchGameDetails = async () => {
@@ -41,13 +43,12 @@ const Submit2 = () => {
       const [worthPrice, setWorthPrice] = useState('');
       const [reviewText, setReviewText] = useState('');
 
-      //When Selected
-      // ...
+      
       const [selectedRating, setSelectedRating] = useState('');
       const [selectedCompletionStatus, setSelectedCompletionStatus] = useState('');
       const [selectedDifficulty, setSelectedDifficulty] = useState('');
       const [selectedWorthPrice, setSelectedWorthPrice] = useState('');
-      // ...
+  
 
        
       const handlePlaytimeHoursChange = (e) => {
@@ -63,7 +64,7 @@ const Submit2 = () => {
       }
 
       const handleRatingChange = (value) => {
-        // Convert the star rating to a numerical value (e.g., 1 to 5)
+       
         const numericValue = parseInt(value, 10);
         setRating(numericValue);
         setSelectedRating(value);
@@ -97,6 +98,7 @@ const Submit2 = () => {
       axios.get('http://localhost:8080/loggedIn', {withCredentials: true})
       .then(res => {
           setUserID(res.data[0].user_id);
+          setUserLog(res.data[0].username);
       })
       .catch(err => console.log(err));
 
@@ -108,6 +110,7 @@ const Submit2 = () => {
      
       const response = await axios.post('http://localhost:8080/addReview', {
         user: userid,
+        username: username,
         game: appid,
         title: gameData.name,
         text: reviewText,
@@ -139,19 +142,19 @@ const Submit2 = () => {
   };
 
   const handleButtonClick = async (e) => {
-    e.preventDefault(); // Add this line
-  
-    if (!areAllFieldsFilled()) {
-      alert('Please fill in all required fields.');
+    e.preventDefault(); 
+
+    if (!areAllFieldsFilled() || reviewText.trim() === '') {
+      alert('Please fill in all fields.');
       return;
     }
   
-    // If all fields are filled and userId is available, proceed with the submission
+   
     await handleSubmit();
 
 
 
-    // Show a thank you message
+  
     alert('Thank you for your review!');
    
     navigate('/home');
@@ -191,16 +194,12 @@ const Submit2 = () => {
                 {gameData.stores && gameData.stores.length > 0 && (
                   <div>
                     <h5>Available at:</h5>
-                    {gameData.stores.map((store) => {
-                    console.log("Store URL:", store.url);
-                    return (
+                    {gameData.stores.map((store) => (
                       <li key={store.store.id}>
-                        <a href={store.url} >
                           {store.store.name}
-                        </a>
+                    
                       </li>
-                    );
-                  })}
+                    ))}
                 
                   </div>
                 )}
@@ -227,7 +226,7 @@ const Submit2 = () => {
                 onChange={handlePlaytimeHoursChange}
                 placeholder="hr"
                 min="0"
-                pattern="\d+" // Use a regular expression to allow only positive integers
+                pattern="\d+" 
                 style={{ width: '80px' }}
               />
               <input
