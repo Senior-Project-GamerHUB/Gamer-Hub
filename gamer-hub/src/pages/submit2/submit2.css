@@ -31,17 +31,21 @@
   margin-left: 150px;
   margin-top: 50px;
   margin-bottom: 20px;
-  margin-left: 20px; /* Note: you have "margin-left" twice, you may want to remove one */
+  margin-left: 20px; 
   align-self: center;
-  /* Set initial background color */
-  background-color: #ffffff; /* Replace with your desired initial color */
-  /* Add transition for a smooth color change */
   transition: background-color 0.3s ease;
+  padding: 10px;
+  background-color: rgb(203, 85, 233); 
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 150px;
+
 }
 
 .submit:hover {
-  /* Change background color on hover */
-  background-color: #800080; /* Replace with your desired hover color (purple in this case) */
+  background-color: #610f61; 
 }
 
 
@@ -123,7 +127,7 @@
   .button-container {
     display: flex;
     flex-wrap: wrap;
-    margin-top: 5px; /* Add spacing between label and buttons */
+    margin-top: 5px; 
   }
 
   .star-container {
@@ -134,11 +138,11 @@
   .star {
     font-size: 48px;
     cursor: pointer;
-    color: #ccc; /* Color of unfilled stars */
+    color: #ccc; 
   }
   
   .star.filled {
-    color: gold; /* Color of filled stars */
+    color: gold; 
   }
 
   .question textarea {

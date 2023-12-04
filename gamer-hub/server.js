@@ -336,6 +336,7 @@ app.post('/addNewGame', async (req, res) => {
 
 app.post('/addReview', async (req, res) => {
 	const userID = req.body.user;
+	const username = req.body.username;
 	const gameID = req.body.game;
 	const votes = req.body.title;
 	const review = req.body.text;
@@ -348,13 +349,12 @@ app.post('/addReview', async (req, res) => {
 	const wtp = req.body.worth_the_price;
   
 	db.query(
-	  "INSERT INTO Review (userID, gameID, vote_up_num, review, playtime_hour, playtime_minutes, playtime_seconds, rating, comp_status, difficulty, wtp) VALUES(?,?,?,?,?,?,?,?,?,?,?)",
-	  [userID, gameID, votes, review, playtime_h, playtime_m, playtime_s, rating, comp_status, difficulty, wtp],
+	  "INSERT INTO Review (userID, userName, gameID, vote_up_num, review, playtime_hour, playtime_minutes, playtime_seconds, rating, comp_status, difficulty, wtp) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
+	  [userID, username, gameID, votes, review, playtime_h, playtime_m, playtime_s, rating, comp_status, difficulty, wtp],
 	  (error, result) => {
 		console.log("error is " + JSON.stringify(error));
 		console.log("results are " + result);
   
-		// Handle the response or send it back to the client
 		if (error) {
 		  res.status(500).send("Error inserting review.");
 		} else {
@@ -364,44 +364,65 @@ app.post('/addReview', async (req, res) => {
 	);
   });
 
-  app.get('/getReviewsByGame', async (req, res) => {
+  app.get('/getReviewsForGame', async (req, res) => {
 	try {
 	  const { gameID } = req.query;
   
 	  if (!gameID) {
 		return res.status(400).json({ error: "Missing gameID parameter" });
 	  }
+  
 	  console.log('Received gameID:', gameID);
   
-	  db.query("SELECT * FROM Review WHERE gameID = ?", [gameID], (error, result) => {
-		if (error) {
-		  console.error("Error fetching reviews:", error);
-		  return res.status(500).json({ error: "Internal Server Error" });
-		}
+	  db.query(
+		"SELECT userID, userName, review, playtime_hour, playtime_minutes, rating, playtime_seconds, comp_status, difficulty, wtp FROM Review WHERE gameID = ?",
+		[gameID],
+		(error, result) => {
+		  if (error) {
+			console.error("Error fetching reviews:", error);
+			return res.status(500).json({ error: "Internal Server Error" });
+		  }
   
-		res.json(result);
-	  });
+		  console.log('Fetched reviews from the database:', result);
+  
+		  const reviews = result.map((row) => ({
+			userID: row.userID,
+			userName: row.userName,
+			review: row.review,
+			rating: row.rating,
+			playtime_hour: row.playtime_hour,
+			playtime_minutes: row.playtime_minutes,
+			playtime_seconds: row.playtime_seconds,
+			completion_status: row.comp_status,
+			difficulty: row.difficulty,
+			worth_the_price: row.wtp,
+		  }));
+  
+		  console.log('Extracted reviews:', reviews);
+  
+		  res.json(reviews);
+		}
+	  );
 	} catch (error) {
 	  console.error("Unexpected error:", error);
 	  res.status(500).json({ error: "Internal Server Error" });
 	}
   });
 
-
   app.post('/addForum', async (req, res) => {
 	const userID = req.body.user;
 	const gameID = req.body.game;
 	const title = req.body.title;
 	const text = req.body.text;
+	const username = req.body.username; // Fix: use `username` instead of `userName`
   
 	db.query(
-	  'INSERT INTO Forum (userID, gameID, title, text) VALUES (?, ?, ?, ?)',
-	  [userID, gameID, title, text],
+	  'INSERT INTO Forum (userID, userName, gameID, title, text) VALUES (?, ?, ?, ?, ?)',
+	  [userID, username, gameID, title, text],
 	  (error, result) => {
 		if (error) {
 		  console.error('Error adding forum post:', error);
-		  
-		  // Check if it's a duplicate entry error
+  
 		  if (error.code === 'ER_DUP_ENTRY') {
 			return res.status(400).json({ error: 'Duplicate entry for user and game' });
 		  } else {
@@ -409,17 +430,16 @@ app.post('/addReview', async (req, res) => {
 		  }
 		}
   
-	
 		const insertedPost = {
 		  post_id: result.insertId,
+		  username: username, // Fix: use `username` instead of `userName`
 		  user_id: userID,
 		  game_id: gameID,
 		  title: title,
 		  text: text,
-		  created_at: new Date(), 
+		  created_at: new Date(),
 		};
   
-		
 		res.json(insertedPost);
 	  }
 	);
@@ -432,15 +452,17 @@ app.post('/addReview', async (req, res) => {
 	  if (!gameID) {
 		return res.status(400).json({ error: "Missing gameID parameter" });
 	  }
+  
 	  console.log('Received gameID:', gameID);
-	 
+  
 	  db.query("SELECT * FROM Forum WHERE gameID = ?", [gameID], (error, result) => {
 		if (error) {
 		  console.error("Error fetching forum posts:", error);
 		  return res.status(500).json({ error: "Internal Server Error" });
 		}
   
-		
+		console.log("Fetched forum posts:", result); // Log the fetched result
+  
 		res.json(result);
 	  });
 	} catch (error) {
@@ -448,7 +470,6 @@ app.post('/addReview', async (req, res) => {
 	  res.status(500).json({ error: "Internal Server Error" });
 	}
   });
-
 
   app.get('/getPost/:postID', async (req, res) => {
 	try {
@@ -462,7 +483,7 @@ app.post('/addReview', async (req, res) => {
 	  console.log('Received postID:', postID);
   
 	  db.query(
-		'SELECT userID, title, text FROM Forum WHERE postID = ?',
+		'SELECT userName, title, text FROM Forum WHERE postID = ?',
 		[postID],
 		(error, result) => {
 		  if (error) {
@@ -472,15 +493,16 @@ app.post('/addReview', async (req, res) => {
   
 		  console.log('Fetched Forum posts from the database:', result);
   
-		  const posts = result.map((row) => ({
-			username: row.userID,
-			title: row.title,
-			text: row.text,
-		  }));
+		  const post = result[0]; 
+		  const postData = {
+			userName: post.userName,
+			title: post.title,
+			text: post.text,
+			};
+
+			res.json(postData);
   
-		  console.log('Extracted posts:', posts);
   
-		  res.json(posts);
 		}
 	  );
 	} catch (error) {

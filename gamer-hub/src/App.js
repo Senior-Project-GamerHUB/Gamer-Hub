@@ -51,7 +51,7 @@ const router = createBrowserRouter([
         element: <Submit2/>,
       },
       {
-        path: '/profile/user/:user',
+        path: '/profile/:userName/:userID',
         element: <Profile />,
       },
       {
@@ -63,7 +63,7 @@ const router = createBrowserRouter([
         element: <Forum2/>,
       },
       {
-        path: '/forum/post/:postid',
+        path: '/forum/post/:postId',
         element: <PostPage/>,
       },
       {

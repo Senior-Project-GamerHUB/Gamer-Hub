@@ -1,5 +1,6 @@
 .post-form-container {
-    width: 600px; /* Adjust the width as needed */
+    max-width: 600px; 
+    width: auto;
     margin: auto;
   }
   
@@ -13,13 +14,28 @@
   
   .submit-button {
     padding: 10px;
-    background-color: #007bff; /* Change the color to your preference */
+    background-color: rgb(203, 85, 233);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 20px;
+    margin-bottom: 30px;
+  }
+  .cancel-button {
+    padding: 10px;
+    background-color: rgb(243, 8, 8); 
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
   }
   
+  
   .submit-button:hover {
-    background-color: #0056b3; /* Change the hover color to your preference */
+    background-color: #520570;
+  }
+
+  .cancel-button:hover {
+    background-color: #520803; 
   }

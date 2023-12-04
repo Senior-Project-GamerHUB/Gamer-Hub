@@ -1,4 +1,5 @@
 import React, {useEffect,useState} from 'react';
+import {Link} from 'react-router-dom';
 import './css/bootstrap.min.css'; 
 import './css/slicknav.min.css';
 import './css/magnific-popup.css';
@@ -40,7 +41,7 @@ const Header = () => {
                     <a href="/profile/user/id">
                         {user}
                     </a>
-                    <a href="/profile/user/id">   Picture</a>
+        
                 </div>
                 <ul className="main-menu primary-menu">
                     <li><a href="/home">Home</a></li>

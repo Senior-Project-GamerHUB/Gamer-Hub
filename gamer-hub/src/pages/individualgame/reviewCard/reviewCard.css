@@ -1,4 +1,4 @@
-.post-card {
+.review-card {
     border: 3px solid;
     border-color: white;
     background-color: rgb(48, 46, 52);
@@ -14,12 +14,12 @@
     word-wrap: break-word; /* Added to allow long words to break and wrap */
   }
   
-  .post-card h2 {
+  .review-card h2 {
     color: rgb(199, 65, 233);
     margin-bottom: 8px;
   }
   
-  .post-card a {
+  .review-card a {
     color: lightblue;
     text-decoration: none;
     font-weight: bold;

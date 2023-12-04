@@ -10,33 +10,12 @@ const Profile = () => {
   const [profilePicture, setProfilePicture] = useState(null);
   const [user_name, setUser_Name] = useState([]);
   const [userLog, setUserLog] = useState([]);
+  const [Email, setEmail] = useState([]);
   const [userid, setUserID] = useState([]);
   const navigate = useNavigate();
 
 
-  useEffect(() => {
-    // Fetch user data from your database or API
-    // Replace the following line with your actual fetchUserData function
-    // const userId = /* Get the user ID, you may get it from authentication */;
-    // fetchUserData(userId)
-    //   .then((data) => setUserData(data))
-    //   .catch((error) => console.error('Error fetching user data:', error));
-
-    // Example mock data - replace this with your actual data fetching logic
-    const mockUserData = {
-      fullName: 'John Doe',
-      avatar: 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp',
-      // Add other user data fields as needed
-    };
-
-    // Simulate asynchronous data fetching
-    const fetchData = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setUserData(mockUserData);
-    };
-
-    fetchData();
-  }, []); // The empty dependency array ensures the effect runs only once when the component mounts
+ 
 
   const handleProfilePictureChange = (e) => {
     const file = e.target.files[0];
@@ -53,11 +32,7 @@ const Profile = () => {
     backgroundImage: 'url("https://i.redd.it/vo9vm1fcqrp71.jpg")',
   };
 
-  if (!userData) {
-    // Display a loading spinner or message while data is being fetched
-    return <div>Loading...</div>;
-  }
-
+ 
 
   const handleSubmit = (event) =>{
     event.preventDefault();
@@ -84,6 +59,7 @@ const Profile = () => {
                     console.log(res.data[0].username);
                     setUserLog(res.data[0].username);
                     setUser_Name(res.data[0].name);
+                    setEmail(res.data[0].email);
                     setUserID(res.data[0].user_id);
     
                 })
@@ -150,16 +126,12 @@ const Profile = () => {
                     <p style={{ color: 'white' }}>Username: {userLog}</p>
                   </div>
                 </div>
-                <div className="row border-bottom mb-2" style={{ padding: '8px 0' }}>
+                <div className="row " style={{ padding: '8px 0' }}>
                   <div className="col-sm-9">
-                    <p style={{ color: 'white' }}> Email: {/* userEmail */}</p>
+                    <p style={{ color: 'white' }}> Email: {Email}</p>
                   </div>
                 </div>
-                <div className="row mb-2" style={{ padding: '8px 0' }}>
-                  <div className="col-sm-9">
-                    <p style={{ color: 'white' }}>Password: {/* userPass */}</p>
-                  </div>
-                </div>
+          
               </div>
             </div>
 

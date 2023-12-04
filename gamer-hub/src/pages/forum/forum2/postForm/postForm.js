@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './postForm.css'; 
 
-const PostForm = ({ onPostSubmit, onSubmissionComplete, gameID, userID }) => {
+const PostForm = ({ onPostSubmit, onSubmissionComplete, gameID, userID, onCancel }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
@@ -16,7 +16,6 @@ const PostForm = ({ onPostSubmit, onSubmissionComplete, gameID, userID }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-
     await onPostSubmit({
       title,
       content,
@@ -26,8 +25,10 @@ const PostForm = ({ onPostSubmit, onSubmissionComplete, gameID, userID }) => {
 
     setTitle('');
     setContent('');
+  };
 
-  
+  const handleCancel = () => {
+    onCancel(); 
   };
 
   return (
@@ -58,6 +59,9 @@ const PostForm = ({ onPostSubmit, onSubmissionComplete, gameID, userID }) => {
         <div>
           <button type="submit" className="submit-button">
             Submit Post
+          </button>
+          <button type="button" className="cancel-button" onClick={handleCancel}>
+            Cancel
           </button>
         </div>
       </form>
