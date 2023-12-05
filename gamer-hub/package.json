@@ -23,7 +23,6 @@
     "jquery": "^3.7.1",
     "mysql": "^2.18.1",
     "mysql2": "^3.6.3",
-    "node-email-validation": "^1.0.4",
     "passport": "^0.6.0",
     "passport-steam": "^1.0.18",
     "popper.js": "^1.16.1",
