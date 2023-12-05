@@ -10,7 +10,6 @@ const SteamStrategy = passportSteam.Strategy;
 const axios = require('axios');
 const cookieParser = require('cookie-parser');
 const bodyParser = require("body-parser");
-const validator = require('node-email-validation');
 
 
 const port = process.env.PORT || 8080;
@@ -37,14 +36,22 @@ async function SteamGameReview(appid){
 	  }
 }
 
-function SteamAccountName(steamid)
+async function SteamAccountName(steamid)
 {
-	(async () => {
-		// steamids=${steamid} change it after testing
+	try{
 		const response = await axios.get(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${key}&steamids=${steamid}`);
 		const data = await response.data;
-		console.log(data["response"]["players"]);
-	})();
+		console.log(data);
+		if(data["response"]["players"] != null ){
+			const steamAccount = data["response"]["players"];
+			return steamAccount;
+		} else {
+			return null;
+		}
+	} catch (error) {
+		console.error('Error fetching steam account: '. error);
+		return null;
+	}
 }
 
 
@@ -119,9 +126,7 @@ const db = mysql.createConnection({
 
 app.get('/', (req, res)=>{
 
-
 	res.send("SERVER WELCOME")
-
 
 })
 
@@ -145,10 +150,10 @@ app.get('/loggedIn', (req, res)=>{
 
 app.get('/loggout', (req, res)=>{
 
-req.session.destroy(err=>{
-	if(err){
-		return res.send(err);
-	}
+	req.session.destroy(err=>{
+		if(err){
+			return res.send(err);
+		}
 
 	res.clearCookie("userId");
 	return res.send("Deleted Session");
@@ -156,8 +161,6 @@ req.session.destroy(err=>{
 
 
 })
-
-
 
 
 app.get('/users', (req, res)=>{
@@ -177,8 +180,6 @@ app.get('/users', (req, res)=>{
 })
 
 
-
-
 // signup data into mysql
 app.post('/signup', async(req, res)=>{
 
@@ -186,13 +187,13 @@ app.post('/signup', async(req, res)=>{
 	const username = req.body.username;
 	var email = null;
 	var email_error = false;
-	const response = await axios.get(`https://api.kickbox.com/v2/verify?email=${req.body.email}&apikey=test_11f4118a926d868891e1da3905508635401c858fef8825da564e3c17250a918d`)
+	const response = await axios.get(`https://api.kickbox.com/v2/verify?email=${req.body.email}&apikey=live_2e405c5c10c7856d5a5d7473f26c2115d311f27ece979004159891439f2086d9`)
 	const data = await response.data;
 	console.log(data);
-	if(data.success != true) {
-		email_error = true;
-	} else {
+	if(data.result == 'deliverable' | data.reason == 'low_deliverability') {
 		email = req.body.email;
+	} else {
+		email_error = true;
 	}
 	
 	const password = await bcrypt.hash(JSON.stringify(req.body.password), 10);
@@ -218,12 +219,6 @@ app.post('/signup', async(req, res)=>{
 			} 
 			
 			else if(JSON.stringify(error).indexOf("cannot be null") >0 ){
-				// var indexNum = JSON.stringify(error).indexOf("Column") + 8;
-				// let string = "";
-				// for(let i = indexNum; JSON.stringify(error)[i] != "'"; i++){
-				// 	string += JSON.stringify(error)[i];
-				// }
-				// console.log("String: "+ string)
 				return res.send("error3");
 			} 
 
@@ -237,11 +232,6 @@ app.post('/signup', async(req, res)=>{
 
 
 })
-
-
-
-
-
 
 // login checker to database
 app.post('/login', (req, res)=>{
@@ -279,42 +269,16 @@ app.post('/login', (req, res)=>{
 })
 
 
-app.get('/login', (req, res)=>{
-
-})
-
-
-
-app.get('/game/:appid', async (req, res) => {
-	const appid = req.params.appid;
-	const gameData = await SteamGameData2(appid);
-  
-	if (gameData) {
-	  res.json(gameData);
-	} else {
-	  res.status(404).json({ error: 'Game not found' });
-	}
-  });
-
-
-
-app.get('/', async (req, res) => {
-
-});
-
 
 app.get('/api/auth/steam', passport.authenticate('steam', {failureRedirect: '/'}), function (req, res) {
 	res.redirect('http://localhost:3000/home');
    });
 
-app.get('/api/auth/steam/return', passport.authenticate('steam', {failureRedirect: '/'}), function (req, res) {
-	console.log(req.user.id);
+app.get('/api/auth/steam/return', passport.authenticate('steam', {failureRedirect: '/'}), async function (req, res) {
+	res.send(await SteamAccountName(req.user.id));
 	res.redirect('http://localhost:3000/home');
    });
 
-// app.get('/getReview', async (req, res) => {
-// 	res.send(await SteamGameReview(220));
-// });
 
 app.post('/getSteamReview', async (req, res) => {
 	(async () => {
@@ -325,13 +289,6 @@ app.post('/getSteamReview', async (req, res) => {
 		appid = data["applist"]["apps"][index]["appid"];
 		res.send(SteamGameData(appid));
 	})();
-});
-
-app.post('/addNewGame', async (req, res) => {
-	// SteamGameData();
-	// await db.get(`INSERT INTO Game_Catalog (Name, Image, Description, Game_Info, Video, User_Rating, Price)
-	// VALUES (?, ?, ?, ?, ?, ?, ?)` (req.body.data.name, req.body.data.screenshots, req.body.data.about_the_game, req.body.data.pc_requirements, req.body.data.movies, req.body.data.metacritic.score, req.body.data.price_overview.final_formatted));
-	res.json({});
 });
 
 app.post('/addReview', async (req, res) => {
@@ -366,43 +323,49 @@ app.post('/addReview', async (req, res) => {
 
   app.get('/getReviewsForGame', async (req, res) => {
 	try {
-	  const { gameID } = req.query;
-  
-	  if (!gameID) {
-		return res.status(400).json({ error: "Missing gameID parameter" });
-	  }
-  
-	  console.log('Received gameID:', gameID);
-  
-	  db.query(
-		"SELECT userID, userName, review, playtime_hour, playtime_minutes, rating, playtime_seconds, comp_status, difficulty, wtp FROM Review WHERE gameID = ?",
-		[gameID],
-		(error, result) => {
-		  if (error) {
-			console.error("Error fetching reviews:", error);
-			return res.status(500).json({ error: "Internal Server Error" });
-		  }
-  
-		  console.log('Fetched reviews from the database:', result);
-  
-		  const reviews = result.map((row) => ({
-			userID: row.userID,
-			userName: row.userName,
-			review: row.review,
-			rating: row.rating,
-			playtime_hour: row.playtime_hour,
-			playtime_minutes: row.playtime_minutes,
-			playtime_seconds: row.playtime_seconds,
-			completion_status: row.comp_status,
-			difficulty: row.difficulty,
-			worth_the_price: row.wtp,
-		  }));
-  
-		  console.log('Extracted reviews:', reviews);
-  
-		  res.json(reviews);
+		// const response = await fetch(`http://api.steampowered.com/ISteamApps/GetAppList/v0002/?key=${key}&format=json`);
+		// const data = await response.json();
+		// var index = data["applist"]["apps"].map(function(e) {return e.name;}).indexOf(JSON.stringify(req.body.game_name));
+		// var appid = data["applist"]["apps"][index]["appid"];
+		// var reviewList = SteamGameData(appid);
+		
+		const { gameID } = req.query;
+
+		if (!gameID) {
+			return res.status(400).json({ error: "Missing gameID parameter" });
 		}
-	  );
+
+		console.log('Received gameID:', gameID);
+
+		db.query(
+			"SELECT userID, userName, review, playtime_hour, playtime_minutes, rating, playtime_seconds, comp_status, difficulty, wtp FROM Review WHERE gameID = ?",
+			[gameID],
+			(error, result) => {
+			if (error) {
+				console.error("Error fetching reviews:", error);
+				return res.status(500).json({ error: "Internal Server Error" });
+			}
+
+			console.log('Fetched reviews from the database:', result);
+
+			const reviews = result.map((row) => ({
+				userID: row.userID,
+				userName: row.userName,
+				review: row.review,
+				rating: row.rating,
+				playtime_hour: row.playtime_hour,
+				playtime_minutes: row.playtime_minutes,
+				playtime_seconds: row.playtime_seconds,
+				completion_status: row.comp_status,
+				difficulty: row.difficulty,
+				worth_the_price: row.wtp,
+			}));
+
+			console.log('Extracted reviews:', reviews);
+
+			res.json(reviews);
+			}
+	);
 	} catch (error) {
 	  console.error("Unexpected error:", error);
 	  res.status(500).json({ error: "Internal Server Error" });
@@ -441,6 +404,39 @@ app.post('/addReview', async (req, res) => {
 		};
   
 		res.json(insertedPost);
+	  }
+	);
+  });
+
+  app.post('/addComments', async (req, res) => {
+	const userID = req.body.user;
+	const username = req.body.username
+	const text = req.body.text;
+	const postID = req.body.post;
+  
+	db.query(
+	  'INSERT INTO Forum_Comments (postID, userID, username, text) VALUES (?, ?, ?, ?)',
+	  [postID, userID, username, text],
+	  (error, result) => {
+		if (error) {
+		  console.error('Error adding comments:', error);
+  
+		  if (error.code === 'ER_DUP_ENTRY') {
+			return res.status(400).json({ error: 'Duplicate entry for user and game' });
+		  } else {
+			return res.status(500).json({ error: 'Internal Server Error' });
+		  }
+		}
+  
+		const insertedComment = {
+		  post_id: postID,
+		  username: username, // Fix: use `username` instead of `userName`
+		  user_id: userID,
+		  text: text,
+		  created_at: new Date(),
+		};
+  
+		res.json(insertedComment);
 	  }
 	);
   });
