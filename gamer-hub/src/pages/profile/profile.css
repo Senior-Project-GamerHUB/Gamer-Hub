@@ -4,7 +4,14 @@
   margin-bottom: 110px;
 }
 
-.profile-background{
-  height: 100%;
+html, body, #root {
+  height: auto;
+  margin: 0;
+  padding: 0;
+}
+
+.profile-background {
+  min-height: 100vh;
+  max-height: auto;
   background-color: rgb(55, 1, 85);
 }

@@ -14,7 +14,7 @@ const Login = () => {
     const handleSteamLogin = () => {
         // Redirect the user to the Steam authentication page
         window.location.href = 'http://localhost:8080/api/auth/steam';
-      };
+    };
 
     const navigate = useNavigate();
 
@@ -93,13 +93,11 @@ const Login = () => {
                             />
                         </div>
 
-                        <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="/login">Forgot password?</a></p>
+                        
                         <button class="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
 
                     </form>
-                            <button className="btn btn-outline-light btn-lg px-5" type="button" onClick={handleSteamLogin}>
-                            Login with Steam
-                            </button>
+                            
                         </div>
                         <div>
                         <p class="mb-0">Don't have an account? <a href="/signup" class="text-white-50 fw-bold">Sign Up</a>

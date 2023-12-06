@@ -10,6 +10,11 @@ const SteamStrategy = passportSteam.Strategy;
 const axios = require('axios');
 const cookieParser = require('cookie-parser');
 const bodyParser = require("body-parser");
+const multer = require('multer');
+
+
+
+
 
 
 const port = process.env.PORT || 8080;
@@ -377,8 +382,7 @@ app.post('/addReview', async (req, res) => {
 	const gameID = req.body.game;
 	const title = req.body.title;
 	const text = req.body.text;
-	const username = req.body.username; // Fix: use `username` instead of `userName`
-  
+	const username = req.body.username; 
 	db.query(
 	  'INSERT INTO Forum (userID, userName, gameID, title, text) VALUES (?, ?, ?, ?, ?)',
 	  [userID, username, gameID, title, text],
@@ -395,7 +399,7 @@ app.post('/addReview', async (req, res) => {
   
 		const insertedPost = {
 		  post_id: result.insertId,
-		  username: username, // Fix: use `username` instead of `userName`
+		  username: username, 
 		  user_id: userID,
 		  game_id: gameID,
 		  title: title,
@@ -410,12 +414,12 @@ app.post('/addReview', async (req, res) => {
 
   app.post('/addComments', async (req, res) => {
 	const userID = req.body.user;
-	const username = req.body.username
+	const username = req.body.username;
 	const text = req.body.text;
 	const postID = req.body.post;
   
 	db.query(
-	  'INSERT INTO Forum_Comments (postID, userID, username, text) VALUES (?, ?, ?, ?)',
+	  'INSERT INTO Comments (postID, userID, username, text) VALUES (?, ?, ?, ?)',
 	  [postID, userID, username, text],
 	  (error, result) => {
 		if (error) {
@@ -429,14 +433,32 @@ app.post('/addReview', async (req, res) => {
 		}
   
 		const insertedComment = {
+		  comment_id: result.insertId, // Make sure result.insertId is supported by your database driver
 		  post_id: postID,
-		  username: username, // Fix: use `username` instead of `userName`
+		  username: username,
 		  user_id: userID,
 		  text: text,
 		  created_at: new Date(),
 		};
   
 		res.json(insertedComment);
+	  }
+	);
+  });
+
+  app.get('/getComments/:postID', async (req, res) => {
+	const postID = req.params.postID;
+  
+	db.query(
+	  'SELECT * FROM Comments WHERE postID = ?',
+	  [postID],
+	  (error, results) => {
+		if (error) {
+		  console.error('Error getting comments:', error);
+		  return res.status(500).json({ error: 'Internal Server Error' });
+		}
+  
+		res.json(results);
 	  }
 	);
   });
@@ -457,7 +479,7 @@ app.post('/addReview', async (req, res) => {
 		  return res.status(500).json({ error: "Internal Server Error" });
 		}
   
-		console.log("Fetched forum posts:", result); // Log the fetched result
+		console.log("Fetched forum posts:", result); 
   
 		res.json(result);
 	  });
@@ -506,6 +528,9 @@ app.post('/addReview', async (req, res) => {
 	  res.status(500).json({ error: 'Internal Server Error' });
 	}
   });
+
+  
+  
   
   
 

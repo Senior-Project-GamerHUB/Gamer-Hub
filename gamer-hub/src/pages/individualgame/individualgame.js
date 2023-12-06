@@ -37,71 +37,67 @@ const IndividualGame = () => {
     fetchGameDetails();
   }, [appid]);
   
-  
-  useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const reviewsResponse = await axios.get(`http://localhost:8080/getReviewsForGame`, {
-          params: {
-            gameID: appid,
-          },
-        });
-  
-        const formattedReviews = reviewsResponse.data.map((review) => ({
-          userID: review.userID,
-          userName: review.userName,
-          review: review.review,
-          playtime_hour: review.playtime_hour,
-          playtime_minutes: review.playtime_minutes,
-          playtime_seconds: review.playtime_seconds,
-          completion_status: review.completion_status,
-          difficulty: review.difficulty,
-          worth_the_price: review.worth_the_price,
-          rating: review.rating,
-        }));
-  
-        setReviews(formattedReviews);
-  
-        const totalPlaytimeSeconds = formattedReviews.reduce(
-          (total, review) =>
-            total +
-            review.playtime_hour * 3600 +
-            review.playtime_minutes * 60 +
-            review.playtime_seconds,
-          0
-        );
-  
-        const totalReviews = formattedReviews.length;
-  
-        const avgPlaytimeInSeconds = totalReviews > 0 ? totalPlaytimeSeconds / totalReviews : 0;
-  
-       
-        const avgPlaytimeHour = Math.floor(avgPlaytimeInSeconds / 3600);
-        const avgPlaytimeMinute = Math.floor((avgPlaytimeInSeconds % 3600) / 60);
-        const avgPlaytimeSecond = Math.floor(avgPlaytimeInSeconds % 60);
-  
-      
-        const totalRating = formattedReviews.reduce((total, review) => total + review.rating, 0);
-        const avgRating = totalReviews > 0 ? totalRating / totalReviews : 0;
-  
-        
-        const roundedAvgRating = Math.round(avgRating * 100) / 100;
-  
-        setAveragePlaytime({
-          hour: avgPlaytimeHour,
-          minute: avgPlaytimeMinute,
-          second: avgPlaytimeSecond,
-          rating: roundedAvgRating,
-        });
-      } catch (error) {
-        console.error('Error fetching reviews for the game: ', error);
-      }
-    };
-  
-    fetchReviews();
-  }, [appid]);
- 
 
+ useEffect(() => {
+  const fetchReviews = async () => {
+    try {
+      const reviewsResponse = await axios.get(`http://localhost:8080/getReviewsForGame`, {
+        params: {
+          gameID: appid,
+        },
+      });
+
+      const formattedReviews = reviewsResponse.data.map((review) => ({
+        userID: review.userID,
+        userName: review.userName,
+        review: review.review,
+        playtime_seconds: review.playtime_seconds,
+        playtime_minutes: review.playtime_minutes,
+        playtime_hour: review.playtime_hour,
+        completion_status: review.completion_status,
+        difficulty: review.difficulty,
+        worth_the_price: review.worth_the_price,
+        rating: review.rating,
+      }));
+
+      setReviews(formattedReviews);
+      console.log('Fetched Reviews:', formattedReviews); // Log the fetched reviews
+
+      const totalPlaytimeInSeconds = formattedReviews.reduce(
+        (total, review) =>
+          total +
+          review.playtime_hour * 3600 +
+          review.playtime_minutes * 60 +
+          review.playtime_seconds,
+        0
+      );
+
+      const totalReviews = formattedReviews.length;
+
+      const avgPlaytimeInSeconds = totalReviews > 0 ? totalPlaytimeInSeconds / totalReviews : 0;
+
+      const avgPlaytimeHour = Math.floor(avgPlaytimeInSeconds / 3600);
+      const avgPlaytimeMinute = Math.floor((avgPlaytimeInSeconds % 3600) / 60);
+      const avgPlaytimeSecond = Math.floor(avgPlaytimeInSeconds % 60);
+
+      const totalRating = formattedReviews.reduce((total, review) => total + review.rating, 0);
+      const avgRating = totalReviews > 0 ? totalRating / totalReviews : 0;
+
+      const roundedAvgRating = Math.round(avgRating * 100) / 100;
+
+      setAveragePlaytime({
+        hour: avgPlaytimeHour,
+        minute: avgPlaytimeMinute,
+        second: avgPlaytimeSecond,
+        rating: roundedAvgRating,
+      });
+    } catch (error) {
+      console.error('Error fetching reviews for the game: ', error);
+    }
+  };
+
+  fetchReviews();
+}, [appid]);
 
 
   return (
@@ -186,14 +182,16 @@ const IndividualGame = () => {
           <div className='rating'>
             <p>GamerHub Rating: {averagePlaytime?.rating ? <StarRating rating={averagePlaytime?.rating} />: 'Not rated yet'}</p>
           </div>
-
+          
           <div className='completion'>
             {averagePlaytime ? (
-              <p>Average Completion Time: {`${averagePlaytime?.hour}h ${averagePlaytime?.minute}m ${averagePlaytime?.second}s`}</p>
+              <p>
+                Average Completion Time:{' '}{`${averagePlaytime?.hour}h ${averagePlaytime?.minute}m ${averagePlaytime?.second}s`}
+              </p>
             ) : (
               <p>No reviews available to calculate average completion time.</p>
             )}
-          </div> 
+          </div>
 
 
          <div className='charts'>

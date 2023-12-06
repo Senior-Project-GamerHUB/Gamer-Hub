@@ -6,32 +6,50 @@ import { useNavigate } from 'react-router-dom';
 
 
 const Profile = () => {
-  const [userData, setUserData] = useState(null);
-  const [profilePicture, setProfilePicture] = useState(null);
+  
   const [user_name, setUser_Name] = useState([]);
   const [userLog, setUserLog] = useState([]);
   const [Email, setEmail] = useState([]);
   const [userid, setUserID] = useState([]);
-  const navigate = useNavigate();
-
-
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [profilePicture, setProfilePicture] = useState(null);
  
-
-  const handleProfilePictureChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfilePicture(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  const navigate = useNavigate();
 
   const heroStyle = {
     backgroundImage: 'url("https://i.redd.it/vo9vm1fcqrp71.jpg")',
   };
 
+ 
+  const handleProfilePictureChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setProfilePicture(URL.createObjectURL(file));
+      setSelectedFile(file);
+    }
+  };
+
+  const handleProfilePictureUpdate = async () => {
+    const formData = new FormData();
+    formData.append('profilePicture', selectedFile);
+
+    try {
+      // Use axios.post to send the file to the server
+      await axios.post('http://localhost:8080/updateProfilePicture', formData, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      // Optionally, update the local state with the new profile picture
+      setProfilePicture(URL.createObjectURL(selectedFile));
+    } catch (error) {
+      console.error('Error updating profile picture:', error);
+    }
+  };
+
+ 
  
 
   const handleSubmit = (event) =>{
@@ -61,14 +79,15 @@ const Profile = () => {
                     setUser_Name(res.data[0].name);
                     setEmail(res.data[0].email);
                     setUserID(res.data[0].user_id);
+                    setProfilePicture(res.data[0].picture)
     
                 })
                 .catch(err => console.log(err));
-  
 
 
+     console.log(profilePicture);
 
-
+               
   return (
     <div className="profile-background">
     <section className="page-top-section set-bg" style={heroStyle}>
@@ -87,22 +106,31 @@ const Profile = () => {
           <div className="col-lg-4">
             <div className="card mb-4" style={{ backgroundColor: 'rgb(48, 46, 52)' }}>
               <div className="card-body text-center">
-                <label htmlFor="profilePictureInput" className="profile-picture-label">
-                  <img
-                    src={profilePicture || userData?.avatar || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp'}
-                    alt="avatar"
-                    className="rounded-circle img-fluid"
-                    style={{ width: '150px', cursor: 'pointer' }}
-                  />
-                </label>
-                <input
-                  id="profilePictureInput"
-                  type="file"
-                  accept="image/*"
-                  style={{ display: 'none' }}
-                  onChange={handleProfilePictureChange}
-                />
-                <h5 className="my-3" style={{ color: 'white' }}>{userLog}</h5>
+              <label htmlFor="profilePictureInput" className="profile-picture-label">
+              <img
+                  src={profilePicture || 'https://example.com/default-profile-picture.jpg'}
+                  alt="avatar"
+                  className="rounded-circle img-fluid"
+                  style={{ width: '150px', cursor: 'pointer' }}
+                  onError={(e) => console.error('Error loading profile picture:', e)}
+              />
+              </label>
+              <input
+                id="profilePictureInput"
+                type="file"
+                accept="image/*"
+                style={{ display: 'none' }}
+                onChange={handleProfilePictureChange}
+              />
+              <h5 className="my-3" style={{ color: 'white' }}>{userLog}</h5>
+              
+              <button
+                type="button"
+                className="btn btn-success mt-3"
+                onClick={handleProfilePictureUpdate} 
+              >
+                Update Profile Picture
+              </button>
               </div>
             </div>
 
@@ -146,7 +174,7 @@ const Profile = () => {
               </div>
               <div className="col-md-6">
                 <div className="card mb-4 mb-md-0" style={{ backgroundColor: 'rgb(48, 46, 52)' }}>
-                  <h5 style={{ display: 'inline', color: 'white' }}>Reviewed Games</h5>
+                  <h5 style={{ display: 'inline', color: 'white' }}>Reviewed Games </h5>
                   <div className="card-body">
                     {/* ... Card content with inline styles */}
                   </div>

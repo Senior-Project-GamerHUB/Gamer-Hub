@@ -11,6 +11,9 @@ const PostPage = () => {
   const [newComment, setNewComment] = useState('');
   const [comments, setComments] = useState([]);
   const [postData, setPostData] = useState(null);
+  const [username, setUserLog] = useState([]);
+  const [userid, setUserID] = useState([]);
+  const [profilePicture, setProfilePicture] = useState(null);
 
   const params = useParams();
   const { postId } = params;
@@ -25,9 +28,20 @@ const PostPage = () => {
         setPostData(null);
       }
     };
-
+  
+    const fetchComments = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/getComments/${postId}`);
+        setComments(response.data);
+      } catch (error) {
+        console.error('Error fetching comments:', error);
+        setComments([]);
+      }
+    };
+  
     if (postId) {
       fetchPostData();
+      fetchComments();
     }
   }, [postId]);
 
@@ -35,14 +49,41 @@ const PostPage = () => {
     setNewComment(e.target.value);
   };
 
-  const handleCommentSubmit = (e) => {
+  axios.get('http://localhost:8080/loggedIn', {withCredentials: true})
+  .then(res => {
+      console.log(res.data[0].username);
+      setUserLog(res.data[0].username);
+      setUserID(res.data[0].user_id);
+
+  })
+
+  const isCommentValid = newComment.trim() !== '';
+
+  const handleCommentSubmit = async (e) => {
     e.preventDefault();
-    const submittedComment = {
-      username: 'Current User',
-      content: newComment,
-    };
-    setComments((prevComments) => [...prevComments, submittedComment]);
-    setNewComment('');
+
+    if (!isCommentValid) {
+  
+      alert('Comment cannot be empty');
+      return;
+    }
+
+
+    try {
+      const response = await axios.post(`http://localhost:8080/addComments`, {
+        user: userid,
+        username: username,
+        text: newComment,
+        post: postId,
+      });
+
+      const submittedComment = response.data;
+
+      setComments((prevComments) => [...prevComments, submittedComment]);
+      setNewComment('');
+    } catch (error) {
+      console.error('Error submitting comment:', error);
+    }
   };
 
   return (
@@ -93,7 +134,7 @@ const PostPage = () => {
         {comments.map((comment, index) => (
           <div key={index} className="comment-box">
             <p style={{ color: 'white' }}>
-              <strong>{comment.username}:</strong> {comment.content}
+              <strong>{comment.username}:</strong> {comment.text}
             </p>
           </div>
         ))}
