@@ -41,7 +41,6 @@ async function SteamAccountName(steamid)
 	try{
 		const response = await axios.get(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${key}&steamids=${steamid}`);
 		const data = await response.data;
-		console.log(data);
 		if(data["response"]["players"] != null ){
 			const steamAccount = data["response"]["players"];
 			return steamAccount;
@@ -99,8 +98,8 @@ app.use(session({
 	resave: false,
 
 	cookie: {
-	secure: false,
-	 maxAge: 3600000
+		secure: false,
+	 	maxAge: 3600000
 	}
 }));
 
@@ -271,14 +270,26 @@ app.post('/login', (req, res)=>{
 
 
 app.get('/api/auth/steam', passport.authenticate('steam', {failureRedirect: '/'}), function (req, res) {
-	res.redirect('http://localhost:3000/home');
+	res.redirect('http://localhost:3000/profile');
    });
 
 app.get('/api/auth/steam/return', passport.authenticate('steam', {failureRedirect: '/'}), async function (req, res) {
-	res.send(await SteamAccountName(req.user.id));
-	res.redirect('http://localhost:3000/home');
-   });
+	const data = await SteamAccountName(req.user.id);
+	db.query("UPDATE User SET username = ?, picture = ?, steamID = ? WHERE userID = ?", [data[0].personaname, data[0].avatarfull, data[0].steamid, req.session.userId], (error, result) =>{
+			
+		console.log("error is " + JSON.stringify(error));
+		console.log("results are " + result);
 
+		if (JSON.stringify(error).indexOf("steamID_UNIQUE") >0 ){
+			console.log('error');
+			// return res.send("error");
+		}
+		else{
+			// return res.send("ok");
+		}
+	})
+	res.redirect('http://localhost:3000/profile');
+   });
 
 app.post('/getSteamReview', async (req, res) => {
 	(async () => {
@@ -497,8 +508,7 @@ app.post('/addReview', async (req, res) => {
 			};
 
 			res.json(postData);
-  
-  
+			
 		}
 	  );
 	} catch (error) {

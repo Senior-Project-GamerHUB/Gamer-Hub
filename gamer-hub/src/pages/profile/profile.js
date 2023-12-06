@@ -13,8 +13,16 @@ const Profile = () => {
   const [Email, setEmail] = useState([]);
   const [userid, setUserID] = useState([]);
   const navigate = useNavigate();
-
-
+  
+  var loginInfo = sessionStorage.getItem('loginInfo');
+  if (typeof loginInfo !== 'undefined' && loginInfo !== null) {
+    const profileSess = sessionStorage.getItem('loginInfo');
+    setUserLog(profileSess.username);
+    setUser_Name(profileSess.name);
+    setEmail(profileSess.email);
+    setUserID(profileSess.user_id);
+    sessionStorage.removeItem("loginInfo");
+  }
  
 
   const handleProfilePictureChange = (e) => {
@@ -26,6 +34,14 @@ const Profile = () => {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleSteamLogin = () => {
+    var myArray = {username: userLog, email: Email, user_id: userid, name: user_name}
+    // Redirect the user to the Steam authentication page
+    sessionStorage.setItem('loginInfo', JSON.stringify(myArray));
+    window.location.href = 'http://localhost:8080/api/auth/steam';
+    
   };
 
   const heroStyle = {
@@ -131,7 +147,9 @@ const Profile = () => {
                     <p style={{ color: 'white' }}> Email: {Email}</p>
                   </div>
                 </div>
-          
+                <button className="btn btn-outline-light btn-lg px-5" type="button" onClick={handleSteamLogin}>
+                            Link with Steam
+                  </button>
               </div>
             </div>
 
