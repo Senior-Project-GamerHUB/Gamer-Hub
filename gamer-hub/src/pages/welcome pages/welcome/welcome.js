@@ -1,42 +1,50 @@
 import React from 'react';
-import './welcome.css'
+import './welcome.css';
+
 const Welcome = () => {
-    return(
-        <div className = "background-1">       
-           <section class="vh-100 gradient-custom">
-            <div class=" py-5 h-100 ">
-                <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                    <div class=" bg-dark text-white green-bg">
-                    <div class="card-body p-5 text-center">
+  return (
+    <div className="background-1">
+      <section className="vh-100 gradient-custom">
+        <div className="py-5 h-100">
+          <div className="row d-flex justify-content-center align-items-center h-100">
+            <div className="col-12 col-md-8 col-lg-6 col-xl-5">
+              <div className="bg-dark text-white green-bg">
+                <div className="card-body p-5 text-center">
+                  <div className="mb-md-5 mt-md-4 pb-8">
+                    <h2 className="fw-bold mb-2 text">Welcome to GamerHub</h2>
+                    <p className="text-white-50 mb-5"></p>
 
-                        <div class="mb-md-5 mt-md-4 pb-8">
+                    <a href="/login">
+                      <button className="btn btn-outline-light btn-lg px-5" type="submit"
+                       style={{ width: '150px' }}  // Adjust the width as needed
+                     
+                       >
+                        Login
+                      </button>
+                    </a>
 
-                        <h2 class="fw-bold mb-2 text-uppercase">Welcome to Gamer Hub</h2>
-                        <p class="text-white-50 mb-5"></p>
+                    <p className="small mb-5 pb-lg-2">
+                      <a className="text-white-50" href="/login"></a>
+                    </p>
 
-                       
-                        <a href="/login">
-                          <button class="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
-                        </a> 
-
-                        <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="/login"></a></p>
-
-                        <a href="/signup">
-                            <button class="btn btn-outline-light btn-lg" style={{ width: '150px' }} type="submit">Sign Up</button>
-                       </a>
-
-                        </div>
-
-                    </div>
-                    </div>
+                    <a href="/signup">
+                      <button
+                        className="btn btn-outline-light btn-lg"  // Make sure both buttons have the same class
+                        style={{ width: '150px' }}  // Adjust the width as needed
+                        type="submit"
+                      >
+                        Sign Up
+                      </button>
+                    </a>
+                  </div>
                 </div>
-                </div>
+              </div>
             </div>
-            </section>
+          </div>
         </div>
-    );
+      </section>
+    </div>
+  );
 };
-
 
 export default Welcome;

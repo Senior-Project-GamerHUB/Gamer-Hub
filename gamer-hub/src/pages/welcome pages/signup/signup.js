@@ -19,6 +19,11 @@ const SignUp = () => {
         repass:""
     })
 
+    const handleSteamLogin = () => {
+        // Redirect the user to the Steam authentication page
+        window.location.href = 'http://localhost:8080/api/auth/steam';
+    };
+
     const navigate = useNavigate();
     const [errors, setErrors] = useState({})
 
@@ -223,9 +228,11 @@ const SignUp = () => {
                     </div>
 
                     <p class="mb-0">Already Have an Account? <a href="/login" class="text-white-50 fw-bold">Login</a>
+                    <p className="mb-0" onClick={handleSteamLogin}>
+                    Have a Steam account? <span style={{ color: 'grey', textDecoration: 'underline', cursor: 'pointer' }}>Sign Up with Steam</span>
                     </p>
-                  
-
+                    </p>
+                
                 </div>
                 </div>
             </div>
