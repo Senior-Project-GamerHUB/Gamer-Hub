@@ -534,7 +534,35 @@ app.post('/addReview', async (req, res) => {
 	}
   });
 
-  
+  const storage = multer.memoryStorage();
+  const upload = multer({
+	storage: storage,
+	limits: {
+	   fileSize: 1024 * 1024 * 5, // Adjust the limit as needed (5MB in this example)
+	},
+ });
+
+ app.post('/updateProfilePicture/:userId', upload.single('profilePicture'), (req, res) => {
+	const userId = req.params.userId;
+	const file = req.file;
+ 
+	if (!file) {
+	   return res.status(400).send('No file uploaded.');
+	}
+ 
+	// Save the file to the database (as a blob data)
+	const query = 'UPDATE users SET picture = ? WHERE user_id = ?';
+	db.query(query, [file.buffer, userId], (err, result) => {
+	   if (err) {
+		  console.error('Error updating profile picture in database:', err);
+		  return res.status(500).send('Internal Server Error');
+	   }
+ 
+	   // Respond with success and the updated user data
+	   res.json({ success: true, picture: `data:image/jpeg;base64,${file.buffer.toString('base64')}` });
+	});
+ });
+ 
   
   
   

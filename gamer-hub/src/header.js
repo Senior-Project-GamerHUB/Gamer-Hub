@@ -1,58 +1,59 @@
-import React, {useEffect,useState} from 'react';
-import {Link} from 'react-router-dom';
-import './css/bootstrap.min.css'; 
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import './css/bootstrap.min.css';
 import './css/slicknav.min.css';
 import './css/magnific-popup.css';
 import './css/animate.css';
-import './css/style.css'; 
+import './css/style.css';
 import axios from 'axios';
 
-
-
-const test = "test this ";
-
 const Header = () => {
+  const [user, setUser] = useState({});
+  const [profilePicture, setProfilePicture] = useState(null);
 
-    const [user, setUser] = useState([]);
+  useEffect(() => {
+    axios.get('http://localhost:8080/loggedIn', { withCredentials: true })
+      .then(res => {
+        setProfilePicture(res.data[0].picture);
+        setUser(res.data[0]);
+         const arrayBuffer = new Uint8Array(res.data[0].picture.data);
+         const base64String = btoa(String.fromCharCode.apply(null, arrayBuffer));
+         setProfilePicture(base64String);
+      })
+      .catch(err => console.log(err));
+  }, []);
 
-
-    axios.get('http://localhost:8080/loggedIn', {withCredentials: true})
-              .then(res => {
-                  console.log(res.data[0].username);
-                  setUser(res.data[0].username);
-  
-              })
-              .catch(err => console.log(err));
-
-    
-
-
+  const defaultProfilePicture = 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png';
 
   return (
-	<header className="header-section">
-    <div className="header-warp">
-       
+    <header className="header-section">
+      <div className="header-warp">
         <div className="header-bar-warp d-flex">
-            <a href="/home" className="site-logo" style={{ marginRight: '20px' }}>
-                GamerHub
-            </a>
-            <nav className="top-nav-area w-100">
-                <div className="user-panel">
-                    <a href="/profile/user/id">
-                        {user}
-                    </a>
-        
-                </div>
-                <ul className="main-menu primary-menu">
-                    <li><a href="/home">Home</a></li>
-                    <li><a href="/forum">Forum</a></li>
-                    <li><a href="/submit">Submit</a></li>
-                
-                </ul>
-            </nav>
+          <Link to="/home" className="site-logo" style={{ marginRight: '20px' }}>
+            GamerHub
+          </Link>
+          <nav className="top-nav-area w-100">
+            <div className="user-panel">
+              <img
+                src={`data:image/png;base64,${profilePicture}`|| defaultProfilePicture}
+                style={{ width: '30px', height: '30px', borderRadius: '50%', marginRight: '5px' }}
+                onError={(e) => {
+                    e.target.src = defaultProfilePicture; // Set a default image on error
+                  }}
+              />
+              <Link to={`/profile/${user.username}/${user.user_id}`}>
+                {user.username}
+              </Link>
+            </div>
+            <ul className="main-menu primary-menu">
+              <li><Link to="/home">Home</Link></li>
+              <li><Link to="/forum">Forum</Link></li>
+              <li><Link to="/submit">Submit</Link></li>
+            </ul>
+          </nav>
         </div>
-    </div>
-</header>
+      </div>
+    </header>
   );
 };
 
