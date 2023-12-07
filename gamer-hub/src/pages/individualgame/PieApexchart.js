@@ -25,12 +25,25 @@ class PieApexChart extends React.Component {
           }
         }]
       },
-    
-    
     };
   }
 
+  // async componentDidMount() {
+  //   const { gameID } = this.props; // Assuming gameID is passed as a prop
+  //   if (!gameID) return;
 
+  //   try {
+  //     const response = await axios.get(`/getReviewsForGame=${gameID}`);
+  //     const compStatusData = response.data;
+
+  //     // Assuming comp_status values are in an array in the response
+  //     const series = compStatusData.map((compStatus) => compStatus.value);
+
+  //     this.setState({ series });
+  //   } catch (error) {
+  //     console.error('Error fetching comp_status:', error);
+  //   }
+  // }
 
   render() {
     return (

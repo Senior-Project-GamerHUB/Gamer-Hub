@@ -16,6 +16,8 @@ const Forum2 = () => {
   const [userid, setUserID] = useState([]);
   const [forumPosts, setForumPosts] = useState([]);
   const [username, setUserLog] = useState([]);
+  const [profilePicture, setProfilePicture] = useState(null);
+  const { postID } = useParams();
 
 
   useEffect(() => {
@@ -40,6 +42,10 @@ const Forum2 = () => {
     .then(res => {
         setUserID(res.data[0].user_id);
         setUserLog(res.data[0].username);
+        const arrayBuffer = new Uint8Array(res.data[0].picture.data);
+        const base64String = btoa(String.fromCharCode.apply(null, arrayBuffer));
+        setProfilePicture(base64String);
+       
     })
     .catch(err => console.log(err));
 
@@ -48,7 +54,8 @@ const Forum2 = () => {
       try {
         const response = await axios.post('http://localhost:8080/addForum', {
           user: userid,
-          username: username, 
+          picture: profilePicture,
+          username: username,
           game: appid,
           title: newPost.title,
           text: newPost.content,
@@ -56,9 +63,14 @@ const Forum2 = () => {
     
         console.log('Server response:', response.data);
     
+       
         setForumPosts((prevForumPosts) => [...prevForumPosts, response.data]);
     
+        
         setShowPostForm(false);
+    
+       
+        window.location.reload();
       } catch (error) {
         console.error('Error submitting post:', error);
       }
@@ -151,7 +163,7 @@ const Forum2 = () => {
           )}
 
           {forumPosts.map((post) => (
-            <PostCard key={post.postID} post={{ id: post.postID, username: post.userName, title: post.title, text: post.text }}/>
+            <PostCard key={post.postID} post={{ id: post.postID, username: post.userName, title: post.title, text: post.text,  profilePicture: post.picture }}/>
           ))}
 
 

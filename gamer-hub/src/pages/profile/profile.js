@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import './profile.css';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 
 const Profile = () => {
-  
+
+  const { userName, userID } = useParams();
   const [user_name, setUser_Name] = useState([]);
   const [userLog, setUserLog] = useState([]);
   const [Email, setEmail] = useState([]);
   const [userid, setUserID] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [profilePicture, setProfilePicture] = useState(null);
- 
+  const [defaultProfilePicture, setDefaultProfilePicture] = useState('https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png');
+
   const navigate = useNavigate();
 
   var loginInfo = sessionStorage.getItem('loginInfo');
@@ -30,7 +32,6 @@ const Profile = () => {
     backgroundImage: 'url("https://i.redd.it/vo9vm1fcqrp71.jpg")',
   };
 
-
  
   const handleProfilePictureChange = (e) => {
     const file = e.target.files[0];
@@ -38,15 +39,6 @@ const Profile = () => {
       setProfilePicture(URL.createObjectURL(file));
       setSelectedFile(file);
     }
-  };
-
-
-  const handleSteamLogin = () => {
-    var myArray = {username: userLog, email: Email, user_id: userid, name: user_name}
-    // Redirect the user to the Steam authentication page
-    sessionStorage.setItem('loginInfo', JSON.stringify(myArray));
-    window.location.href = 'http://localhost:8080/api/auth/steam';
-    
   };
 
   const handleProfilePictureUpdate = async () => {
@@ -67,46 +59,64 @@ const Profile = () => {
     } catch (error) {
       console.error('Error updating profile picture:', error);
     }
-
   };
 
- 
  
 
   const handleSubmit = (event) =>{
     event.preventDefault();
 
-    console.log("CLICKED LOGOUT");
+    axios.get('http://localhost:8080/loggout', { withCredentials: true })
+      .then(res => {
+        console.log(res.data);
+      })
+      .catch(err => console.log(err));
 
-        axios.get('http://localhost:8080/loggout',  {withCredentials: true})
+    navigate('/');
+  };
+
+  useEffect(() => {
+    axios.get(`http://localhost:8080/loggedIn?userName=${userName}&userID=${userID}`, { withCredentials: true })
+      .then(res => {
+        setUserLog(res.data[0].username);
+        setUser_Name(res.data[0].name);
+        setEmail(res.data[0].email);
+        setUserID(res.data[0].user_id);
+
+        const arrayBuffer = new Uint8Array(res.data[0].picture.data);
+        const base64String = btoa(String.fromCharCode.apply(null, arrayBuffer));
+        setProfilePicture(base64String);
+      })
+      .catch(err => console.log(err));
+  }, [userName, userID]);
+
+  console.log(profilePicture);
+
+  
+  const handleUpdateProfilePicture = (event) => {
+    event.preventDefault();
+  
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append('profilePicture', selectedFile);
+  
+      axios.post(`http://localhost:8080/updateProfilePicture/${userid}`, formData, { withCredentials: true })
         .then(res => {
-
-            console.log(res.data);
-        
-            
-   
+          // Check the response structure and make sure it contains the correct path to the new picture
+          const newProfilePicture = res.data?.picture || res.data?.pathToPicture;
+  
+          console.log('Profile picture updated successfully');
+          setProfilePicture(newProfilePicture);
+          setSelectedFile(null); // Reset the selectedFile state
+  
+          // Reload the page
+          window.location.reload();
         })
-        .catch(err => console.log(err));
-
-        navigate('/');
-
-      }
-
-
-   axios.get('http://localhost:8080/loggedIn', {withCredentials: true})
-                .then(res => {
-                    console.log(res.data[0].username);
-                    setUserLog(res.data[0].username);
-                    setUser_Name(res.data[0].name);
-                    setEmail(res.data[0].email);
-                    setUserID(res.data[0].user_id);
-                    setProfilePicture(res.data[0].picture)
-    
-                })
-                .catch(err => console.log(err));
-
-
-     console.log(profilePicture);
+        .catch(err => {
+          console.error('Error updating profile picture:', err);
+        });
+    }
+  };
 
                
   return (
@@ -127,13 +137,12 @@ const Profile = () => {
           <div className="col-lg-4">
             <div className="card mb-4" style={{ backgroundColor: 'rgb(48, 46, 52)' }}>
               <div className="card-body text-center">
-              <label htmlFor="profilePictureInput" className="profile-picture-label">
+              <label htmlFor="profilePictureInput" className="profile-picture">
               <img
-                  src={profilePicture || 'https://example.com/default-profile-picture.jpg'}
-                  alt="avatar"
-                  className="rounded-circle img-fluid"
-                  style={{ width: '150px', cursor: 'pointer' }}
-                  onError={(e) => console.error('Error loading profile picture:', e)}
+                src={selectedFile ? URL.createObjectURL(selectedFile) : `data:image/png;base64,${profilePicture}` || defaultProfilePicture}
+                className="rounded-circle img-fluid"
+                style={{ width: '150px', cursor: 'pointer' }}
+                onError={(e) => console.error('Error loading profile picture:', e)}
               />
               </label>
               <input
@@ -141,15 +150,15 @@ const Profile = () => {
                 type="file"
                 accept="image/*"
                 style={{ display: 'none' }}
-                onChange={handleProfilePictureChange}
+                onChange={(e) => setSelectedFile(e.target.files[0])}
               />
               <h5 className="my-3" style={{ color: 'white' }}>{userLog}</h5>
               
               <button
                 type="button"
-                className="btn btn-success mt-3"
-                onClick={handleProfilePictureUpdate} 
-              >
+                className="btn btn-success mt-3" 
+                onClick={handleUpdateProfilePicture}
+              >  
                 Update Profile Picture
               </button>
               </div>
@@ -180,7 +189,7 @@ const Profile = () => {
                     <p style={{ color: 'white' }}> Email: {Email}</p>
                   </div>
                 </div>
-                <button className="btn btn-outline-light btn-lg px-5" type="button" onClick={handleSteamLogin}>
+                <button className="btn btn-outline-light btn-lg px-5" type="button" onClick={""}>
                             Link with Steam
                   </button>
               </div>
