@@ -10,11 +10,6 @@ const SteamStrategy = passportSteam.Strategy;
 const axios = require('axios');
 const cookieParser = require('cookie-parser');
 const bodyParser = require("body-parser");
-const multer = require('multer');
-
-
-
-
 
 
 const port = process.env.PORT || 8080;

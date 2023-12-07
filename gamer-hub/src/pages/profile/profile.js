@@ -49,9 +49,6 @@ const Profile = () => {
     
   };
 
-  const heroStyle = {
-    backgroundImage: 'url("https://i.redd.it/vo9vm1fcqrp71.jpg")',
-
   const handleProfilePictureUpdate = async () => {
     const formData = new FormData();
     formData.append('profilePicture', selectedFile);
