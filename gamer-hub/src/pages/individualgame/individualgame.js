@@ -18,6 +18,7 @@ const IndividualGame = () => {
   const { appid } = useParams();
   const [reviews, setReviews] = useState([]);
   const [averagePlaytime, setAveragePlaytime] = useState(null);
+  const [isGameSaved, setIsGameSaved] = useState(false);
 
   useEffect(() => {
     const fetchGameDetails = async () => {
@@ -36,7 +37,31 @@ const IndividualGame = () => {
   
     fetchGameDetails();
   }, [appid]);
-  
+
+  const [userid, setUserID] = useState([]);
+  axios.get('http://localhost:8080/loggedIn', {withCredentials: true})
+  .then(res => {
+      setUserID(res.data[0].user_id);
+      
+  })
+
+
+  .catch(err => console.log(err));
+
+  const handleSaveGame = async () => {
+    try {
+      
+      const response = await axios.post('http://localhost:8080/saveGame', {
+        user: userid, // Replace with the actual user ID
+        game: appid, // Replace with the actual game ID
+      });
+
+      console.log('Save Game Response:', response.data);
+      setIsGameSaved(true);
+    } catch (error) {
+      console.error('Error saving game:', error);
+    }
+  };
 
  useEffect(() => {
   const fetchReviews = async () => {
@@ -154,12 +179,9 @@ const IndividualGame = () => {
                     <button className="btn3">Submit Review</button>
                   </Link>
                 )}  
-                  {gameData && (
-                    <button className="btn3" >
-                   Save Game
-                 </button>
-                )}
-                 
+               <button className="btn3" onClick={handleSaveGame} disabled={isGameSaved}>
+                  {isGameSaved ? 'Game Saved' : 'Save Game'}
+                </button>
               </div>
               {gameData && (
                   <Link to={`/forum/game/${gameData.id}`}>
