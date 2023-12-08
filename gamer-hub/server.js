@@ -336,25 +336,41 @@ app.post('/addReview', async (req, res) => {
     );
 });
 
-  app.post('/saveGame', async (req, res) => {
-
-	  const userID = req.body.user;
-	  const gameID = req.body.game;
-	   
-	  db.query(
-		"INSERT INTO SavedGames (userID, gameID) VALUES(?,?)",
-		[userID, gameID],
-		(error, result) => {
-		  console.log("error is " + JSON.stringify(error));
-		  console.log("results are " + result);
-	
-		  if (error) {
-			res.status(500).send("Error saving game.");
-		  } else {
-			res.status(200).send("Game Saved successfully.");
-		  }
+app.post('/saveGame', async (req, res) => {
+	const userID = req.body.user;
+	const gameID = req.body.game;
+  
+	// Check if the combination of userID and gameID already exists
+	db.query(
+	  "SELECT * FROM SavedGames WHERE userID = ? AND gameID = ?",
+	  [userID, gameID],
+	  (selectError, selectResult) => {
+		if (selectError) {
+		  console.error("Error checking existing record:", selectError);
+		  res.status(500).send("Error checking existing record.");
+		  return;
 		}
-	  );
+  
+		if (selectResult.length > 0) {
+		  // The combination already exists, so the game is already saved
+		  res.status(400).send("Game is already saved.");
+		} else {
+		  // Insert the new record since it doesn't exist
+		  db.query(
+			"INSERT INTO SavedGames (userID, gameID) VALUES (?, ?)",
+			[userID, gameID],
+			(insertError, insertResult) => {
+			  if (insertError) {
+				console.error("Error saving game:", insertError);
+				res.status(500).send("Error saving game.");
+			  } else {
+				res.status(200).send("Game saved successfully.");
+			  }
+			}
+		  );
+		}
+	  }
+	);
   });
 
   app.get('/getSavedGames/:userID', (req, res) => {
