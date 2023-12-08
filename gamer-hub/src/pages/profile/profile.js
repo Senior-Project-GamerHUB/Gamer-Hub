@@ -3,6 +3,8 @@ import './profile.css';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 
 const Profile = () => {
@@ -15,6 +17,103 @@ const Profile = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [profilePicture, setProfilePicture] = useState(null);
   const [defaultProfilePicture, setDefaultProfilePicture] = useState('https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png');
+  const [userReviews, setUserReviews] = useState([]);
+  const [savedGames, setSavedGames] = useState([]);
+
+  const handleDeleteSavedGame = (gameID) => {
+    axios.delete(`http://localhost:8080/deleteSavedGame/${userID}/${gameID}`, { withCredentials: true })
+      .then((res) => {
+        // Check if the server response indicates success
+        if (res.status === 200) {
+          // Update the state to reflect the changes (remove the deleted game)
+          setSavedGames((prevSavedGames) => prevSavedGames.filter((game) => game.gameID !== gameID));
+          console.log('Saved game deleted successfully');
+        } else {
+          console.error('Unexpected response:', res);
+        }
+      })
+      .catch((error) => {
+        console.error('Error deleting saved game:', error);
+      });
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch user reviews by userID
+        const userReviewsResponse = await axios.get(`http://localhost:8080/getReviewsByUser?userID=${userID}`, {
+          withCredentials: true,
+        });
+  
+        const reviews = userReviewsResponse.data;
+  
+        // Extract game IDs from reviews
+        const reviewGameIDs = reviews.map((review) => review.gameID);
+  
+        // Fetch details for each reviewed game using the game IDs
+        const reviewGameDetailsPromises = reviewGameIDs.map(async (gameID) => {
+          const gameResponse = await axios.get(`https://api.rawg.io/api/games/${gameID}`, {
+            params: {
+              key: '3f02ae9693244e86b768ab662105fd14',
+            },
+          });
+  
+          return gameResponse.data;
+        });
+  
+        // Wait for all reviewed game details requests to complete
+        const reviewGameDetails = await Promise.all(reviewGameDetailsPromises);
+  
+        // Combine reviews and game details
+        const userReviewsWithDetails = reviews.map((review, index) => ({
+          ...review,
+          gameDetails: reviewGameDetails[index],
+        }));
+  
+        // Update the state with the fetched user reviews and game details
+        setUserReviews(userReviewsWithDetails);
+  
+        // Fetch saved games by userID
+        const savedGamesResponse = await axios.get(`http://localhost:8080/getSavedGames/${userID}`, {
+          withCredentials: true,
+        });
+  
+        const savedGames = savedGamesResponse.data;
+  
+        // Extract game IDs from saved games
+        const savedGameIDs = savedGames.map((savedGame) => savedGame.gameID);
+  
+        // Fetch details for each saved game using the game IDs
+        const savedGameDetailsPromises = savedGameIDs.map(async (gameID) => {
+          const gameResponse = await axios.get(`https://api.rawg.io/api/games/${gameID}`, {
+            params: {
+              key: '3f02ae9693244e86b768ab662105fd14',
+            },
+          });
+  
+          return gameResponse.data;
+        });
+  
+        // Wait for all saved game details requests to complete
+        const savedGameDetails = await Promise.all(savedGameDetailsPromises);
+  
+        // Combine saved games and game details
+        const savedGamesWithDetails = savedGames.map((savedGame, index) => ({
+          ...savedGame,
+          gameDetails: savedGameDetails[index],
+        }));
+  
+        // Update the state with the fetched saved games and game details
+        setSavedGames(savedGamesWithDetails);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    fetchData();
+  }, [userID]);
+
+
 
   const navigate = useNavigate();
 
@@ -200,15 +299,63 @@ const Profile = () => {
                 <div className="card mb-4 mb-md-0" style={{ backgroundColor: 'rgb(48, 46, 52)' }}>
                   <h5 style={{ display: 'inline', color: 'white' }}>Saved Games</h5>
                   <div className="card-body">
-                    {/* ... Card content with inline styles */}
+                  {savedGames.length > 0 ? (
+                            <ul>
+                              {savedGames.map((savedGame) => (
+                                <li key={savedGame.gameID}>
+                                  <p>{savedGame.gameDetails.name}</p>
+                                  <a
+                                    href={`/game/${savedGame.gameID}`} // Replace with the actual route for game details
+                                    style={{ textDecoration: 'none', color: 'inherit' }}
+                                  >
+                                    <img
+                                      className='profileGameImg'
+                                      src={savedGame.gameDetails.background_image}
+                                      alt={`Game: ${savedGame.gameDetails.name}`}
+                                      style={{ maxWidth: '150px', maxHeight: '150px' }}
+                                    />
+                                  </a>
+                                  <button className='deleteButton' onClick={() => handleDeleteSavedGame(savedGame.gameID)}>
+                                    <FontAwesomeIcon icon={faTimes} />
+                                  </button>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p>You have no saved games.</p>
+                          )}
                   </div>
                 </div>
               </div>
+
+
               <div className="col-md-6">
                 <div className="card mb-4 mb-md-0" style={{ backgroundColor: 'rgb(48, 46, 52)' }}>
                   <h5 style={{ display: 'inline', color: 'white' }}>Reviewed Games </h5>
                   <div className="card-body">
-                    {/* ... Card content with inline styles */}
+                  {userReviews.length > 0 ? (
+                            <ul>
+                              {userReviews.map((review) => (
+                                <li key={review.gameID}>
+                                  <p>{review.gameDetails.name}</p>
+                                  <a
+                                    href={`/game/${review.gameID}`} // Replace with the actual route for game details
+                                    style={{ textDecoration: 'none', color: 'inherit' }}
+                                  >
+                                    <img
+                                      className='profileGameImg'
+                                      src={review.gameDetails.background_image}
+                                      alt={`Game: ${review.gameDetails.name}`}
+                                      style={{ maxWidth: '150px', maxHeight: '150px' }}
+                                    />
+                                  </a>
+                                  {/* Add more details based on your backend response */}
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p>You have not reviewed games.</p>
+                          )}
                   </div>
                 </div>
               </div>

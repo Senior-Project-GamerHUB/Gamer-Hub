@@ -10,7 +10,7 @@ const SteamStrategy = passportSteam.Strategy;
 const axios = require('axios');
 const cookieParser = require('cookie-parser');
 const bodyParser = require("body-parser");
-
+const multer = require("multer");
 
 const port = process.env.PORT || 8080;
 key = '6FDE1CAA90BAA7010C02DF447AF228BE';
@@ -303,34 +303,112 @@ app.post('/getSteamReview', async (req, res) => {
 });
 
 app.post('/addReview', async (req, res) => {
-	const userID = req.body.user;
-	const username = req.body.username;
-	const gameID = req.body.game;
-	const votes = req.body.title;
-	const review = req.body.text;
-	const playtime_h = req.body.playtime_hour;
-	const playtime_m = req.body.playtime_minutes;
-	const playtime_s = req.body.playtime_seconds;
-	const rating = req.body.review;
-	const comp_status = req.body.completion_status;
-	const difficulty = req.body.difficulty;
-	const wtp = req.body.worth_the_price;
+    const userID = req.body.user;
+    const username = req.body.username;
+    const gameID = req.body.game;
+    const votes = req.body.title;
+    const review = req.body.text;
+    const playtime_h = req.body.playtime_hour;
+    const playtime_m = req.body.playtime_minutes;
+    const playtime_s = req.body.playtime_seconds;
+    const rating = req.body.review;
+    const comp_status = req.body.completion_status;
+    const difficulty = req.body.difficulty;
+    const wtp = req.body.worth_the_price;
+
+    db.query(
+        "INSERT INTO Review (userID, userName, gameID, vote_up_num, review, playtime_hour, playtime_minutes, playtime_seconds, rating, comp_status, difficulty, wtp) VALUES(?,?,?,?,?,?,?,?,?,?,?,?) " +
+        "ON DUPLICATE KEY UPDATE " +
+        "userID = VALUES(userID), userName = VALUES(userName), vote_up_num = VALUES(vote_up_num), review = VALUES(review), playtime_hour = VALUES(playtime_hour), " +
+        "playtime_minutes = VALUES(playtime_minutes), playtime_seconds = VALUES(playtime_seconds), rating = VALUES(rating), comp_status = VALUES(comp_status), " +
+        "difficulty = VALUES(difficulty), wtp = VALUES(wtp)",
+        [userID, username, gameID, votes, review, playtime_h, playtime_m, playtime_s, rating, comp_status, difficulty, wtp],
+        (error, result) => {
+            console.log("error is " + JSON.stringify(error));
+            console.log("results are " + result);
+
+            if (error) {
+                res.status(500).send("Error inserting/updating review.");
+            } else {
+                res.status(200).send("Review inserted/updated successfully.");
+            }
+        }
+    );
+});
+
+  app.post('/saveGame', async (req, res) => {
+
+	  const userID = req.body.user;
+	  const gameID = req.body.game;
+	   
+	  db.query(
+		"INSERT INTO SavedGames (userID, gameID) VALUES(?,?)",
+		[userID, gameID],
+		(error, result) => {
+		  console.log("error is " + JSON.stringify(error));
+		  console.log("results are " + result);
+	
+		  if (error) {
+			res.status(500).send("Error saving game.");
+		  } else {
+			res.status(200).send("Game Saved successfully.");
+		  }
+		}
+	  );
+  });
+
+  app.get('/getSavedGames/:userID', (req, res) => {
+	const userID = req.params.userID;
   
 	db.query(
-	  "INSERT INTO Review (userID, userName, gameID, vote_up_num, review, playtime_hour, playtime_minutes, playtime_seconds, rating, comp_status, difficulty, wtp) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
-	  [userID, username, gameID, votes, review, playtime_h, playtime_m, playtime_s, rating, comp_status, difficulty, wtp],
-	  (error, result) => {
+	  "SELECT * FROM SavedGames WHERE userID = ?",
+	  [userID],
+	  (error, results) => {
 		console.log("error is " + JSON.stringify(error));
-		console.log("results are " + result);
+		console.log("results are " + JSON.stringify(results));
   
 		if (error) {
-		  res.status(500).send("Error inserting review.");
+		  res.status(500).send("Error retrieving saved games.");
 		} else {
-		  res.status(200).send("Review inserted successfully.");
+		  res.status(200).json(results);
 		}
 	  }
 	);
   });
+
+  app.delete('/deleteSavedGame/:userID/:gameID', (req, res) => {
+	try {
+	  const { userID, gameID } = req.params;
+  
+	  // Check if the saved game exists before attempting to delete
+	  db.query('SELECT * FROM SavedGames WHERE userID = ? AND gameID = ?', [userID, gameID], (error, results) => {
+		if (error) {
+		  console.error('Error checking saved game:', error);
+		  return res.status(500).json({ error: 'Internal Server Error' });
+		}
+  
+		if (results.length === 0) {
+		  // If no saved game is found, respond with a 404 status
+		  return res.status(404).json({ error: 'Saved game not found' });
+		}
+  
+		// The saved game exists, proceed to delete
+		db.query('DELETE FROM SavedGames WHERE userID = ? AND gameID = ?', [userID, gameID], (deleteError, deleteResult) => {
+		  if (deleteError) {
+			console.error('Error deleting saved game:', deleteError);
+			return res.status(500).json({ error: 'Internal Server Error' });
+		  }
+  
+		  // Send a success response
+		  res.status(200).json({ message: 'Saved game deleted successfully' });
+		});
+	  });
+	} catch (error) {
+	  console.error('Error deleting saved game:', error);
+	  res.status(500).json({ error: 'Internal Server Error' });
+	}
+  });
+
 
   app.get('/getReviewsForGame', async (req, res) => {
 	try {
@@ -377,6 +455,43 @@ app.post('/addReview', async (req, res) => {
 			res.json(reviews);
 			}
 	);
+	} catch (error) {
+	  console.error("Unexpected error:", error);
+	  res.status(500).json({ error: "Internal Server Error" });
+	}
+  });
+
+  app.get('/getReviewsByUser', async (req, res) => {
+	try {
+	  const { userID } = req.query;
+  
+	  if (!userID) {
+		return res.status(400).json({ error: "Missing userID parameter" });
+	  }
+  
+	  console.log('Received userID:', userID);
+  
+	  db.query(
+		"SELECT gameID FROM Review WHERE userID = ?",
+		[userID],
+		(error, result) => {
+		  if (error) {
+			console.error("Error fetching reviews by user:", error);
+			return res.status(500).json({ error: "Internal Server Error" });
+		  }
+  
+		  console.log('Fetched reviews from the database:', result);
+  
+		  const reviews = result.map((row) => ({
+			gameID: row.gameID,
+
+		  }));
+  
+		  console.log('Extracted reviews:', reviews);
+  
+		  res.json(reviews);
+		}
+	  );
 	} catch (error) {
 	  console.error("Unexpected error:", error);
 	  res.status(500).json({ error: "Internal Server Error" });
