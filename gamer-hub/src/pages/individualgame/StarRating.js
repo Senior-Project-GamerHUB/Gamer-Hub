@@ -11,12 +11,9 @@ const StarRating = ({ rating }) => {
     starElements.push(<span key={i} className="star filled">★</span>);
   }
 
-  if (hasHalfStar) {
-    starElements.push(<span key="half" className="star half">★</span>);
-  }
-
+ 
   for (let i = 0; i < remainingStars; i++) {
-    starElements.push(<span key={`empty-${i}`} className="star">☆</span>);
+    starElements.push(<span key={`empty-${i}`} className="star">★</span>);
   }
 
   return <div className="star-rating">{starElements}</div>;

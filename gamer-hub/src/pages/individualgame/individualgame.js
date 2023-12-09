@@ -50,14 +50,15 @@ const IndividualGame = () => {
 
   const handleSaveGame = async () => {
     try {
-      
       const response = await axios.post('http://localhost:8080/saveGame', {
-        user: userid, // Replace with the actual user ID
-        game: appid, // Replace with the actual game ID
+        user: userid,
+        game: appid,
       });
-
+  
       console.log('Save Game Response:', response.data);
-      setIsGameSaved(true);
+  
+      // Update isGameSaved based on the response from the server
+      setIsGameSaved(response.data.isGameSaved);
     } catch (error) {
       console.error('Error saving game:', error);
     }
@@ -105,9 +106,18 @@ const IndividualGame = () => {
       const avgPlaytimeMinute = Math.floor((avgPlaytimeInSeconds % 3600) / 60);
       const avgPlaytimeSecond = Math.floor(avgPlaytimeInSeconds % 60);
 
-      const totalRating = formattedReviews.reduce((total, review) => total + review.rating, 0);
-      const avgRating = totalReviews > 0 ? totalRating / totalReviews : 0;
-
+      const totalRating = formattedReviews.reduce((total, review) => {
+        // Ensure each review's rating is capped at 5
+        const cappedRating = Math.min(review.rating, 5);
+        return total + cappedRating;
+      }, 0);
+      
+      // Ensure that the total rating is capped at 5 times the number of reviews
+      const cappedTotalRating = Math.min(totalRating, 5 * formattedReviews.length);
+      
+      const avgRating = formattedReviews.length > 0 ? cappedTotalRating / formattedReviews.length : 0;
+      
+      // Use Math.round() for standard rounding behavior
       const roundedAvgRating = Math.round(avgRating * 100) / 100;
 
       setAveragePlaytime({
@@ -179,7 +189,7 @@ const IndividualGame = () => {
                     <button className="btn3">Submit Review</button>
                   </Link>
                 )}  
-               <button className="btn3" onClick={handleSaveGame} disabled={isGameSaved}>
+                <button className="btn3" onClick={handleSaveGame} disabled={isGameSaved}>
                   {isGameSaved ? 'Game Saved' : 'Save Game'}
                 </button>
               </div>
@@ -216,30 +226,29 @@ const IndividualGame = () => {
           </div>
 
 
-         <div className='charts'>
-          <h2>Completion</h2>
+          <div className='charts'>
+            <h2>Completion</h2>
+            {reviews.length > 0 ? (
+              <PieApexChart completionStatusData={reviews.map(review => review.completion_status)} />            ) : (
+              <p>No reviews available to display completion chart.</p>
+            )}
+          </div>
+
+          <div className='charts'>
+          <h2>Difficulty</h2>
           {reviews.length > 0 ? (
-            <PieApexChart completionStatusData={reviews.map(review => review.completion_status)} />
+            <StackApexChart difficultyData={reviews.map(review => review.difficulty)} />
           ) : (
-            <p>No reviews available to display completion chart.</p>
+            <p>No reviews available to display difficulty chart.</p>
           )}
         </div>
-
-        <div className='charts'>
-        <h2>Difficulty</h2>
-        {reviews.length > 0 ? (
-          <StackApexChart />
-        ) : (
-          <p>No reviews available to display difficulty chart.</p>
-        )}
-      </div>
       
         <div className='charts'>
           <h2>Worth the Price</h2>
           {reviews.length > 0 ? (
-            <DonutApexChart />
+            <DonutApexChart worthThePriceData={reviews.map(review => review.worth_the_price)} />
           ) : (
-            <p>No reviews available to display worth the price chart.</p>
+            <p>No reviews available to display difficulty chart.</p>
           )}
         </div>
 
