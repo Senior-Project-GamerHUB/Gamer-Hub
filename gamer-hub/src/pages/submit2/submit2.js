@@ -56,12 +56,16 @@ const Submit2 = () => {
       }
     
       const handlePlaytimeMinutesChange = (e) => {
-        setPlaytimeMinutes(e.target.value);
-      }
+        // Allow values up to 60 for minutes
+        const minutesValue = Math.min(e.target.value, 60);
+        setPlaytimeMinutes(minutesValue);
+      };
     
       const handlePlaytimeSecondsChange = (e) => {
-        setPlaytimeSeconds(e.target.value);
-      }
+        // Allow values up to 60 for seconds
+        const secondsValue = Math.min(e.target.value, 60);
+        setPlaytimeSeconds(secondsValue);
+      };
 
       const handleRatingChange = (value) => {
        

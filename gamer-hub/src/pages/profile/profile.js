@@ -237,12 +237,13 @@ const Profile = () => {
             <div className="card mb-4" style={{ backgroundColor: 'rgb(48, 46, 52)' }}>
               <div className="card-body text-center">
               <label htmlFor="profilePictureInput" className="profile-picture">
-              <img
-                src={selectedFile ? URL.createObjectURL(selectedFile) : `data:image/png;base64,${profilePicture}` || defaultProfilePicture}
-                className="rounded-circle img-fluid"
-                style={{ width: '150px', cursor: 'pointer' }}
-                onError={(e) => console.error('Error loading profile picture:', e)}
-              />
+                <img
+                  src={selectedFile ? URL.createObjectURL(selectedFile) : `data:image/png;base64,${profilePicture}` || defaultProfilePicture}
+                  className="rounded-circle img-fluid"
+                  style={{ width: '150px', cursor: 'pointer' }}
+                  onError={(e) => console.error('Error loading profile picture:', e)}
+                
+                />
               </label>
               <input
                 id="profilePictureInput"
@@ -354,7 +355,7 @@ const Profile = () => {
                               ))}
                             </ul>
                           ) : (
-                            <p>You have not reviewed games.</p>
+                            <p>You have not reviewed any games.</p>
                           )}
                   </div>
                 </div>

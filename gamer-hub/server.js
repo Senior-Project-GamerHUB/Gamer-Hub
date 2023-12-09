@@ -347,13 +347,13 @@ app.post('/saveGame', async (req, res) => {
 	  (selectError, selectResult) => {
 		if (selectError) {
 		  console.error("Error checking existing record:", selectError);
-		  res.status(500).send("Error checking existing record.");
+		  res.status(500).json({ error: "Error checking existing record." });
 		  return;
 		}
   
 		if (selectResult.length > 0) {
 		  // The combination already exists, so the game is already saved
-		  res.status(400).send("Game is already saved.");
+		  res.status(200).json({ message: "Game is already saved.", isGameSaved: true });
 		} else {
 		  // Insert the new record since it doesn't exist
 		  db.query(
@@ -362,9 +362,9 @@ app.post('/saveGame', async (req, res) => {
 			(insertError, insertResult) => {
 			  if (insertError) {
 				console.error("Error saving game:", insertError);
-				res.status(500).send("Error saving game.");
+				res.status(500).json({ error: "Error saving game." });
 			  } else {
-				res.status(200).send("Game saved successfully.");
+				res.status(200).json({ message: "Game saved successfully.", isGameSaved: true });
 			  }
 			}
 		  );

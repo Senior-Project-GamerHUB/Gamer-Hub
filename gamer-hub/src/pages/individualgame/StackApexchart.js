@@ -1,79 +1,107 @@
-import React from 'react';
-import ReactApexCharts from 'react-apexcharts';
+import React, { useEffect, useState } from 'react';
+import ReactApexChart from 'react-apexcharts';
+import './StackApexChart.css'; // Import a CSS file for styling
 
-class StackApexChart extends React.Component {
-  constructor(props) {
-    super(props);
-
-    // Define the chart options
-    const options = {
-      series: [{
+const StackApexChart = ({ difficultyData }) => {
+  const [chartData, setChartData] = useState({
+    series: [
+      {
         name: 'Easy Peasy',
-        data: [44]
-      }, {
+        data: [0],
+      },
+      {
         name: 'Simple',
-        data: [53]
-      }, {
-        name: 'Intermediate',
-        data: [12]
-      }, {
+        data: [0],
+      },
+      {
+        name: 'Moderate',
+        data: [0],
+      },
+      {
         name: 'Challenging',
-        data: [9]
-      }, {
+        data: [0],
+      },
+      {
         name: 'Relentless',
-        data: [25]
-      }],
+        data: [0],
+      },
+    ],
+    options: {
       chart: {
         type: 'bar',
         height: 350,
-        stacked: true,
-        stackType: '100%'
       },
       plotOptions: {
         bar: {
           horizontal: true,
+          distributed: true,
+          dataLabels: {
+            position: 'top',
+            style: {
+              colors: ['#fff000', '#fff', '#fff', '#fff', '#fff'], // Set default label text color to white
+              hover: {
+                colors: ['#000', '#000', '#000', '#000', '#000'], // Set label text color to black on hover
+              },
+            },
+          },
         },
       },
-      stroke: {
-        width: 1,
-        colors: ['#fff']
-      },
-      title: {
-      
-      },
       xaxis: {
-        categories: ['Difficulty'],
+        categories: ['Easy Peasy', 'Simple', 'Moderate', 'Challenging', 'Relentless'],
+        labels: {
+          style: {
+            colors: '#fff', // Set label text color to white
+          },
+        },
       },
-      tooltip: {
-        y: {
-          formatter: function (val) {
-            return val + "K";
-          }
-        }
+      yaxis: {
+        labels: {
+          style: {
+            colors: '#fff', // Set label text color to white
+          },
+        },
       },
-      fill: {
-        opacity: 1
-      },
+      colors: ['#FF0000', '#FFA500', '#00FF00', '#0000FF', '#800080'],
       legend: {
-        position: 'top',
-        horizontalAlign: 'left',
-        offsetX: 40
-      }
-    };
+        position: 'right',
+        labels: {
+          colors: '#fff', // Set legend text color to white
+        },
+      },
+    },
+  });
 
-    
-    this.state = {
-      options: options,
-    };
-  }
+  useEffect(() => {
+    updateChartData();
+  }, [difficultyData]);
 
-  render() {
-    return (
-      <div id="chart">
-        <ReactApexCharts options={this.state.options} series={this.state.options.series} type="bar" height={350} />
-      </div>
-    );
-  }
-}
+  const updateChartData = () => {
+    setChartData((prevChartData) => {
+      const difficultyCounts = difficultyData.reduce((counts, difficulty) => {
+        counts[difficulty] = (counts[difficulty] || 0) + 1;
+        return counts;
+      }, {});
+
+      // Ensure that the series has values for all possible labels
+      const updatedSeriesData = ['Easy Peasy', 'Simple', 'Moderate', 'Challenging', 'Relentless'].map((label) => {
+        const count = difficultyCounts[label] || 0;
+        return count;
+      });
+
+      const updatedSeries = [{ ...prevChartData.series[0], data: updatedSeriesData }];
+
+      return {
+        ...prevChartData,
+        series: updatedSeries,
+      };
+    });
+  };
+
+  return (
+    <div id="chart">
+      <ReactApexChart options={chartData.options} series={chartData.series} type="bar" height={350} />
+    </div>
+  );
+};
 
 export default StackApexChart;
