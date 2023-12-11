@@ -64,7 +64,7 @@ app = express();
 app.use(express.static(path.join(__dirname, 'static')));
 app.use(express.json());
 app.use(cors({
-	origin: 'http://localhost:3000', 
+	origin: 'https://gamerhub-s7o6.onrender.com', 
     credentials: true,
 
 }));
