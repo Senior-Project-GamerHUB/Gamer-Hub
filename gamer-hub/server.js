@@ -139,11 +139,11 @@ app.get('*', async (req, res) => {
 	res.sendFile(path.join(path.join(__dirname, 'build'), 'index.html'))
 });
 
-app.get('/', (req, res)=>{
+// app.get('/', (req, res)=>{
 
-	res.send("SERVER WELCOME")
+// 	res.send("SERVER WELCOME")
 
-})
+// })
 
 app.get('/loggedIn', (req, res)=>{
 
