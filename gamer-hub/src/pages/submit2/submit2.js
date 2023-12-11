@@ -99,7 +99,7 @@ const Submit2 = () => {
       const [userid, setUserID] = useState([]);
       const navigate = useNavigate();
 
-      axios.get('http://localhost:8080/loggedIn', {withCredentials: true})
+      axios.get('https://gamerhub-s7o6.onrender.com/loggedIn', {withCredentials: true})
       .then(res => {
           setUserID(res.data[0].user_id);
           setUserLog(res.data[0].username);
@@ -112,7 +112,7 @@ const Submit2 = () => {
 
     try {
      
-      const response = await axios.post('http://localhost:8080/addReview', {
+      const response = await axios.post('https://gamerhub-s7o6.onrender.com/addReview', {
         user: userid,
         username: username,
         game: appid,

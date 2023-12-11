@@ -9,7 +9,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 const Profile = () => {
 
-  const { userName, userID } = useParams();
+  const {userName, userID } = useParams();
   const [user_name, setUser_Name] = useState([]);
   const [userLog, setUserLog] = useState([]);
   const [Email, setEmail] = useState([]);
@@ -21,7 +21,7 @@ const Profile = () => {
   const [savedGames, setSavedGames] = useState([]);
 
   const handleDeleteSavedGame = (gameID) => {
-    axios.delete(`http://localhost:8080/deleteSavedGame/${userID}/${gameID}`, { withCredentials: true })
+    axios.delete(`https://gamerhub-s7o6.onrender.com/deleteSavedGame/${userID}/${gameID}`, { withCredentials: true })
       .then((res) => {
         // Check if the server response indicates success
         if (res.status === 200) {
@@ -41,7 +41,7 @@ const Profile = () => {
     const fetchData = async () => {
       try {
         // Fetch user reviews by userID
-        const userReviewsResponse = await axios.get(`http://localhost:8080/getReviewsByUser?userID=${userID}`, {
+        const userReviewsResponse = await axios.get(`https://gamerhub-s7o6.onrender.com/getReviewsByUser?userID=${userID}`, {
           withCredentials: true,
         });
   
@@ -74,7 +74,7 @@ const Profile = () => {
         setUserReviews(userReviewsWithDetails);
   
         // Fetch saved games by userID
-        const savedGamesResponse = await axios.get(`http://localhost:8080/getSavedGames/${userID}`, {
+        const savedGamesResponse = await axios.get(`https://gamerhub-s7o6.onrender.com/getSavedGames/${userID}`, {
           withCredentials: true,
         });
   
@@ -117,55 +117,21 @@ const Profile = () => {
 
   const navigate = useNavigate();
 
-  var loginInfo = sessionStorage.getItem('loginInfo');
-  if (typeof loginInfo !== 'undefined' && loginInfo !== null) {
-    const profileSess = sessionStorage.getItem('loginInfo');
-    setUserLog(profileSess.username);
-    setUser_Name(profileSess.name);
-    setEmail(profileSess.email);
-    setUserID(profileSess.user_id);
-    sessionStorage.removeItem("loginInfo");
-  }
-
   const heroStyle = {
     backgroundImage: 'url("https://i.redd.it/vo9vm1fcqrp71.jpg")',
   };
 
- 
-  const handleProfilePictureChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setProfilePicture(URL.createObjectURL(file));
-      setSelectedFile(file);
-    }
+
+  const handleSteamLogin = () => {
+    // Redirect the user to the Steam authentication page
+    window.location.href = 'https://gamerhub-s7o6.onrender.com/api/auth/steam';
+    
   };
-
-  const handleProfilePictureUpdate = async () => {
-    const formData = new FormData();
-    formData.append('profilePicture', selectedFile);
-
-    try {
-      // Use axios.post to send the file to the server
-      await axios.post('http://localhost:8080/updateProfilePicture', formData, {
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      // Optionally, update the local state with the new profile picture
-      setProfilePicture(URL.createObjectURL(selectedFile));
-    } catch (error) {
-      console.error('Error updating profile picture:', error);
-    }
-  };
-
- 
 
   const handleSubmit = (event) =>{
     event.preventDefault();
 
-    axios.get('http://localhost:8080/loggout', { withCredentials: true })
+    axios.get('https://gamerhub-s7o6.onrender.com/loggout', { withCredentials: true })
       .then(res => {
         console.log(res.data);
       })
@@ -175,7 +141,7 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/loggedIn?userName=${userName}&userID=${userID}`, { withCredentials: true })
+    axios.get(`https://gamerhub-s7o6.onrender.com/loggedIn?userName=${userName}&userID=${userID}`, { withCredentials: true })
       .then(res => {
         setUserLog(res.data[0].username);
         setUser_Name(res.data[0].name);
@@ -189,7 +155,30 @@ const Profile = () => {
       .catch(err => console.log(err));
   }, [userName, userID]);
 
-  console.log(profilePicture);
+  // useEffect(()=> {
+  //   // Access initial value from session storage
+  //     const profilePage = JSON.parse(sessionStorage.getItem("profile"));
+  //     if (profilePage == null) {
+  //       // Initialize page views count
+  //       profilePage = [userName, user_name, userLog, Email, userid, selectedFile, profilePicture, defaultProfilePicture, userReviews, savedGames]
+  //       console.log(profilePage);
+  //       // } else if (userID != profilePage[3]) {
+  //     } else {
+  //       setUser_Name(profilePage[0]);
+  //       setUserLog(profilePage[1]);
+  //       setEmail(profilePage[2]);
+  //       setUserID(profilePage[3]);
+  //       setSelectedFile(profilePage[4]);
+  //       setProfilePicture(profilePage[5]);
+  //       setDefaultProfilePicture(profilePage[6]);
+  //       setUserReviews(profilePage[7]);
+  //       setSavedGames(profilePage[8]);
+  //     }
+  //     // Update session storage
+  //     sessionStorage.setItem("profile", JSON.stringify(profilePage));
+  //     //No dependency to trigger in each page load
+  // });
+  // console.log(profilePicture);
 
   
   const handleUpdateProfilePicture = (event) => {
@@ -289,7 +278,7 @@ const Profile = () => {
                     <p style={{ color: 'white' }}> Email: {Email}</p>
                   </div>
                 </div>
-                <button className="btn btn-outline-light btn-lg px-5" type="button" onClick={""}>
+                <button className="btn btn-outline-light btn-lg px-5" type="button" onClick={handleSteamLogin}>
                             Link with Steam
                   </button>
               </div>

@@ -12,12 +12,6 @@ const Login = () => {
     })
 
 
-    const handleSteamLogin = () => {
-        // Redirect the user to the Steam authentication page
-        window.location.href = 'http://localhost:8080/api/auth/steam';
-    };
-
-
     const navigate = useNavigate();
 
     const [errors, setErrors] = useState({})
@@ -36,7 +30,7 @@ const Login = () => {
         setErrors(Valid(values));
 
 
-        axios.post('http://localhost:8080/login', values,  {withCredentials: true})
+        axios.post('https://gamerhub-s7o6.onrender.com/login', values,  {withCredentials: true})
             .then(res => {
                 console.log(res.data)
                 if(res.data == "Login Successfull"){

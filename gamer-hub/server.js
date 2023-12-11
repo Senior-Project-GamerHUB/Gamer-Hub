@@ -14,6 +14,13 @@ const multer = require("multer");
 
 const port = process.env.PORT || 8080;
 key = '6FDE1CAA90BAA7010C02DF447AF228BE';
+var sessID = null;
+var user = null; 
+
+function CurrentUser(id, name){
+	sessID = id;
+	user = name
+}
 
 async function SteamGameReview(appid){
 	try {
@@ -53,31 +60,6 @@ async function SteamAccountName(steamid)
 	}
 }
 
-
-// Required to get data from user for sessions
-passport.serializeUser((user, done) => {
-	done(null, user);
-   });
-
-passport.deserializeUser((user, done) => {
-	done(null, user);
-   });
-
-// Initiate Strategy
-passport.use(new SteamStrategy({
-	returnURL: 'http://localhost:' + port + '/api/auth/steam/return',
-	realm: 'http://localhost:' + port + '/',
-	apiKey: '6FDE1CAA90BAA7010C02DF447AF228BE'
-	}, function (identifier, profile, done) {
-	 process.nextTick(function () {
-	  profile.identifier = identifier;
-	  return done(null, profile);
-	 });
-	}
-));
-
-// use this for steam sign in <a href="http://localhost:3000/api/auth/steam">Sign in</a>
-
 app = express();
 app.use(express.static(path.join(__dirname, 'static')));
 app.use(express.json());
@@ -104,6 +86,38 @@ app.use(session({
 }));
 
 
+// Required to get data from user for sessions
+passport.serializeUser((user, done) => {
+	done(null, user);
+   });
+
+passport.deserializeUser((user, done) => {
+	done(null, user);
+   });
+
+// Initiate Strategy
+passport.use(new SteamStrategy({
+	returnURL: 'http://localhost:' + port + '/api/auth/steam/return',
+	realm: 'http://localhost:' + port + '/',
+	apiKey: '6FDE1CAA90BAA7010C02DF447AF228BE'
+	}, function (identifier, profile, done) {
+	 process.nextTick(async function () {
+		db.query("UPDATE user SET username = ?, picture = ?, steamID = ? WHERE user_id = ?", [profile._json['personaname'], profile._json['avatarfull'], profile._json['steamid'], sessID], (error, result) =>{
+			
+		console.log("error is " + JSON.stringify(error));
+		console.log("results are " + result);
+
+			if(JSON.stringify(error).indexOf("steamID_UNIQUE") >0 ){
+				console.log('error');
+			}
+		})
+
+	  profile.identifier = identifier;
+	  return done(null, profile);
+	 });
+	}
+));
+
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -121,7 +135,9 @@ const db = mysql.createConnection({
 
 
 
-
+app.get('*', async (req, res) => {
+	res.sendFile(path.join(path.join(__dirname, 'build'), 'index.html'))
+});
 
 app.get('/', (req, res)=>{
 
@@ -250,10 +266,9 @@ app.post('/login', (req, res)=>{
 			console.log("User ID: " + SESS);
 
 			req.session.userId=SESS;
+			CurrentUser(req.session.userId, data[0].username);
 			
 			console.log("Session ID: " + req.session.userId);
-
-
 
 
 		let compare = await bcrypt.compare(JSON.stringify(req.body.password), data[0].password);
@@ -270,25 +285,12 @@ app.post('/login', (req, res)=>{
 
 
 app.get('/api/auth/steam', passport.authenticate('steam', {failureRedirect: '/'}), function (req, res) {
-	res.redirect('http://localhost:3000/profile');
+	res.redirect(`https://gamerhub-s7o6.onrender.com/login`);
    });
 
 app.get('/api/auth/steam/return', passport.authenticate('steam', {failureRedirect: '/'}), async function (req, res) {
-	const data = await SteamAccountName(req.user.id);
-	db.query("UPDATE User SET username = ?, picture = ?, steamID = ? WHERE userID = ?", [data[0].personaname, data[0].avatarfull, data[0].steamid, req.session.userId], (error, result) =>{
-			
-		console.log("error is " + JSON.stringify(error));
-		console.log("results are " + result);
-
-		if (JSON.stringify(error).indexOf("steamID_UNIQUE") >0 ){
-			console.log('error');
-			// return res.send("error");
-		}
-		else{
-			// return res.send("ok");
-		}
-	})
-	res.redirect('http://localhost:3000/profile');
+	res.redirect(`https://gamerhub-s7o6.onrender.com/login`);
+	//profile/${user}/${sessID}
    });
 
 app.post('/getSteamReview', async (req, res) => {
@@ -298,7 +300,7 @@ app.post('/getSteamReview', async (req, res) => {
 		index = data["applist"]["apps"].map(function(e) {return e.name;}).indexOf(JSON.stringify(req.body.game_name));
 		res.send(data["applist"]["apps"][index]);
 		appid = data["applist"]["apps"][index]["appid"];
-		res.send(SteamGameData(appid));
+		res.send(SteamGameReview(appid));
 	})();
 });
 
