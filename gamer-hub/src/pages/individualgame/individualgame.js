@@ -39,7 +39,7 @@ const IndividualGame = () => {
   }, [appid]);
 
   const [userid, setUserID] = useState([]);
-  axios.get('http://localhost:8080/loggedIn', {withCredentials: true})
+  axios.get('https://gamerhub-s7o6.onrender.com/loggedIn', {withCredentials: true})
   .then(res => {
       setUserID(res.data[0].user_id);
       
@@ -50,7 +50,7 @@ const IndividualGame = () => {
 
   const handleSaveGame = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/saveGame', {
+      const response = await axios.post('https://gamerhub-s7o6.onrender.com/saveGame', {
         user: userid,
         game: appid,
       });
@@ -67,7 +67,7 @@ const IndividualGame = () => {
  useEffect(() => {
   const fetchReviews = async () => {
     try {
-      const reviewsResponse = await axios.get(`http://localhost:8080/getReviewsForGame`, {
+      const reviewsResponse = await axios.get(`https://gamerhub-s7o6.onrender.com/getReviewsForGame`, {
         params: {
           gameID: appid,
         },

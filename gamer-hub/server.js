@@ -15,11 +15,11 @@ const multer = require("multer");
 const port = process.env.PORT || 8080;
 key = '6FDE1CAA90BAA7010C02DF447AF228BE';
 var sessID = null;
-var user = null; 
+// var user = null; 
 
 function CurrentUser(id, name){
 	sessID = id;
-	user = name
+	// user = name
 }
 
 async function SteamGameReview(appid){
@@ -61,7 +61,7 @@ async function SteamAccountName(steamid)
 }
 
 app = express();
-app.use(express.static(path.join(__dirname, 'static')));
+app.use(express.static(path.join(__dirname, 'build')));
 app.use(express.json());
 app.use(cors({
 	origin: 'https://gamerhub-s7o6.onrender.com', 
@@ -97,8 +97,8 @@ passport.deserializeUser((user, done) => {
 
 // Initiate Strategy
 passport.use(new SteamStrategy({
-	returnURL: 'http://localhost:' + port + '/api/auth/steam/return',
-	realm: 'http://localhost:' + port + '/',
+	returnURL: 'https://gamerhub-s7o6.onrender.com' + '/api/auth/steam/return',
+	realm: 'https://gamerhub-s7o6.onrender.com/',
 	apiKey: '6FDE1CAA90BAA7010C02DF447AF228BE'
 	}, function (identifier, profile, done) {
 	 process.nextTick(async function () {
