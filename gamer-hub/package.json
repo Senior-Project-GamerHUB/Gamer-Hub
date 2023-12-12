@@ -1,6 +1,7 @@
 {
   "name": "gamer-hub",
   "version": "0.1.0",
+  "homepage": "https://gamer-hub-server.onrender.com",
   "engines": {
     "npm": "8.19.3"
   },
