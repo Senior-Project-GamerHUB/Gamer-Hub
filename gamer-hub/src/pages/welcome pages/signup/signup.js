@@ -48,7 +48,7 @@ const SignUp = () => {
 
 
 
-         axios.post('https://gamerhub-s7o6.onrender.com/signup', values)
+         axios.post('https://gamer-hub-server.onrender.com/signup', values)
             .then(res =>{console.log(res)
             {
 

@@ -13,7 +13,7 @@ const Header = () => {
   const [profilePicture, setProfilePicture] = useState(null);
 
   useEffect(() => {
-    axios.get('https://gamerhub-s7o6.onrender.com/loggedIn', { withCredentials: true })
+    axios.get('https://gamer-hub-server.onrender.com/loggedIn', { withCredentials: true })
       .then(res => {
         setProfilePicture(res.data[0].picture);
         setUser(res.data[0]);

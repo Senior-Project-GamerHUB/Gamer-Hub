@@ -22,7 +22,7 @@ const Profile = () => {
   
 
   const handleDeleteSavedGame = (gameID) => {
-    axios.delete(`https://gamerhub-s7o6.onrender.com/deleteSavedGame/${userID}/${gameID}`, { withCredentials: true })
+    axios.delete(`https://gamer-hub-server.onrender.com/deleteSavedGame/${userID}/${gameID}`, { withCredentials: true })
       .then((res) => {
         // Check if the server response indicates success
         if (res.status === 200) {
@@ -42,7 +42,7 @@ const Profile = () => {
     const fetchData = async () => {
       try {
  
-        const userReviewsResponse = await axios.get(`https://gamerhub-s7o6.onrender.com/getReviewsByUser?userID=${userID}`, {
+        const userReviewsResponse = await axios.get(`https://gamer-hub-server.onrender.com/getReviewsByUser?userID=${userID}`, {
           withCredentials: true,
         });
   
@@ -75,7 +75,7 @@ const Profile = () => {
         setUserReviews(userReviewsWithDetails);
   
       
-        const savedGamesResponse = await axios.get(`https://gamerhub-s7o6.onrender.com/getSavedGames/${userID}`, {
+        const savedGamesResponse = await axios.get(`https://gamer-hub-server.onrender.com/getSavedGames/${userID}`, {
           withCredentials: true,
         });
   
@@ -124,7 +124,7 @@ const Profile = () => {
 
   const handleSteamLogin = () => {
     // Redirect the user to the Steam authentication page
-    window.location.href = 'https://gamerhub-s7o6.onrender.com/api/auth/steam';
+    window.location.href = 'https://gamer-hub-server.onrender.com/api/auth/steam';
 
   };
  
@@ -132,7 +132,7 @@ const Profile = () => {
   const handleSubmit = (event) =>{
     event.preventDefault();
 
-    axios.get('https://gamerhub-s7o6.onrender.com/loggout', { withCredentials: true })
+    axios.get('https://gamer-hub-server.onrender.com/loggout', { withCredentials: true })
       .then(res => {
         console.log(res.data);
       })
@@ -142,7 +142,7 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    axios.get(`https://gamerhub-s7o6.onrender.com/loggedIn?userName=${userName}&userID=${userID}`, { withCredentials: true })
+    axios.get(`https://gamer-hub-server.onrender.com/loggedIn?userName=${userName}&userID=${userID}`, { withCredentials: true })
       .then(res => {
         setUserLog(res.data[0].username);
         setUser_Name(res.data[0].name);
@@ -166,7 +166,7 @@ const Profile = () => {
       const formData = new FormData();
       formData.append('profilePicture', selectedFile);
   
-      axios.post(`https://gamerhub-s7o6.onrender.com/updateProfilePicture/${userid}`, formData, { withCredentials: true })
+      axios.post(`https://gamer-hub-server.onrender.com/updateProfilePicture/${userid}`, formData, { withCredentials: true })
         .then(res => {
         
           const newProfilePicture = res.data?.picture || res.data?.pathToPicture;

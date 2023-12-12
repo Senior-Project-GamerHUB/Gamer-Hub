@@ -38,7 +38,7 @@ const Forum2 = () => {
     fetchGameDetails();
   }, [appid]);
 
-    axios.get('https://gamerhub-s7o6.onrender.com/loggedIn', {withCredentials: true})
+    axios.get('https://gamer-hub-server.onrender.com/loggedIn', {withCredentials: true})
     .then(res => {
         setUserID(res.data[0].user_id);
         setUserLog(res.data[0].username);
@@ -52,7 +52,7 @@ const Forum2 = () => {
    
     const handlePostSubmit = async (newPost) => {
       try {
-        const response = await axios.post('https://gamerhub-s7o6.onrender.com/addForum', {
+        const response = await axios.post('https://gamer-hub-server.onrender.com/addForum', {
           user: userid,
           picture: profilePicture,
           username: username,
@@ -79,7 +79,7 @@ const Forum2 = () => {
       const fetchForumPosts = async () => {
         try {
           console.log('Fetching forum posts for gameID:', appid);
-          const response = await axios.get('https://gamerhub-s7o6.onrender.com/getForumPosts', {
+          const response = await axios.get('https://gamer-hub-server.onrender.com/getForumPosts', {
             params: {
               gameID: appid,
             },
