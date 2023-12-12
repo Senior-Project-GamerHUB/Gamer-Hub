@@ -86,14 +86,14 @@ app = express();
 app.use(express.static(buildPath));
 app.use(express.json());
 app.use(cors({
-	origin: 'https://gamer-hub-server.onrender.com', 
+	origin: 'https://gamer-hub-website.onrender.com', 
     credentials: true,
-	// headers: {
-	// 	'Content-Type': 'application/json',
-	// 	'Access-Control-Allow-Origin': '*',
-	// 	'Access-Control-Allow-Credentials': true,
-	// 	'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
-	//   }
+	headers: {
+		'Content-Type': 'application/json',
+		'Access-Control-Allow-Origin': 'https://gamer-hub-website.onrender.com',
+		'Access-Control-Allow-Credentials': true,
+		'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+	  }
 
 }));
 
