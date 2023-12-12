@@ -23,11 +23,6 @@ function CurrentUser(id, name){
 	sessUser = name
 }
 
-var sessID = null;
-
-function CurrentUser(id){
-	sessID = id;
-}
 async function SteamGameReview(appid){
 	try {
 		const response = await axios.get(`https://store.steampowered.com/appreviews/${appid}?json=1`);
@@ -90,7 +85,7 @@ app = express();
 app.use(express.static(path.join(__dirname, 'build')));
 app.use(express.json());
 app.use(cors({
-	origin: 'https://gamerhub-s7o6.onrender.com', 
+	origin: '*', 
     credentials: true,
 	headers: {
 		'Content-Type': 'application/json',
@@ -262,6 +257,7 @@ app.post('/login', (req, res)=>{
 			console.log("User ID: " + SESS);
 
 			req.session.userId=SESS;
+			req.session.save();
 			CurrentUser(req.session.userId, data[0].username);
 			console.log("Session ID: " + req.session.userId);
 
