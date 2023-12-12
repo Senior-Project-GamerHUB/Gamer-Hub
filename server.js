@@ -90,7 +90,7 @@ app.use(cors({
     credentials: true,
 	headers: {
 		'Content-Type': 'application/json',
-		'Access-Control-Allow-Origin': 'https://gamer-hub-server.onrender.com',
+		'Access-Control-Allow-Origin': 'https://gamer-hub-website.onrender.com',
 		'Access-Control-Allow-Credentials': true,
 		'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
 	  }
