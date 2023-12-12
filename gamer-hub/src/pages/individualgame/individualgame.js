@@ -263,7 +263,7 @@ const IndividualGame = () => {
           {reviews.length > 0 ? (
             <DonutApexChart worthThePriceData={reviews.map(review => review.worth_the_price)} />
           ) : (
-            <p>No reviews available to display difficulty chart.</p>
+            <p>No reviews available to display worth the price chart.</p>
           )}
         </div>
 
@@ -273,7 +273,7 @@ const IndividualGame = () => {
               <ReviewCard key={index} review={review} />
             ))
           ) : (
-            <p>No written review yet for this game. Be the first one to submit a written review!</p>
+            <p>No written reviews yet for this game.</p>
           )}
 
      
