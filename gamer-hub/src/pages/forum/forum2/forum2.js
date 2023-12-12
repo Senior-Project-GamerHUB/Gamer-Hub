@@ -42,7 +42,7 @@ const Forum2 = () => {
     .then(res => {
         setUserID(res.data[0].user_id);
         setUserLog(res.data[0].username);
-        const arrayBuffer = new Uint8Array(res.data[0].picture.data);
+        const arrayBuffer = new Uint8Array(res.data[0].picture);
         const base64String = btoa(String.fromCharCode.apply(null, arrayBuffer));
         setProfilePicture(base64String);
        
