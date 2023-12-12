@@ -85,11 +85,11 @@ app = express();
 app.use(express.static(path.join(__dirname, 'build')));
 app.use(express.json());
 app.use(cors({
-	origin: '*', 
+	origin: 'https://gamerhub-s7o6.onrender.com', 
     credentials: true,
 	headers: {
 		'Content-Type': 'application/json',
-		'Access-Control-Allow-Origin': '*',
+		'Access-Control-Allow-Origin': 'https://gamerhub-s7o6.onrender.com',
 		'Access-Control-Allow-Credentials': true,
 		'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
 	  }
