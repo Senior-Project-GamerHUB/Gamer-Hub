@@ -25,7 +25,7 @@ const Forum2 = () => {
       try {
         const response = await axios.get(`https://api.rawg.io/api/games/${appid}`, {
           params: {
-            key: '3f02ae9693244e86b768ab662105fd14',
+            key: 'fecf056691bd489dac7a439f05843915',
           },
         });
 

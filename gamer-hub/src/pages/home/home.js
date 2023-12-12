@@ -10,7 +10,7 @@ const Home = () => {
 
   const [topGames, setTopGames] = useState([]);
   const [newGames, setNewGames] = useState([]);
-  const apiKey = '3f02ae9693244e86b768ab662105fd14'; 
+  const apiKey = 'fecf056691bd489dac7a439f05843915'; 
   const currentDate = new Date().toISOString().split('T')[0]; // Get current date in 'YYYY-MM-DD' format
   const LastYear = new Date();
   LastYear.setFullYear(LastYear.getFullYear() - 1);

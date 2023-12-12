@@ -13,6 +13,7 @@ const Submit2 = () => {
       const [gameData, setGameData] = useState(null);
       const { appid } = useParams();
       const [username, setUserLog] = useState([]);
+      const [profilePicture, setProfilePicture] = useState(null);
     
     
     
@@ -21,7 +22,7 @@ const Submit2 = () => {
           try {
             const response = await axios.get(`https://api.rawg.io/api/games/${appid}`, {
               params: {
-                key: '3f02ae9693244e86b768ab662105fd14', 
+                key: 'fecf056691bd489dac7a439f05843915', 
               },
             });
     
@@ -56,13 +57,13 @@ const Submit2 = () => {
       }
     
       const handlePlaytimeMinutesChange = (e) => {
-        // Allow values up to 60 for minutes
+     
         const minutesValue = Math.min(e.target.value, 60);
         setPlaytimeMinutes(minutesValue);
       };
     
       const handlePlaytimeSecondsChange = (e) => {
-        // Allow values up to 60 for seconds
+      
         const secondsValue = Math.min(e.target.value, 60);
         setPlaytimeSeconds(secondsValue);
       };
@@ -99,12 +100,21 @@ const Submit2 = () => {
       const [userid, setUserID] = useState([]);
       const navigate = useNavigate();
 
-      axios.get('https://gamerhub-s7o6.onrender.com/loggedIn', {withCredentials: true})
-      .then(res => {
-          setUserID(res.data[0].user_id);
-          setUserLog(res.data[0].username);
-      })
-      .catch(err => console.log(err));
+      useEffect(() => {
+        const fetchUserData = async () => {
+          try {
+            const response = await axios.get('http://localhost:8080/loggedIn', { withCredentials: true });
+            setUserID(response.data[0].user_id);
+            setUserLog(response.data[0].username);
+            setProfilePicture(response.data[0].picture);
+            
+          } catch (error) {
+            console.error('Error fetching user data: ', error);
+          }
+        };
+    
+        fetchUserData();
+      }, []);
 
 
   const handleSubmit = async () => {
@@ -112,7 +122,7 @@ const Submit2 = () => {
 
     try {
      
-      const response = await axios.post('https://gamerhub-s7o6.onrender.com/addReview', {
+      const response = await axios.post('http://localhost:8080/addReview', {
         user: userid,
         username: username,
         game: appid,

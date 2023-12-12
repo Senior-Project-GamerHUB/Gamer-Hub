@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 const Forum = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [games, setGames] = useState([]);
-  const apiKey = '3f02ae9693244e86b768ab662105fd14';
+  const apiKey = 'fecf056691bd489dac7a439f05843915';
 
   const heroStyle = {
     backgroundImage: 'url("https://i.redd.it/vo9vm1fcqrp71.jpg")',
