@@ -124,7 +124,6 @@ const Submit2 = () => {
      
       const response = await axios.post('http://localhost:8080/addReview', {
         user: userid,
-        picture: profilePicture,
         username: username,
         game: appid,
         title: gameData.name,
