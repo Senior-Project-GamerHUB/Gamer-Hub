@@ -38,7 +38,7 @@ const Header = () => {
                 src={`data:image/png;base64,${profilePicture}`|| defaultProfilePicture}
                 style={{ width: '30px', height: '30px', borderRadius: '50%', marginRight: '5px' }}
                 onError={(e) => {
-                    e.target.src = defaultProfilePicture; // Set a default image on error
+                    e.target.src = defaultProfilePicture; 
                   }}
               />
               <Link to={`/profile/${user.username}/${user.user_id}`}>

@@ -19,6 +19,7 @@ const Profile = () => {
   const [defaultProfilePicture, setDefaultProfilePicture] = useState('https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png');
   const [userReviews, setUserReviews] = useState([]);
   const [savedGames, setSavedGames] = useState([]);
+  
 
   const handleDeleteSavedGame = (gameID) => {
     axios.delete(`http://localhost:8080/deleteSavedGame/${userID}/${gameID}`, { withCredentials: true })
@@ -40,17 +41,17 @@ const Profile = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch user reviews by userID
+ 
         const userReviewsResponse = await axios.get(`http://localhost:8080/getReviewsByUser?userID=${userID}`, {
           withCredentials: true,
         });
   
         const reviews = userReviewsResponse.data;
   
-        // Extract game IDs from reviews
+   
         const reviewGameIDs = reviews.map((review) => review.gameID);
   
-        // Fetch details for each reviewed game using the game IDs
+     
         const reviewGameDetailsPromises = reviewGameIDs.map(async (gameID) => {
           const gameResponse = await axios.get(`https://api.rawg.io/api/games/${gameID}`, {
             params: {
@@ -61,29 +62,29 @@ const Profile = () => {
           return gameResponse.data;
         });
   
-        // Wait for all reviewed game details requests to complete
+       
         const reviewGameDetails = await Promise.all(reviewGameDetailsPromises);
   
-        // Combine reviews and game details
+   
         const userReviewsWithDetails = reviews.map((review, index) => ({
           ...review,
           gameDetails: reviewGameDetails[index],
         }));
   
-        // Update the state with the fetched user reviews and game details
+       
         setUserReviews(userReviewsWithDetails);
   
-        // Fetch saved games by userID
+      
         const savedGamesResponse = await axios.get(`http://localhost:8080/getSavedGames/${userID}`, {
           withCredentials: true,
         });
   
         const savedGames = savedGamesResponse.data;
   
-        // Extract game IDs from saved games
+        
         const savedGameIDs = savedGames.map((savedGame) => savedGame.gameID);
   
-        // Fetch details for each saved game using the game IDs
+       
         const savedGameDetailsPromises = savedGameIDs.map(async (gameID) => {
           const gameResponse = await axios.get(`https://api.rawg.io/api/games/${gameID}`, {
             params: {
@@ -94,16 +95,15 @@ const Profile = () => {
           return gameResponse.data;
         });
   
-        // Wait for all saved game details requests to complete
         const savedGameDetails = await Promise.all(savedGameDetailsPromises);
   
-        // Combine saved games and game details
+      
         const savedGamesWithDetails = savedGames.map((savedGame, index) => ({
           ...savedGame,
           gameDetails: savedGameDetails[index],
         }));
   
-        // Update the state with the fetched saved games and game details
+        
         setSavedGames(savedGamesWithDetails);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -145,7 +145,7 @@ const Profile = () => {
     formData.append('profilePicture', selectedFile);
 
     try {
-      // Use axios.post to send the file to the server
+    
       await axios.post('http://localhost:8080/updateProfilePicture', formData, {
         withCredentials: true,
         headers: {
@@ -153,7 +153,7 @@ const Profile = () => {
         },
       });
 
-      // Optionally, update the local state with the new profile picture
+    
       setProfilePicture(URL.createObjectURL(selectedFile));
     } catch (error) {
       console.error('Error updating profile picture:', error);
@@ -201,14 +201,14 @@ const Profile = () => {
   
       axios.post(`http://localhost:8080/updateProfilePicture/${userid}`, formData, { withCredentials: true })
         .then(res => {
-          // Check the response structure and make sure it contains the correct path to the new picture
+        
           const newProfilePicture = res.data?.picture || res.data?.pathToPicture;
   
           console.log('Profile picture updated successfully');
           setProfilePicture(newProfilePicture);
-          setSelectedFile(null); // Reset the selectedFile state
+          setSelectedFile(null); 
   
-          // Reload the page
+          
           window.location.reload();
         })
         .catch(err => {
@@ -276,7 +276,7 @@ const Profile = () => {
               <div className="card-body" style={{ backgroundColor: 'rgb(48, 46, 52)', color: 'white' }}>
                 <div className="row border-bottom mb-2" style={{ padding: '8px 0' }}>
                   <div className="col-sm-9">
-                    <p  style={{ color: 'white' }}>FullName: {user_name}</p>
+                    <p  style={{ color: 'white' }}>Full Name: {user_name}</p>
                   </div>
                 </div>
                 <div className="row border-bottom mb-2" style={{ padding: '8px 0' }}>
@@ -306,7 +306,7 @@ const Profile = () => {
                                 <li key={savedGame.gameID}>
                                   <p>{savedGame.gameDetails.name}</p>
                                   <a
-                                    href={`/game/${savedGame.gameID}`} // Replace with the actual route for game details
+                                    href={`/game/${savedGame.gameID}`} 
                                     style={{ textDecoration: 'none', color: 'inherit' }}
                                   >
                                     <img
@@ -340,7 +340,7 @@ const Profile = () => {
                                 <li key={review.gameID}>
                                   <p>{review.gameDetails.name}</p>
                                   <a
-                                    href={`/game/${review.gameID}`} // Replace with the actual route for game details
+                                    href={`/game/${review.gameID}`} 
                                     style={{ textDecoration: 'none', color: 'inherit' }}
                                   >
                                     <img
@@ -350,7 +350,7 @@ const Profile = () => {
                                       style={{ maxWidth: '150px', maxHeight: '150px' }}
                                     />
                                   </a>
-                                  {/* Add more details based on your backend response */}
+                                 
                                 </li>
                               ))}
                             </ul>

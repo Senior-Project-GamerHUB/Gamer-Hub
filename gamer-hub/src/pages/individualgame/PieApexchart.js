@@ -23,7 +23,7 @@ const PieApexChart = ({ completionStatusData }) => {
       colors: ['#FF0000', '#FFA500', '#00FF00', '#0000FF', '#800080'],
       legend: {
         labels: {
-          colors: '#fff', // Set legend text color to white
+          colors: '#fff', 
         },
       },
     },
@@ -40,7 +40,6 @@ const PieApexChart = ({ completionStatusData }) => {
         return counts;
       }, {});
 
-      // Ensure that the series has values for all possible labels
       const updatedSeries = ['Tried It', 'Hooked', 'Halfway', 'Finished Most', 'Conquered It'].map(label => {
         const count = submissionCounts[label] || 0;
         return count;

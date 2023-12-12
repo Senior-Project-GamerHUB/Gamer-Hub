@@ -585,7 +585,7 @@ ol {
 ---------------------*/
 
 .intro-section {
-	background: #0c062e;
+	background: linear-gradient(to bottom, #e05591, #261297);
 	padding: 115px 0;
 }
 
