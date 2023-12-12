@@ -103,7 +103,7 @@ const Submit2 = () => {
       useEffect(() => {
         const fetchUserData = async () => {
           try {
-            const response = await axios.get('http://localhost:8080/loggedIn', { withCredentials: true });
+            const response = await axios.get('https://gamerhub-s7o6.onrender.com/loggedIn', { withCredentials: true });
             setUserID(response.data[0].user_id);
             setUserLog(response.data[0].username);
             setProfilePicture(response.data[0].picture);
@@ -122,7 +122,7 @@ const Submit2 = () => {
 
     try {
      
-      const response = await axios.post('http://localhost:8080/addReview', {
+      const response = await axios.post('https://gamerhub-s7o6.onrender.com/addReview', {
         user: userid,
         username: username,
         game: appid,

@@ -15,6 +15,11 @@ const multer = require("multer");
 const port = process.env.PORT || 8080;
 key = '6FDE1CAA90BAA7010C02DF447AF228BE';
 
+var sessID = null;
+
+function CurrentUser(id){
+	sessID = id;
+}
 async function SteamGameReview(appid){
 	try {
 		const response = await axios.get(`https://store.steampowered.com/appreviews/${appid}?json=1`);
@@ -36,22 +41,6 @@ async function SteamGameReview(appid){
 	  }
 }
 
-async function SteamAccountName(steamid)
-{
-	try{
-		const response = await axios.get(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${key}&steamids=${steamid}`);
-		const data = await response.data;
-		if(data["response"]["players"] != null ){
-			const steamAccount = data["response"]["players"];
-			return steamAccount;
-		} else {
-			return null;
-		}
-	} catch (error) {
-		console.error('Error fetching steam account: '. error);
-		return null;
-	}
-}
 
 
 // Required to get data from user for sessions
@@ -69,7 +58,16 @@ passport.use(new SteamStrategy({
 	realm: 'http://localhost:' + port + '/',
 	apiKey: '6FDE1CAA90BAA7010C02DF447AF228BE'
 	}, function (identifier, profile, done) {
-	 process.nextTick(function () {
+	 process.nextTick(async function () {
+		db.query("UPDATE user SET username = ?, picture = ?, steamID = ? WHERE user_id = ?", [profile._json['personaname'], profile._json['avatarfull'], profile._json['steamid'], sessID], (error, result) =>{
+
+			console.log("error is " + JSON.stringify(error));
+			console.log("results are " + result);
+	
+				if(JSON.stringify(error).indexOf("steamID_UNIQUE") >0 ){
+					console.log('error');
+				}
+			})
 	  profile.identifier = identifier;
 	  return done(null, profile);
 	 });
@@ -79,11 +77,17 @@ passport.use(new SteamStrategy({
 // use this for steam sign in <a href="http://localhost:3000/api/auth/steam">Sign in</a>
 
 app = express();
-app.use(express.static(path.join(__dirname, 'static')));
+app.use(express.static(path.join(__dirname, 'build')));
 app.use(express.json());
 app.use(cors({
-	origin: 'http://localhost:3000', 
+	origin: 'https://gamerhub-s7o6.onrender.com', 
     credentials: true,
+	headers: {
+		'Content-Type': 'application/json',
+		'Access-Control-Allow-Origin': '*',
+		'Access-Control-Allow-Credentials': true,
+		'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+	  }
 
 }));
 
@@ -123,10 +127,8 @@ const db = mysql.createConnection({
 
 
 
-app.get('/', (req, res)=>{
-
-	res.send("SERVER WELCOME")
-
+app.get('*', (req, res)=>{
+	res.sendFile(path.join(path.join(__dirname, 'build'), 'index.html'));
 })
 
 app.get('/loggedIn', (req, res)=>{
@@ -250,7 +252,7 @@ app.post('/login', (req, res)=>{
 			console.log("User ID: " + SESS);
 
 			req.session.userId=SESS;
-			
+			CurrentUser(req.session.userId);
 			console.log("Session ID: " + req.session.userId);
 
 
@@ -270,35 +272,19 @@ app.post('/login', (req, res)=>{
 
 
 app.get('/api/auth/steam', passport.authenticate('steam', {failureRedirect: '/'}), function (req, res) {
-	res.redirect('http://localhost:3000/profile');
+	res.redirect(`https://gamerhub-s7o6.onrender.com/login`);
    });
 
 app.get('/api/auth/steam/return', passport.authenticate('steam', {failureRedirect: '/'}), async function (req, res) {
-	const data = await SteamAccountName(req.user.id);
-	db.query("UPDATE User SET username = ?, picture = ?, steamID = ? WHERE userID = ?", [data[0].personaname, data[0].avatarfull, data[0].steamid, req.session.userId], (error, result) =>{
-			
-		console.log("error is " + JSON.stringify(error));
-		console.log("results are " + result);
-
-		if (JSON.stringify(error).indexOf("steamID_UNIQUE") >0 ){
-		    return res.send("error");
-		}
-		else{
-			 return res.send("ok");
-		}
-	})
-	res.redirect('http://localhost:3000/profile');
+	res.redirect(`https://gamerhub-s7o6.onrender.com/login`);
    });
 
 app.post('/getSteamReview', async (req, res) => {
-	(async () => {
-		const response = await fetch(`http://api.steampowered.com/ISteamApps/GetAppList/v0002/?key=${key}&format=json`);
-		const data = await response.json();
-		index = data["applist"]["apps"].map(function(e) {return e.name;}).indexOf(JSON.stringify(req.body.game_name));
-		res.send(data["applist"]["apps"][index]);
-		appid = data["applist"]["apps"][index]["appid"];
-		res.send(SteamGameData(appid));
-	})();
+	const response = await fetch(`http://api.steampowered.com/ISteamApps/GetAppList/v0002/?key=${key}&format=json`);
+	const data = await response.json();
+	index = data["applist"]["apps"].map(function(e) {return e.name;}).indexOf(JSON.stringify(req.body.game_name));
+	appid = data["applist"]["apps"][index]["appid"];
+	SteamGameReview(appid);
 });
 
 app.post('/addReview', async (req, res) => {
