@@ -16,6 +16,14 @@ const port = process.env.PORT || 8080;
 key = '6FDE1CAA90BAA7010C02DF447AF228BE';
 
 var sessID = null;
+var sessUser = null;
+
+function CurrentUser(id, name){
+	sessID = id;
+	sessUser = name
+}
+
+var sessID = null;
 
 function CurrentUser(id){
 	sessID = id;
@@ -54,20 +62,23 @@ passport.deserializeUser((user, done) => {
 
 // Initiate Strategy
 passport.use(new SteamStrategy({
-	returnURL: 'http://localhost:' + port + '/api/auth/steam/return',
-	realm: 'http://localhost:' + port + '/',
+	returnURL: 'https://gamerhub-s7o6.onrender.com/api/auth/steam/return',
+	realm: 'https://gamerhub-s7o6.onrender.com/',
 	apiKey: '6FDE1CAA90BAA7010C02DF447AF228BE'
 	}, function (identifier, profile, done) {
-	 process.nextTick(async function () {
-		db.query("UPDATE user SET username = ?, picture = ?, steamID = ? WHERE user_id = ?", [profile._json['personaname'], profile._json['avatarfull'], profile._json['steamid'], sessID], (error, result) =>{
-
+	 process.nextTick(function () {
+		db.query("UPDATE users SET picture = ?, username = ?, steamID = ? WHERE user_id = ?", [profile._json['avatarfull'], profile._json['personaname'], profile._json['steamid'], sessID], (error, result) =>{
+			
 			console.log("error is " + JSON.stringify(error));
 			console.log("results are " + result);
 	
-				if(JSON.stringify(error).indexOf("steamID_UNIQUE") >0 ){
-					console.log('error');
-				}
-			})
+			if (JSON.stringify(error).indexOf("steamID_UNIQUE") >0 ){
+				console.log("error");
+			}
+			else{
+				console.log("ok");
+			}
+		})
 	  profile.identifier = identifier;
 	  return done(null, profile);
 	 });
@@ -98,7 +109,7 @@ app.use(session({
 	key: "userId",
 	secret: 'secretKey',
 	saveUninitialized: false,
-	resave: false,
+	resave: true,
 
 	cookie: {
 		secure: false,
@@ -132,7 +143,10 @@ app.get('*', (req, res)=>{
 
 app.get('/loggedIn', (req, res)=>{
 
-
+	console.log("Current Session: " + req.session.userId);
+	if (req.session.userID === undefined){
+		req.session.userId = sessID;
+	}
 	db.query("SELECT * FROM users WHERE user_id = ?", [req.session.userId], (error, data)=>{
 
 		if(error){
@@ -248,7 +262,7 @@ app.post('/login', (req, res)=>{
 			console.log("User ID: " + SESS);
 
 			req.session.userId=SESS;
-			CurrentUser(req.session.userId);
+			CurrentUser(req.session.userId, data[0].username);
 			console.log("Session ID: " + req.session.userId);
 
 
@@ -268,11 +282,11 @@ app.post('/login', (req, res)=>{
 
 
 app.get('/api/auth/steam', passport.authenticate('steam', {failureRedirect: '/'}), function (req, res) {
-	res.redirect(`https://gamerhub-s7o6.onrender.com/login`);
+	res.redirect(`https://gamerhub-s7o6.onrender.com/profile/${sessUser}/${sessID}`);
    });
 
 app.get('/api/auth/steam/return', passport.authenticate('steam', {failureRedirect: '/'}), async function (req, res) {
-	res.redirect(`https://gamerhub-s7o6.onrender.com/login`);
+	res.redirect(`https://gamerhub-s7o6.onrender.com/profile/${sessUser}/${sessID}`);
    });
 
 app.post('/getSteamReview', async (req, res) => {

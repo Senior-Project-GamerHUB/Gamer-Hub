@@ -122,6 +122,11 @@ const Profile = () => {
   };
 
 
+  const handleSteamLogin = () => {
+    // Redirect the user to the Steam authentication page
+    window.location.href = 'https://gamerhub-s7o6.onrender.com/api/auth/steam';
+
+  };
  
 
   const handleSubmit = (event) =>{
@@ -259,7 +264,7 @@ const Profile = () => {
                     <p style={{ color: 'white' }}> Email: {Email}</p>
                   </div>
                 </div>
-                <button className="btn btn-outline-light btn-lg px-5" type="button" onClick={""}>
+                <button className="btn btn-outline-light btn-lg px-5" type="button" onClick={handleSteamLogin}>
                             Link with Steam
                   </button>
               </div>
