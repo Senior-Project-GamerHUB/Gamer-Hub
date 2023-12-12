@@ -6,6 +6,7 @@ import './css/magnific-popup.css';
 import './css/animate.css';
 import './css/style.css';
 import axios from 'axios';
+import logoImage from './fleatkim.png';
 
 const Header = () => {
   const [user, setUser] = useState({});
@@ -24,13 +25,17 @@ const Header = () => {
   }, []);
 
   const defaultProfilePicture = 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png';
-
+ 
   return (
     <header className="header-section">
       <div className="header-warp">
         <div className="header-bar-warp d-flex">
           <Link to="/home" className="site-logo" style={{ marginRight: '20px' }}>
-            GamerHub
+          <img className = "header-logo"
+              src={logoImage}
+              alt="GamerHub Logo"
+              style={{ width: '80px', height: 'auto', marginTop: '-30px', marginBottom: '10px'}}
+            />
           </Link>
           <nav className="top-nav-area w-100">
             <div className="user-panel">
