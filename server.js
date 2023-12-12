@@ -90,10 +90,10 @@ app.use(cors({
     credentials: true,
 	headers: {
 		'Content-Type': 'application/json',
-		'Access-Control-Allow-Headers': '*',
-		'Access-Control-Allow-Origin': 'https://gamer-hub-website.onrender.com',
+		'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+		'Access-Control-Allow-Origin': '*',
 		'Access-Control-Allow-Credentials': true,
-		'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+		'Access-Control-Allow-Methods': '*',
 	  }
 
 }));
