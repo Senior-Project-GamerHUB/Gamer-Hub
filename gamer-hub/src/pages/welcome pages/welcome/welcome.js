@@ -11,7 +11,7 @@ const Welcome = () => {
               <div className="bg-dark text-white green-bg">
                 <div className="card-body p-5 text-center">
                   <div className="mb-md-5 mt-md-4 pb-8">
-                    <h2 className="fw-bold mb-2 text">Welcome to GamerHub</h2>
+                    <h1 className="fw-bold mb-2 text">Welcome to GamerHub</h1>
                     <p className="text-white-50 mb-5"></p>
 
                     <a href="/login">

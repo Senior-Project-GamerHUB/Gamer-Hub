@@ -18,6 +18,8 @@ const PostPage = () => {
   const params = useParams();
   const { postId } = params;
 
+  const defaultProfilePictureUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png';
+
   useEffect(() => {
     const fetchPostData = async () => {
       try {
@@ -55,6 +57,10 @@ const PostPage = () => {
       setUserLog(res.data[0].username);
       setUserID(res.data[0].user_id);
 
+      const arrayBuffer = new Uint8Array(res.data[0].picture.data);
+        const base64String = btoa(String.fromCharCode.apply(null, arrayBuffer));
+        setProfilePicture(base64String);
+
   })
 
   const isCommentValid = newComment.trim() !== '';
@@ -72,6 +78,7 @@ const PostPage = () => {
     try {
       const response = await axios.post(`http://localhost:8080/addComments`, {
         user: userid,
+        picture: profilePicture,
         username: username,
         text: newComment,
         post: postId,
@@ -102,15 +109,23 @@ const PostPage = () => {
 
       <div className="thread-box">
         <div className="post-content">
-          {postData ? (
-            <div>
-              <p>Author: {postData.userName}</p>
-              <h2>{postData.title}</h2>
-              <p>{postData.text}</p>
-            </div>
-          ) : (
-            <p>Loading...</p>
-          )}
+        {postData ? (
+          <div>
+            <p>
+            <img
+                src={ defaultProfilePictureUrl}
+                alt={`${postData.userName}'s Profile`}
+                className="profile-picture"
+                style={{ width: '20px', height: '20px', marginRight: '10px' }}
+              />
+             {postData.userName}</p>
+           
+            <h1 className="postTitle">{postData.title}</h1>
+            <p>{postData.text}</p>
+          </div>
+        ) : (
+          <p>Loading...</p>
+        )}
         </div>
 
         <div className="comment-form">
@@ -134,7 +149,22 @@ const PostPage = () => {
         {comments.map((comment, index) => (
           <div key={index} className="comment-box">
             <p style={{ color: 'white' }}>
-              <strong>{comment.username}:</strong> {comment.text}
+              <strong>
+
+              <img
+                src={ defaultProfilePictureUrl}
+                alt={`${postData.userName}'s Profile`}
+                className="profile-picture"
+                style={{ width: '20px', height: '20px', marginRight: '10px' }}
+              />
+                {comment.username}:  
+              
+              </strong> 
+              
+              <p className="comments-text">
+                {comment.text}
+              </p>
+              
             </p>
           </div>
         ))}

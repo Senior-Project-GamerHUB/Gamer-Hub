@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
-import './StackApexChart.css'; // Import a CSS file for styling
+import './StackApexChart.css'; 
 
 const StackApexChart = ({ difficultyData }) => {
   const [chartData, setChartData] = useState({
@@ -38,9 +38,9 @@ const StackApexChart = ({ difficultyData }) => {
           dataLabels: {
             position: 'top',
             style: {
-              colors: ['#fff000', '#fff', '#fff', '#fff', '#fff'], // Set default label text color to white
+              colors: ['#fff000', '#fff', '#fff', '#fff', '#fff'],
               hover: {
-                colors: ['#000', '#000', '#000', '#000', '#000'], // Set label text color to black on hover
+                colors: ['#000', '#000', '#000', '#000', '#000'], 
               },
             },
           },
@@ -50,14 +50,14 @@ const StackApexChart = ({ difficultyData }) => {
         categories: ['Easy Peasy', 'Simple', 'Moderate', 'Challenging', 'Relentless'],
         labels: {
           style: {
-            colors: '#fff', // Set label text color to white
+            colors: '#fff', 
           },
         },
       },
       yaxis: {
         labels: {
           style: {
-            colors: '#fff', // Set label text color to white
+            colors: '#fff', 
           },
         },
       },
@@ -65,7 +65,7 @@ const StackApexChart = ({ difficultyData }) => {
       legend: {
         position: 'right',
         labels: {
-          colors: '#fff', // Set legend text color to white
+          colors: '#fff', 
         },
       },
     },
@@ -82,7 +82,7 @@ const StackApexChart = ({ difficultyData }) => {
         return counts;
       }, {});
 
-      // Ensure that the series has values for all possible labels
+      
       const updatedSeriesData = ['Easy Peasy', 'Simple', 'Moderate', 'Challenging', 'Relentless'].map((label) => {
         const count = difficultyCounts[label] || 0;
         return count;

@@ -281,11 +281,10 @@ app.get('/api/auth/steam/return', passport.authenticate('steam', {failureRedirec
 		console.log("results are " + result);
 
 		if (JSON.stringify(error).indexOf("steamID_UNIQUE") >0 ){
-			console.log('error');
-			// return res.send("error");
+		    return res.send("error");
 		}
 		else{
-			// return res.send("ok");
+			 return res.send("ok");
 		}
 	})
 	res.redirect('http://localhost:3000/profile');
@@ -304,6 +303,7 @@ app.post('/getSteamReview', async (req, res) => {
 
 app.post('/addReview', async (req, res) => {
     const userID = req.body.user;
+	const picture = req.body.picture;
     const username = req.body.username;
     const gameID = req.body.game;
     const votes = req.body.title;
@@ -317,12 +317,12 @@ app.post('/addReview', async (req, res) => {
     const wtp = req.body.worth_the_price;
 
     db.query(
-        "INSERT INTO Review (userID, userName, gameID, vote_up_num, review, playtime_hour, playtime_minutes, playtime_seconds, rating, comp_status, difficulty, wtp) VALUES(?,?,?,?,?,?,?,?,?,?,?,?) " +
+        "INSERT INTO Review (userID, picture, userName, gameID, vote_up_num, review, playtime_hour, playtime_minutes, playtime_seconds, rating, comp_status, difficulty, wtp) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?) " +
         "ON DUPLICATE KEY UPDATE " +
-        "userID = VALUES(userID), userName = VALUES(userName), vote_up_num = VALUES(vote_up_num), review = VALUES(review), playtime_hour = VALUES(playtime_hour), " +
+        "userID = VALUES(userID), picture = VALUES(picture), userName = VALUES(userName), vote_up_num = VALUES(vote_up_num), review = VALUES(review), playtime_hour = VALUES(playtime_hour), " +
         "playtime_minutes = VALUES(playtime_minutes), playtime_seconds = VALUES(playtime_seconds), rating = VALUES(rating), comp_status = VALUES(comp_status), " +
         "difficulty = VALUES(difficulty), wtp = VALUES(wtp)",
-        [userID, username, gameID, votes, review, playtime_h, playtime_m, playtime_s, rating, comp_status, difficulty, wtp],
+        [userID, picture, username, gameID, votes, review, playtime_h, playtime_m, playtime_s, rating, comp_status, difficulty, wtp],
         (error, result) => {
             console.log("error is " + JSON.stringify(error));
             console.log("results are " + result);
@@ -340,7 +340,7 @@ app.post('/saveGame', async (req, res) => {
 	const userID = req.body.user;
 	const gameID = req.body.game;
   
-	// Check if the combination of userID and gameID already exists
+
 	db.query(
 	  "SELECT * FROM SavedGames WHERE userID = ? AND gameID = ?",
 	  [userID, gameID],
@@ -352,10 +352,10 @@ app.post('/saveGame', async (req, res) => {
 		}
   
 		if (selectResult.length > 0) {
-		  // The combination already exists, so the game is already saved
+		  
 		  res.status(200).json({ message: "Game is already saved.", isGameSaved: true });
 		} else {
-		  // Insert the new record since it doesn't exist
+		 
 		  db.query(
 			"INSERT INTO SavedGames (userID, gameID) VALUES (?, ?)",
 			[userID, gameID],
@@ -443,7 +443,7 @@ app.post('/saveGame', async (req, res) => {
 		console.log('Received gameID:', gameID);
 
 		db.query(
-			"SELECT userID, userName, review, playtime_hour, playtime_minutes, rating, playtime_seconds, comp_status, difficulty, wtp FROM Review WHERE gameID = ?",
+			"SELECT userID, picture, userName, review, playtime_hour, playtime_minutes, rating, playtime_seconds, comp_status, difficulty, wtp FROM Review WHERE gameID = ?",
 			[gameID],
 			(error, result) => {
 			if (error) {
@@ -455,6 +455,7 @@ app.post('/saveGame', async (req, res) => {
 
 			const reviews = result.map((row) => ({
 				userID: row.userID,
+				picture: row.picture,
 				userName: row.userName,
 				review: row.review,
 				rating: row.rating,
@@ -516,13 +517,14 @@ app.post('/saveGame', async (req, res) => {
 
   app.post('/addForum', async (req, res) => {
 	const userID = req.body.user;
+	const picture = req.body.picture;
 	const gameID = req.body.game;
 	const title = req.body.title;
 	const text = req.body.text;
 	const username = req.body.username; 
 	db.query(
-	  'INSERT INTO Forum (userID, userName, gameID, title, text) VALUES (?, ?, ?, ?, ?)',
-	  [userID, username, gameID, title, text],
+	  'INSERT INTO Forum (userID, picture, userName, gameID, title, text) VALUES (?, ?, ?, ?, ?, ?)',
+	  [userID, picture, username, gameID, title, text],
 	  (error, result) => {
 		if (error) {
 		  console.error('Error adding forum post:', error);
@@ -536,6 +538,7 @@ app.post('/saveGame', async (req, res) => {
   
 		const insertedPost = {
 		  post_id: result.insertId,
+		  picture: picture,
 		  username: username, 
 		  user_id: userID,
 		  game_id: gameID,
@@ -551,13 +554,14 @@ app.post('/saveGame', async (req, res) => {
 
   app.post('/addComments', async (req, res) => {
 	const userID = req.body.user;
+	const picture = req.body.picture;
 	const username = req.body.username;
 	const text = req.body.text;
 	const postID = req.body.post;
   
 	db.query(
-	  'INSERT INTO Comments (postID, userID, username, text) VALUES (?, ?, ?, ?)',
-	  [postID, userID, username, text],
+	  'INSERT INTO Comments (postID, picture, userID, username, text) VALUES (?, ?, ?, ?, ?)',
+	  [postID, picture, userID, username, text],
 	  (error, result) => {
 		if (error) {
 		  console.error('Error adding comments:', error);
@@ -570,7 +574,8 @@ app.post('/saveGame', async (req, res) => {
 		}
   
 		const insertedComment = {
-		  comment_id: result.insertId, // Make sure result.insertId is supported by your database driver
+		  comment_id: result.insertId, 
+		  picture: picture,
 		  post_id: postID,
 		  username: username,
 		  user_id: userID,
@@ -638,7 +643,7 @@ app.post('/saveGame', async (req, res) => {
 	  console.log('Received postID:', postID);
   
 	  db.query(
-		'SELECT userName, title, text FROM Forum WHERE postID = ?',
+		'SELECT userName, picture, title, text FROM Forum WHERE postID = ?',
 		[postID],
 		(error, result) => {
 		  if (error) {
@@ -651,6 +656,7 @@ app.post('/saveGame', async (req, res) => {
 		  const post = result[0]; 
 		  const postData = {
 			userName: post.userName,
+			picture: post.picture,
 			title: post.title,
 			text: post.text,
 			};
@@ -669,7 +675,7 @@ app.post('/saveGame', async (req, res) => {
   const upload = multer({
 	storage: storage,
 	limits: {
-	   fileSize: 1024 * 1024 * 5, // Adjust the limit as needed (5MB in this example)
+	   fileSize: 1024 * 1024 * 5,
 	},
  });
 
@@ -681,7 +687,7 @@ app.post('/saveGame', async (req, res) => {
 	   return res.status(400).send('No file uploaded.');
 	}
  
-	// Save the file to the database (as a blob data)
+	
 	const query = 'UPDATE users SET picture = ? WHERE user_id = ?';
 	db.query(query, [file.buffer, userId], (err, result) => {
 	   if (err) {
@@ -689,7 +695,7 @@ app.post('/saveGame', async (req, res) => {
 		  return res.status(500).send('Internal Server Error');
 	   }
  
-	   // Respond with success and the updated user data
+	 
 	   res.json({ success: true, picture: `data:image/jpeg;base64,${file.buffer.toString('base64')}` });
 	});
  });

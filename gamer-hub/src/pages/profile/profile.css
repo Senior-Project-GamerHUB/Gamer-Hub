@@ -13,7 +13,9 @@ html, body, #root {
 .profile-background {
   min-height: 100vh;
   max-height: auto;
-  background-color: rgb(55, 1, 85);
+  background: linear-gradient(to bottom, #a643ed, #170021);
+
+  
 }
 
 .deleteButton{

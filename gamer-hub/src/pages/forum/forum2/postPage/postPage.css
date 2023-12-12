@@ -3,19 +3,18 @@
     margin-top: 50px;
     margin-left: auto;
     margin-right: auto;
-    background-color: rgb(80, 80, 80);
+    background-color: rgb(48, 46, 52);;
     padding: 10px;
     width: 1000px;
     border-radius: 2px;
+    padding: 20px;
     
 }
 
-
-
 .backgroundPost{
     justify-content: center;
-    background-color:rgb(37, 6, 56);
-    color: white;
+    background: linear-gradient(to bottom, #170021, #a643ed);
+    color: rgb(199, 65, 233);
     height: auto;
     width: auto;
     min-height: 150vh;
@@ -73,6 +72,6 @@
 .submit-comment-button:hover {
     background-color: #610f61; 
   }
-
+  
 
 

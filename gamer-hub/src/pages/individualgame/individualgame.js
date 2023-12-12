@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import "./individualgame.css";
-import PieApexChart from "./PieApexchart"
-import StackApexChart from "./StackApexchart"
-import DonutApexChart from "./DonutApexChart"
+import './individualgame.css';
+import PieApexChart from './PieApexchart';
+import StackApexChart from './StackApexchart';
+import DonutApexChart from './DonutApexChart';
 import StarRating from './StarRating';
 import ReviewCard from './reviewCard/reviewCard';
 import axios from 'axios';
@@ -25,28 +25,27 @@ const IndividualGame = () => {
       try {
         const response = await axios.get(`https://api.rawg.io/api/games/${appid}`, {
           params: {
-            key: '3f02ae9693244e86b768ab662105fd14',
+            key: 'fecf056691bd489dac7a439f05843915',
           },
         });
-  
+
         setGameData(response.data);
       } catch (error) {
         console.error('Error fetching game data: ', error);
       }
     };
-  
+
     fetchGameDetails();
   }, [appid]);
 
   const [userid, setUserID] = useState([]);
-  axios.get('http://localhost:8080/loggedIn', {withCredentials: true})
-  .then(res => {
-      setUserID(res.data[0].user_id);
-      
-  })
-
-
-  .catch(err => console.log(err));
+  useEffect(() => {
+    axios.get('http://localhost:8080/loggedIn', { withCredentials: true })
+      .then(res => {
+        setUserID(res.data[0].user_id);
+      })
+      .catch(err => console.log(err));
+  }, []);
 
   const handleSaveGame = async () => {
     try {
@@ -54,86 +53,101 @@ const IndividualGame = () => {
         user: userid,
         game: appid,
       });
-  
+
       console.log('Save Game Response:', response.data);
-  
-      // Update isGameSaved based on the response from the server
+
       setIsGameSaved(response.data.isGameSaved);
     } catch (error) {
       console.error('Error saving game:', error);
     }
   };
 
- useEffect(() => {
-  const fetchReviews = async () => {
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const reviewsResponse = await axios.get(`http://localhost:8080/getReviewsForGame`, {
+          params: {
+            gameID: appid,
+          },
+        });
+
+        const formattedReviews = await Promise.all(reviewsResponse.data.map(async (review) => {
+          const pictureBase64 = await fetchImageAsBase64(review.picture);
+          return {
+            userID: review.userID,
+            picture: pictureBase64,
+            userName: review.userName,
+            review: review.review,
+            playtime_seconds: review.playtime_seconds,
+            playtime_minutes: review.playtime_minutes,
+            playtime_hour: review.playtime_hour,
+            completion_status: review.completion_status,
+            difficulty: review.difficulty,
+            worth_the_price: review.worth_the_price,
+            rating: review.rating,
+          };
+        }));
+
+        setReviews(formattedReviews);
+        console.log('Fetched Reviews:', formattedReviews);
+
+        const totalPlaytimeInSeconds = formattedReviews.reduce(
+          (total, review) =>
+            total +
+            review.playtime_hour * 3600 +
+            review.playtime_minutes * 60 +
+            review.playtime_seconds,
+          0
+        );
+
+        const totalReviews = formattedReviews.length;
+
+        const avgPlaytimeInSeconds = totalReviews > 0 ? totalPlaytimeInSeconds / totalReviews : 0;
+
+        const avgPlaytimeHour = Math.floor(avgPlaytimeInSeconds / 3600);
+        const avgPlaytimeMinute = Math.floor((avgPlaytimeInSeconds % 3600) / 60);
+        const avgPlaytimeSecond = Math.floor(avgPlaytimeInSeconds % 60);
+
+        const totalRating = formattedReviews.reduce((total, review) => {
+          const cappedRating = Math.min(review.rating, 5);
+          return total + cappedRating;
+        }, 0);
+
+        const cappedTotalRating = Math.min(totalRating, 5 * formattedReviews.length);
+
+        const avgRating = formattedReviews.length > 0 ? cappedTotalRating / formattedReviews.length : 0;
+
+        const roundedAvgRating = Math.round(avgRating * 100) / 100;
+
+        setAveragePlaytime({
+          hour: avgPlaytimeHour,
+          minute: avgPlaytimeMinute,
+          second: avgPlaytimeSecond,
+          rating: roundedAvgRating,
+        });
+      } catch (error) {
+        console.error('Error fetching reviews for the game: ', error);
+      }
+    };
+
+    fetchReviews();
+  }, [appid]);
+
+  const fetchImageAsBase64 = async (imageUrl) => {
     try {
-      const reviewsResponse = await axios.get(`http://localhost:8080/getReviewsForGame`, {
-        params: {
-          gameID: appid,
-        },
-      });
-
-      const formattedReviews = reviewsResponse.data.map((review) => ({
-        userID: review.userID,
-        userName: review.userName,
-        review: review.review,
-        playtime_seconds: review.playtime_seconds,
-        playtime_minutes: review.playtime_minutes,
-        playtime_hour: review.playtime_hour,
-        completion_status: review.completion_status,
-        difficulty: review.difficulty,
-        worth_the_price: review.worth_the_price,
-        rating: review.rating,
-      }));
-
-      setReviews(formattedReviews);
-      console.log('Fetched Reviews:', formattedReviews); // Log the fetched reviews
-
-      const totalPlaytimeInSeconds = formattedReviews.reduce(
-        (total, review) =>
-          total +
-          review.playtime_hour * 3600 +
-          review.playtime_minutes * 60 +
-          review.playtime_seconds,
-        0
-      );
-
-      const totalReviews = formattedReviews.length;
-
-      const avgPlaytimeInSeconds = totalReviews > 0 ? totalPlaytimeInSeconds / totalReviews : 0;
-
-      const avgPlaytimeHour = Math.floor(avgPlaytimeInSeconds / 3600);
-      const avgPlaytimeMinute = Math.floor((avgPlaytimeInSeconds % 3600) / 60);
-      const avgPlaytimeSecond = Math.floor(avgPlaytimeInSeconds % 60);
-
-      const totalRating = formattedReviews.reduce((total, review) => {
-        // Ensure each review's rating is capped at 5
-        const cappedRating = Math.min(review.rating, 5);
-        return total + cappedRating;
-      }, 0);
-      
-      // Ensure that the total rating is capped at 5 times the number of reviews
-      const cappedTotalRating = Math.min(totalRating, 5 * formattedReviews.length);
-      
-      const avgRating = formattedReviews.length > 0 ? cappedTotalRating / formattedReviews.length : 0;
-      
-      // Use Math.round() for standard rounding behavior
-      const roundedAvgRating = Math.round(avgRating * 100) / 100;
-
-      setAveragePlaytime({
-        hour: avgPlaytimeHour,
-        minute: avgPlaytimeMinute,
-        second: avgPlaytimeSecond,
-        rating: roundedAvgRating,
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
       });
     } catch (error) {
-      console.error('Error fetching reviews for the game: ', error);
+      console.error('Error fetching image as base64:', error);
+      return null;
     }
   };
-
-  fetchReviews();
-}, [appid]);
-
 
   return (
     <div>
@@ -212,13 +226,14 @@ const IndividualGame = () => {
           </div>
 
           <div className='rating'>
-            <p>GamerHub Rating: {averagePlaytime?.rating ? <StarRating rating={averagePlaytime?.rating} />: 'Not rated yet'}</p>
+            <h2>GamerHub Rating: {averagePlaytime?.rating ? <StarRating rating={averagePlaytime?.rating} />: 'Not rated yet'}</h2>
           </div>
           
           <div className='completion'>
+            <h2>Average Completion Time:</h2>
             {averagePlaytime ? (
-              <p>
-                Average Completion Time:{' '}{`${averagePlaytime?.hour}h ${averagePlaytime?.minute}m ${averagePlaytime?.second}s`}
+              <p className='time-color'>
+                {' '}{`${averagePlaytime?.hour}h ${averagePlaytime?.minute}m ${averagePlaytime?.second}s`}
               </p>
             ) : (
               <p>No reviews available to calculate average completion time.</p>

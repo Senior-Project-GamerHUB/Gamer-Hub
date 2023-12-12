@@ -1,5 +1,5 @@
 .background-2 {
-  background-color: rgb(55, 1, 85);
-    height: 1000px;;
-  }
+  background: linear-gradient(to bottom, #0f054c, #e05591);
+  height: 1000px;;
+}
 

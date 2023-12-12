@@ -7,8 +7,8 @@ const DonutApexChart = ({ worthThePriceData }) => {
     options: {
       chart: {
         type: 'donut',
-        width: 500, // Set the desired width
-        height: 400, // Set the desired height
+        width: 500, 
+        height: 400, 
       },
       labels: ['Pass', 'Wait For Sale', 'Reasonable', 'Great Deal', 'Worth Every Penny'],
       responsive: [{
@@ -25,7 +25,7 @@ const DonutApexChart = ({ worthThePriceData }) => {
       colors: ['#FF0000', '#FFA500', '#00FF00', '#0000FF', '#800080'],
       legend: {
         labels: {
-          colors: '#fff', // Set legend text color to white
+          colors: '#fff', 
         },
       },
     },
@@ -59,7 +59,7 @@ const DonutApexChart = ({ worthThePriceData }) => {
   };
 
   return (
-    <div id="chart" style={{ width: '400px', height: '300px' }}> {/* Set the desired container size */}
+    <div id="chart" style={{ width: '400px', height: '300px' }}> 
       <ReactApexChart options={chartData.options} series={chartData.series} type="donut" />
     </div>
   );

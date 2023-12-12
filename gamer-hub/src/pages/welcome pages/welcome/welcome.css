@@ -1,5 +1,5 @@
 .background-1{
-    background-color: rgb(55, 1, 85);
+  background: linear-gradient(to bottom, #0f054c, #e05591);
     height: 920px;
     width: auto;
 }
