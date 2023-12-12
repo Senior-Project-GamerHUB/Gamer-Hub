@@ -517,14 +517,14 @@ app.post('/saveGame', async (req, res) => {
 
   app.post('/addForum', async (req, res) => {
 	const userID = req.body.user;
-	const picture = req.body.picture;
 	const gameID = req.body.game;
 	const title = req.body.title;
 	const text = req.body.text;
 	const username = req.body.username; 
+	
 	db.query(
-	  'INSERT INTO Forum (userID, picture, userName, gameID, title, text) VALUES (?, ?, ?, ?, ?, ?)',
-	  [userID, picture, username, gameID, title, text],
+	  'INSERT INTO Forum (userID, userName, gameID, title, text) VALUES (?, ?, ?, ?, ?)',
+	  [userID, username, gameID, title, text],
 	  (error, result) => {
 		if (error) {
 		  console.error('Error adding forum post:', error);
@@ -538,7 +538,6 @@ app.post('/saveGame', async (req, res) => {
   
 		const insertedPost = {
 		  post_id: result.insertId,
-		  picture: picture,
 		  username: username, 
 		  user_id: userID,
 		  game_id: gameID,
