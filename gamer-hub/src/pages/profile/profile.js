@@ -55,7 +55,7 @@ const Profile = () => {
         const reviewGameDetailsPromises = reviewGameIDs.map(async (gameID) => {
           const gameResponse = await axios.get(`https://api.rawg.io/api/games/${gameID}`, {
             params: {
-              key: '3f02ae9693244e86b768ab662105fd14',
+              key: 'fecf056691bd489dac7a439f05843915',
             },
           });
   
@@ -88,7 +88,7 @@ const Profile = () => {
         const savedGameDetailsPromises = savedGameIDs.map(async (gameID) => {
           const gameResponse = await axios.get(`https://api.rawg.io/api/games/${gameID}`, {
             params: {
-              key: '3f02ae9693244e86b768ab662105fd14',
+              key: 'fecf056691bd489dac7a439f05843915',
             },
           });
   
@@ -245,9 +245,9 @@ const Profile = () => {
                 }
                 className="rounded-circle img-fluid"
                 style={{
-                  width: '150px', // Set your desired width
-                  height: '150px', // Set your desired height
-                  objectFit: 'cover', // This property ensures the image covers the entire container while maintaining its aspect ratio
+                  width: '150px', 
+                  height: '150px', 
+                  objectFit: 'cover', 
                   cursor: 'pointer',
                 }}
                 onError={(e) => console.error('Error loading profile picture:', e)}
