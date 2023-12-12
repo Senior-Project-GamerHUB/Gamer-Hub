@@ -17,7 +17,7 @@ const Header = () => {
       .then(res => {
         setProfilePicture(res.data[0].picture);
         setUser(res.data[0]);
-         const arrayBuffer = new Uint8Array(res.data[0].picture.data);
+         const arrayBuffer = new Uint8Array(res.data[0].picture);
          const base64String = btoa(String.fromCharCode.apply(null, arrayBuffer));
          setProfilePicture(base64String);
       })

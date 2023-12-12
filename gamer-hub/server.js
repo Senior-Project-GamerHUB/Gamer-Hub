@@ -74,7 +74,6 @@ passport.use(new SteamStrategy({
 	}
 ));
 
-// use this for steam sign in <a href="http://localhost:3000/api/auth/steam">Sign in</a>
 
 app = express();
 app.use(express.static(path.join(__dirname, 'build')));
@@ -140,7 +139,6 @@ app.get('/loggedIn', (req, res)=>{
 			throw error;
 		}
 		else{
-			
 			res.send(data)
 		}
 
@@ -190,7 +188,6 @@ app.post('/signup', async(req, res)=>{
 	var email_error = false;
 	const response = await axios.get(`https://api.kickbox.com/v2/verify?email=${req.body.email}&apikey=live_2e405c5c10c7856d5a5d7473f26c2115d311f27ece979004159891439f2086d9`)
 	const data = await response.data;
-	console.log(data);
 	if(data.result == 'deliverable' | data.reason == 'low_deliverability') {
 		email = req.body.email;
 	} else {
@@ -247,7 +244,6 @@ app.post('/login', (req, res)=>{
 	db.query(dbsql, [req.body.email], async(err,data)=>{
 		if(err) return res.json(err);
 		if(data.length > 0){
-			console.log(data);
 			const SESS = data[0].user_id;
 			console.log("User ID: " + SESS);
 
