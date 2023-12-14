@@ -26,14 +26,14 @@ const ReviewCard = ({ review }) => {
   return (
     <div className="review-card">
       <div className="user-info">
-        <p>
+          <p className='userName-card'>
           <img
             src={getProfilePicture()}
             alt={review.userName}
             style={profilePictureSize}
-          />
-          {review.userName}
+          />{review.userName}
         </p>
+       
       </div>
       <p className="review-text">{review.review}</p>
     </div>

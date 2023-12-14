@@ -118,7 +118,7 @@ const Forum2 = () => {
         <div className="game-container">
           {gameData ? (
             <div>
-              <h1>{gameData.name}</h1>
+              <h1 className='gameName'>{gameData.name}</h1>
               <div className="game-image">
                 <a href={`/game/${gameData.id}`}>
                   <img src={gameData.background_image} alt={gameData.name} />

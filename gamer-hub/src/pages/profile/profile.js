@@ -236,13 +236,15 @@ const Profile = () => {
                 src={
                   selectedFile
                     ? URL.createObjectURL(selectedFile)
-                    : `data:image/png;base64,${profilePicture}` || defaultProfilePicture
+                    : profilePicture
+                      ? `data:image/png;base64,${profilePicture}`
+                      : defaultProfilePicture
                 }
                 className="rounded-circle img-fluid"
                 style={{
-                  width: '150px', 
-                  height: '150px', 
-                  objectFit: 'cover', 
+                  width: '150px',
+                  height: '150px',
+                  objectFit: 'cover',
                   cursor: 'pointer',
                 }}
                 onError={(e) => console.error('Error loading profile picture:', e)}
