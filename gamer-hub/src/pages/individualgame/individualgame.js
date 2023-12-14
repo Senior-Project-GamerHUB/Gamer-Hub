@@ -165,7 +165,7 @@ const IndividualGame = () => {
         <div className="game-container">
           {gameData ? (
             <div>
-              <h1>{gameData.name}</h1>
+              <h1 className="gameName">{gameData.name}</h1>
               <div className="game-image">
                 <img src={gameData.background_image} alt={gameData.name} />
               </div>
@@ -226,54 +226,64 @@ const IndividualGame = () => {
           </div>
 
           <div className='rating'>
-            <h2>GamerHub Rating: {averagePlaytime?.rating ? <StarRating rating={averagePlaytime?.rating} />: 'Not rated yet'}</h2>
+            <h2>
+              GamerHub Rating: {reviews.length > 0 ? (
+                <>
+                  <span className='numeric-rating'>
+                    ({averagePlaytime.rating})
+                  </span>
+                  <StarRating rating={averagePlaytime.rating} />
+                </>
+              ) : <p className = "no-reviews">No Reviews Available to calculate rating</p>}
+            </h2>
           </div>
+
+
           
           <div className='completion'>
             <h2>Average Completion Time:</h2>
-            {averagePlaytime ? (
+            {reviews.length > 0 ? (
               <p className='time-color'>
                 {' '}{`${averagePlaytime?.hour}h ${averagePlaytime?.minute}m ${averagePlaytime?.second}s`}
               </p>
             ) : (
-              <p>No reviews available to calculate average completion time.</p>
+              <p className = "no-reviews">No reviews available to calculate average completion time.</p>
             )}
           </div>
 
-
           <div className='charts'>
-            <h2>Completion</h2>
+            <h2>Completion Status: </h2>
             {reviews.length > 0 ? (
               <PieApexChart completionStatusData={reviews.map(review => review.completion_status)} />            ) : (
-              <p>No reviews available to display completion chart.</p>
+                <p className = "no-reviews">No reviews available to display completion chart.</p>
             )}
           </div>
 
           <div className='charts'>
-          <h2>Difficulty</h2>
+          <h2>Difficulty: </h2>
           {reviews.length > 0 ? (
             <StackApexChart difficultyData={reviews.map(review => review.difficulty)} />
           ) : (
-            <p>No reviews available to display difficulty chart.</p>
+            <p className = "no-reviews">No reviews available to display difficulty chart.</p>
           )}
         </div>
       
         <div className='charts'>
-          <h2>Worth the Price</h2>
+          <h2>Worth the Price: </h2>
           {reviews.length > 0 ? (
             <DonutApexChart worthThePriceData={reviews.map(review => review.worth_the_price)} />
           ) : (
-            <p>No reviews available to display worth the price chart.</p>
+            <p className = "no-reviews">No reviews available to display worth the price chart.</p>
           )}
         </div>
 
-          <h2>Reviews</h2>
+          <h2>Reviews: </h2>
           {reviews.length > 0 ? (
             reviews.map((review, index) => (
               <ReviewCard key={index} review={review} />
             ))
           ) : (
-            <p>No written reviews yet for this game.</p>
+            <p className = "no-reviews">No written reviews yet for this game.</p>
           )}
 
      

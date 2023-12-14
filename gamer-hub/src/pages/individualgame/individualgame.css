@@ -8,6 +8,10 @@
 
 }
 
+.gameName{
+    color: rgb(219, 111, 252);
+    margin-bottom: 20px;
+}
 
 .game-container {
     width: 350px;
@@ -27,6 +31,16 @@
 
     
 }
+
+.no-reviews{
+    color: #888; 
+}
+
+.numeric-rating {
+    margin-left: 5px; 
+    font-size: 14px; 
+    color: #888; 
+  }
 
 p{
     color: white;
@@ -115,7 +129,7 @@ p{
 }
 
 .rating{
-    margin-top: 20px;
+    margin-top: 50px;
     margin-bottom: 50px;
 }
 
@@ -130,7 +144,7 @@ p{
 
 
 .time-color {
-    color: lightskyblue;
+    color: #888;
     font-size: 44px;
 }
 

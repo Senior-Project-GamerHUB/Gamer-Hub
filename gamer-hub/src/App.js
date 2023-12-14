@@ -1,5 +1,6 @@
-import React from "react";
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { createBrowserRouter, Outlet, RouterProvider, useNavigate, useLocation } from "react-router-dom";
+import axios from 'axios';
 import Welcome from './pages/welcome pages/welcome/welcome';
 import Login from './pages/welcome pages/login/login';
 import SignUp from './pages/welcome pages/signup/signup';
@@ -25,10 +26,45 @@ const Layout = () => {
   );
 };
 
+const ProtectedRoute = ({ element, ...rest }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/loggedIn`, {
+          withCredentials: true,
+        });
+
+        if (response.data[0]?.username) {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+          if (pathname !== '/login') {
+            navigate('/login');
+          }
+        }
+      } catch (error) {
+        console.error('Authentication check failed:', error);
+        setIsAuthenticated(false);
+        if (pathname !== '/login') {
+          navigate('/login');
+        }
+      }
+    };
+
+    checkAuthentication();
+  }, [pathname, navigate]);
+
+  return isAuthenticated ? element : null;
+};
+
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Welcome />, 
+    element: <Welcome />,
   },
   {
     path: '/',
@@ -36,38 +72,38 @@ const router = createBrowserRouter([
     children: [
       {
         path: 'home',
-        element: <Home />,
+        element: <ProtectedRoute element={<Home />} />,
       },
       {
         path: 'game/:appid',
-        element: <IndividualGame />,
+        element: <ProtectedRoute element={<IndividualGame />} />,
       },
       {
         path: '/submit',
-        element: <Submit />,
+        element: <ProtectedRoute element={<Submit />} />,
       },
       {
         path: '/submit/game/:appid',
-        element: <Submit2/>,
+        element: <ProtectedRoute element={<Submit2 />} />,
       },
       {
         path: '/profile/:userName/:userID',
-        element: <Profile />,
+        element: <ProtectedRoute element={<Profile />} />,
       },
       {
         path: '/forum',
-        element: <Forum />,
+        element: <ProtectedRoute element={<Forum />} />,
       },
       {
         path: '/forum/game/:appid',
-        element: <Forum2/>,
+        element: <ProtectedRoute element={<Forum2 />} />,
       },
       {
         path: '/forum/post/:postId',
-        element: <PostPage/>,
+        element: <ProtectedRoute element={<PostPage />} />,
       },
       {
-        path: '*', 
+        path: '*',
         element: <NotFound />,
       },
     ],
@@ -80,17 +116,14 @@ const router = createBrowserRouter([
     path: 'signup',
     element: <SignUp />,
   },
-  
 ]);
 
 function App() {
-
-
   return (
     <div className="font-bodyFont">
       <RouterProvider router={router} />
     </div>
-  )
+  );
 }
 
 export default App;
