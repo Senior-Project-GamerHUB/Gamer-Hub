@@ -64,9 +64,7 @@ const Forum2 = () => {
         console.log('Server response:', response.data);
     
        
-        setForumPosts((prevForumPosts) => [...prevForumPosts, response.data]);
-    
-        
+        setForumPosts((prevForumPosts) => [...prevForumPosts, response.data]);      
         setShowPostForm(false);
     
        
@@ -86,8 +84,9 @@ const Forum2 = () => {
               gameID: appid,
             },
           });
-          console.log('Fetched forum posts:', response.data);
+          //console.log('Fetched forum posts:', response.data);
           setForumPosts(response.data);
+          console.log("Fourms: " + forumPosts);
         } catch (error) {
           console.error('Error fetching forum posts:', error);
         }

@@ -117,16 +117,6 @@ const Profile = () => {
 
   const navigate = useNavigate();
 
-  var loginInfo = sessionStorage.getItem('loginInfo');
-  if (typeof loginInfo !== 'undefined' && loginInfo !== null) {
-    const profileSess = sessionStorage.getItem('loginInfo');
-    setUserLog(profileSess.username);
-    setUser_Name(profileSess.name);
-    setEmail(profileSess.email);
-    setUserID(profileSess.user_id);
-    sessionStorage.removeItem("loginInfo");
-  }
-
   const heroStyle = {
     backgroundImage: 'url("https://i.redd.it/vo9vm1fcqrp71.jpg")',
   };
@@ -160,6 +150,11 @@ const Profile = () => {
     }
   };
 
+  const handleSteamLogin = () => {
+    // Redirect the user to the Steam authentication page
+    window.location.href = 'http://localhost:8080/api/auth/steam';
+
+  };
  
 
   const handleSubmit = (event) =>{
@@ -297,7 +292,7 @@ const Profile = () => {
                     <p style={{ color: 'white' }}> Email: {Email}</p>
                   </div>
                 </div>
-                <button className="btn btn-outline-light btn-lg px-5" type="button" onClick={""}>
+                <button className="btn btn-outline-light btn-lg px-5" type="button" onClick={handleSteamLogin}>
                             Link with Steam
                   </button>
               </div>

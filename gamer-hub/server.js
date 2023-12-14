@@ -13,7 +13,15 @@ const bodyParser = require("body-parser");
 const multer = require("multer");
 
 const port = process.env.PORT || 8080;
-key = '6FDE1CAA90BAA7010C02DF447AF228BE';
+key = 'B8B403638D5776C9AD2F430A1629D749';
+
+var sessID = null;
+var sessUser = null;
+
+function CurrentUser(id, name){
+	sessID = id;
+	sessUser = name
+}
 
 async function SteamGameReview(appid){
 	try {
@@ -53,7 +61,14 @@ async function SteamAccountName(steamid)
 	}
 }
 
-
+// async function ConvertURLToBlob(url){
+// 	fetch(url)
+// 	.then( response => {
+// 			const data = response.blob()
+// 			console.log("pic" + Promise.resolve(data));
+// 			return data
+// 		})
+// 	}
 // Required to get data from user for sessions
 passport.serializeUser((user, done) => {
 	done(null, user);
@@ -67,9 +82,21 @@ passport.deserializeUser((user, done) => {
 passport.use(new SteamStrategy({
 	returnURL: 'http://localhost:' + port + '/api/auth/steam/return',
 	realm: 'http://localhost:' + port + '/',
-	apiKey: '6FDE1CAA90BAA7010C02DF447AF228BE'
+	apiKey: key
 	}, function (identifier, profile, done) {
-	 process.nextTick(function () {
+	 process.nextTick(async function () {
+		db.query("UPDATE users SET picture = ?, username = ?, steamID = ? WHERE user_id = ?", [profile._json['avatarfull'], profile._json['personaname'], profile._json['steamid'], sessID], (error, result) =>{
+			
+			console.log("error is " + JSON.stringify(error));
+			console.log("results are " + result);
+	
+			if (JSON.stringify(error).indexOf("steamID_UNIQUE") >0 ){
+				console.log("error");
+			}
+			else{
+				console.log("ok");
+			}
+		})
 	  profile.identifier = identifier;
 	  return done(null, profile);
 	 });
@@ -95,7 +122,7 @@ app.use(session({
 	key: "userId",
 	secret: 'secretKey',
 	saveUninitialized: false,
-	resave: false,
+	resave: true,
 
 	cookie: {
 		secure: false,
@@ -131,7 +158,10 @@ app.get('/', (req, res)=>{
 
 app.get('/loggedIn', (req, res)=>{
 
-
+	console.log("Current Session: " + req.session.userId);
+	if (req.session.userID === undefined){
+		req.session.userId = sessID;
+	}
 	db.query("SELECT * FROM users WHERE user_id = ?", [req.session.userId], (error, data)=>{
 
 		if(error){
@@ -250,7 +280,8 @@ app.post('/login', (req, res)=>{
 			console.log("User ID: " + SESS);
 
 			req.session.userId=SESS;
-			
+			req.session.save();
+			CurrentUser(req.session.userId, data[0].username);
 			console.log("Session ID: " + req.session.userId);
 
 
@@ -270,24 +301,11 @@ app.post('/login', (req, res)=>{
 
 
 app.get('/api/auth/steam', passport.authenticate('steam', {failureRedirect: '/'}), function (req, res) {
-	res.redirect('http://localhost:3000/profile');
+	res.redirect(`http://localhost:3000/profile/${sessUser}/${sessID}`);
    });
 
 app.get('/api/auth/steam/return', passport.authenticate('steam', {failureRedirect: '/'}), async function (req, res) {
-	const data = await SteamAccountName(req.user.id);
-	db.query("UPDATE User SET username = ?, picture = ?, steamID = ? WHERE userID = ?", [data[0].personaname, data[0].avatarfull, data[0].steamid, req.session.userId], (error, result) =>{
-			
-		console.log("error is " + JSON.stringify(error));
-		console.log("results are " + result);
-
-		if (JSON.stringify(error).indexOf("steamID_UNIQUE") >0 ){
-		    return res.send("error");
-		}
-		else{
-			 return res.send("ok");
-		}
-	})
-	res.redirect('http://localhost:3000/profile');
+	res.redirect(`http://localhost:3000/profile/${sessUser}/${sessID}`);
    });
 
 app.post('/getSteamReview', async (req, res) => {
